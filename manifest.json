@@ -1,0 +1,24 @@
+{
+  "name": "DC Refresher",
+  "description": "DC 페이지를 자동으로 새로 고칩니다.",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "permissions": [
+    "https://gall.dcinside.com/*",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "content_scripts": [
+    {
+      "js": ["dc_refresh.js"],
+      "css": ["dc_refresh.css"],
+      "matches": ["https://gall.dcinside.com/*"]
+    }
+  ],
+  "page_action": {
+    "default_popup": "dc_refresh.html",
+    "default_icon": {
+      "32": "icns/logo_icon.png"
+    }
+  }
+}
