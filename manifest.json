@@ -11,6 +11,7 @@
   "content_scripts": [
     {
       "js": ["dc_refresh.js"],
+      "run_at": "document_start",
       "css": ["dc_refresh.css"],
       "matches": ["https://gall.dcinside.com/*"]
     }
