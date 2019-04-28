@@ -21,5 +21,6 @@
     "default_icon": {
       "32": "icns/logo_icon.png"
     }
-  }
+  },
+  "web_accessible_resources": ["icns/*"]
 }

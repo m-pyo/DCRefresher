@@ -1,6 +1,6 @@
 /**
- * getParameterByname
- * source :
+ * URL의 QueryString에서 name의 값을 가져옵니다.
+ *
  * @param {String} name 쿼리의 이름 ex:) ?id=XXX : name = id
  * @param {String} url URL, 미지정시 window.location.href 사용
  * @copyright https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
@@ -16,8 +16,22 @@ let getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
 
-// 초기화 변수
+/**
+ * 쿠키를 가져옵니다.
+ * @param {String} name 쿠키 key 이름
+ */
+let getCookie = name => {
+  var value = '; ' + document.cookie
+  var parts = value.split('; ' + name + '=')
+  if (parts.length == 2) {
+    return parts
+      .pop()
+      .split(';')
+      .shift()
+  }
+}
 
+// 초기화 변수
 let pgId = getParameterByName('id')
 let cachedNew = []
 let gTableOrigin
@@ -73,13 +87,106 @@ let recalcLeftRight = (div, w, h) => {
 }
 
 /**
+ * HTML 데이터에서 유용한 데이터를 파싱하여 결과를 Object로 반환합니다.
+ * @param {HTMLDocument} d 값 데이터 Document
+ * @param {String} id 게시글 ID
+ * @returns {Object} 도큐멘트에서 파싱한 값
+ */
+let getInfofromDocument = (d, id) => {
+  let upvotes = d.getElementById('recommend_view_up_' + id).innerText
+  let downvotes = d.getElementById('recommend_view_down_' + id).innerText
+  let commentCounts = d.getElementById('comment_total_' + id).innerText
+  let category = d.getElementsByClassName('title_headtext')[0].innerText
+  let title = d.getElementsByClassName('title_subject')[0].innerText
+  let __nick_obj = d.getElementsByClassName('gall_writer')[0]
+  let nick = __nick_obj.dataset.nick
+  let unique_id = __nick_obj.dataset.uid
+  let ip_addr = __nick_obj.dataset.ip
+  let date = d.getElementsByClassName('gall_date')[0].title
+
+  let __voteCodeParentElem = d.getElementsByClassName('recommend_kapcode')[0]
+  let voteCodeImage =
+    typeof __voteCodeParentElem !== 'undefined'
+      ? 'https://gall.dcinside.com/kcaptcha/image/?kcaptcha_type=recommend&time=' +
+        new Date().getTime()
+      : null
+
+  // let voteCodeImage = __voteCodeParentElem.getElementsByTagName('img')[0].src
+
+  let viewContent = d.getElementsByClassName('gallview_head')[0]
+  let __nickCon = viewContent.getElementsByTagName('img')[0]
+  let __nickTypeURL = typeof __nickCon !== 'undefined' ? __nickCon.src : ''
+  let nickType = 0
+
+  if (/\/fix_nik\.gif/.test(__nickTypeURL)) {
+    nickType = 1
+  } else if (/\/nik\.gif/.test(__nickTypeURL)) {
+    nickType = 2
+  } else if (/\/fix_sub_managernik\.gif/.test(__nickTypeURL)) {
+    nickType = 3
+  } else if (/\/fix_managernik\.gif/.test(__nickTypeURL)) {
+    nickType = 4
+  }
+
+  return {
+    upvotes,
+    downvotes,
+    commentCounts,
+    title,
+    category,
+    nick,
+    unique_id,
+    ip_addr,
+    date,
+    nickType,
+    voteCodeImage
+  }
+}
+
+/**
+ * 디시 서버에 개념글 추천 요청을 보냅니다.
+ *
+ * @param {Boolean} is_up 개념글 추천 버튼인가?
+ * @param {*} gall_id 갤러리 ID
+ * @param {*} post_id 게시글 ID
+ */
+let pressRecommend = async (is_up, gall_id, post_id, code) => {
+  let response = await fetch('https://gall.dcinside.com/board/recommend/vote', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    cache: 'no-store',
+    body: `ci_t=${getCookie('ci_c')}&id=${gall_id}&no=${post_id}&mode=${
+      is_up ? 'U' : 'D'
+    }&code_recommend=${code}`
+  })
+
+  let gottenData = response.text()
+
+  if (gottenData) {
+    let parsedResponse = gottenData.split('|')
+    return parsedResponse
+  } else {
+    return false
+  }
+}
+
+/**
  * 디시인사이드 페이지에 GET 요청을 보내 게시글을 가져옵니다.
  * @param {HTMLElement} div 가져온 값을 적용할 HTMLElement
  * @param {String} id 게시글의 ID값
  */
 let fetchPostInfo = async (div, id) => {
   let response = await fetch(
-    'https://gall.dcinside.com/mgallery/board/view/?id=' + pgId + '&no=' + id,
+    'https://gall.dcinside.com/' +
+      (isMinor ? 'mgallery/' : '') +
+      'board/view/?id=' +
+      pgId +
+      '&no=' +
+      id,
     { method: 'GET', mode: 'cors', cache: 'no-store' }
   )
 
@@ -87,24 +194,82 @@ let fetchPostInfo = async (div, id) => {
     await response.text(),
     'text/html'
   )
+  let postData = getInfofromDocument(domPs, id)
 
+  div.innerHTML = ''
   let cntWrap = document.createElement('div')
   cntWrap.className = '__hoverBox_contentWrap'
 
-  let upvote = domPs.getElementById('recommend_view_up_' + id).innerText
-  let downvote = domPs.getElementById('recommend_view_down_' + id).innerText
+  var headers = document.createElement('div')
+  headers.className = '__hoverBox_header'
+  headers.innerHTML = `
+    <span class="__hoverBox_postTitle">${postData.title}</span>
+    <div class="__hoverBox_nickWrap">
+      <span class="__hoverBox_nickIcon __hoverBox_icon${
+  postData.nickType
+}"></span>
+      <span class="__hoverBox_nickName">${postData.nick}</span>
+      <span class="__hoverBox_nickId">${postData.unique_id}</span>
+      <span class="__hoverBox_nickIP">${postData.ip_addr}</span>
+      <span class="__hoverBox_date">${postData.date}</span>
+    </div>
+  `
+  cntWrap.appendChild(headers)
+
   let fetchedWrittingBox = domPs.getElementsByClassName('writing_view_box')
   fetchedWrittingBox[0].style.float = 'unset'
   fetchedWrittingBox[0].style.maxWidth = 'unset'
   fetchedWrittingBox[0].style.width = '100%'
-
   cntWrap.appendChild(fetchedWrittingBox[0])
+
+  var bottomContents = document.createElement('div')
+  bottomContents.className = '__hoverBox_bottom'
+  bottomContents.innerHTML = `
+    ${
+  postData.voteCodeImage
+    ? `
+      <div class="__hoverBox_voteCodeWrap">
+        <img src="${postData.voteCodeImage}"></img>
+        <input type="text" id="__hoverBox_voteCodeTexts"></input>
+      </div>
+    `
+    : ''
+}
+    <div class="__hoverBox_voteWrap">
+      <div class="__hoverBox_upvoteWrap" id="__hoverBox_upvoteId_${id}">
+        <img src="${chrome.extension.getURL(
+    '/icns/upvote.png'
+  )}" class="__hoverBox_voteIcon"></img>
+        <div class="__hoverBox_upvoteCounts" id="__hoverBox_upvoteBtn">${
+  postData.upvotes
+}</div>
+      </div>
+      <div class="__hoverBox_downvoteWrap" id="__hoverBox_downvoteId_${id}">
+        <img src="${chrome.extension.getURL(
+    '/icns/downvote.png'
+  )}" class="__hoverBox_voteIcon"></img>
+        <div class="__hoverBox_downvoteCounts" id="__hoverBox_downvoteBtn">${
+  postData.downvotes
+}</div>
+      </div>
+    </div>
+    <div class="__hoverBox_seperater"></div>
+
+  `
+  cntWrap.appendChild(bottomContents)
   div.appendChild(cntWrap)
 
-  // 컨텐츠 / 댓글 분리자입니다.
-  var lineComment = document.createElement('div')
-  lineComment.className = '__hoverBox_seperater'
-  cntWrap.appendChild(lineComment)
+  document
+    .getElementById('__hoverBox_upvoteId_' + id)
+    .addEventListener('click', () => {
+      pressRecommend(true, pgId, id)
+    })
+
+  document
+    .getElementById('__hoverBox_downvoteId_' + id)
+    .addEventListener('click', () => {
+      pressRecommend(false, pgId, id)
+    })
 }
 
 /**
@@ -128,6 +293,7 @@ let addHoverListener = t => {
         createdOverlay = await createTooltipOverlay(postId)
         createOuterOverlay(createdOverlay)
         fillWithLoader(createdOverlay)
+        recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
         await fetchPostInfo(createdOverlay, postId)
         recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
 
@@ -137,8 +303,19 @@ let addHoverListener = t => {
   }
 }
 
+/**
+ * 로딩 중인 경우, 로더로 채웁니다.
+ * @param {HTMLElement} div
+ */
 let fillWithLoader = div => {
-  div.innerHTML = '<div class="__hoverBox_loader"></div>'
+  var outerLoader = document.createElement('div')
+  outerLoader.className = '__hoverBox_loader'
+
+  var loaderRing = document.createElement('div')
+  loaderRing.className = '__hoverBox_dual-ring'
+
+  outerLoader.appendChild(loaderRing)
+  div.appendChild(outerLoader)
 }
 
 /**
@@ -151,7 +328,6 @@ let createTooltipOverlay = async id => {
   div.id = '__hoverBox_num_' + id
   div.className = '__hoverBox_wrap'
   div.dataset.id = id
-  div.className += ' __hoverBox_loading'
 
   document.getElementsByTagName('body')[0].appendChild(div)
   return div
@@ -200,14 +376,21 @@ window.addEventListener('DOMContentLoaded', () => {
     gElements[i].style.fontFamily = "'Noto Sans CJK KR', sans-serif"
   }
 
-  if (/board\/lists/g.test(window.location.href)) {
+  if (
+    /\/board\/lists/g.test(window.location.href) ||
+    /\/board\/view/g.test(window.location.href)
+  ) {
     gTableOrigin = document.getElementsByClassName('gall_list')[0]
   }
 
   addNewCaching(gTableOrigin, true)
   addHoverListener(gTableOrigin)
 
-  if (/board\/lists\?id=/g.test(window.location.href) && pgId != null) {
+  if (
+    (/board\/view/g.test(window.location.href) ||
+      /board\/lists/g.test(window.location.href)) &&
+    pgId != null
+  ) {
     setInterval(() => {
       fetch(fetchURL, { method: 'GET', mode: 'cors', cache: 'no-store' }).then(
         async response => {

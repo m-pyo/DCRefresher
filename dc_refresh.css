@@ -5,9 +5,12 @@
   animation: newPost 3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.__hoverBox_loading {
-  background: -webkit-linear-gradient(to right, #323232, #242424);
-  animation: bg_loop 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+.__hoverBox_loader {
+  width: 400px;
+  height: 200px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes bg_loop {
@@ -33,6 +36,7 @@
   position: fixed;
   width: fit-content;
   height: fit-content;
+  max-width: 1000px;
   min-width: 400px;
   max-height: 60%;
   background-color: #f8f8f8;
@@ -44,12 +48,161 @@
   font-size: 14px;
 }
 
+.__hoverBox_header {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+.__hoverBox_postTitle,
+.__hoverBox_nickWrap {
+  display: block;
+}
+
+.__hoverBox_postTitle {
+  position: relative;
+  font-weight: 700;
+  font-size: 20px;
+  width: 100%;
+}
+
+.__hoverBox_nickWrap {
+  font-weight: 100;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.__hoverBox_nickName {
+  color: #424242;
+}
+
+.__hoverBox_nickName::after,
+.__hoverBox_nickIP::after {
+  content: " | ";
+  margin-left: 2.5px;
+  margin-right: 2.5px;
+  color: #a1a1a1;
+}
+
+.__hoverBox_nickId {
+  font-size: 12px;
+  color: #a8a8a8;
+}
+
+.__hoverBox_nickIP {
+  font-size: 12px;
+  color: #636363;
+}
+
+.__hoverBox_date {
+  font-size: 12px;
+  color: #555555;
+}
+
+.__hoverBox_nickIcon {
+  display: inline-block;
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0px 0px 6px rgba(97, 97, 97, 0.15);
+}
+
+/* 유동 */
+.__hoverBox_icon0 {
+  background: #fff;
+}
+
+/* 고닉 */
+.__hoverBox_icon1 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(255, 242, 55) 30%,
+    rgb(255, 232, 102) 100%
+  );
+}
+
+/* 반고닉 */
+.__hoverBox_icon2 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(201, 201, 201) 30%,
+    rgb(180, 180, 180) 100%
+  );
+}
+
+/* 파딱 */
+.__hoverBox_icon3 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(0, 140, 255) 0%,
+    rgb(102, 173, 255) 100%
+  );
+}
+
+/* 주딱 */
+.__hoverBox_icon4 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(255, 136, 0) 0%,
+    rgb(255, 176, 102) 100%
+  );
+}
+
 .__hoverBox_contentWrap {
-  padding: 1.618% 2.5%;
+  padding: 5.82% 2.5%;
   height: fit-content;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.__hoverBox_voteWrap,
+.__hoverBox_voteCodeWrap {
+  display: flex;
+  margin-top: 24px;
+}
+
+.__hoverBox_upvoteWrap,
+.__hoverBox_downvoteWrap {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.__hoverBox_upvoteWrap:hover,
+.__hoverBox_downvoteWrap:hover {
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 5px;
+}
+
+.__hoverBox_upvoteWrap:hover {
+  background-color: rgba(255, 136, 0, 0.23);
+}
+
+.__hoverBox_downvoteWrap:hover {
+  background-color: rgba(0, 162, 255, 0.23);
+}
+
+.__hoverBox_upvoteWrap:active {
+  background-color: rgba(255, 136, 0, 0.53);
+}
+
+.__hoverBox_downvoteWrap:active {
+  background-color: rgba(0, 162, 255, 0.53);
+}
+
+.__hoverBox_voteIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.__hoverBox_upvoteCounts,
+.__hoverBox_downvoteCounts {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 10px;
 }
 
 .__hoverBox_seperater {
@@ -87,5 +240,31 @@
   100% {
     background-color: transparent;
     color: black;
+  }
+}
+
+.__hoverBox_dual-ring {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  margin: auto;
+}
+.__hoverBox_dual-ring:after {
+  content: " ";
+  display: block;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 5px solid #000;
+  border-color: #000 transparent #000 transparent;
+  animation: __hoverBox_dual-ring-anime 1.2s linear infinite;
+}
+@keyframes __hoverBox_dual-ring-anime {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
