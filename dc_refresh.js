@@ -37,14 +37,15 @@ let cachedNew = []
 let gTableOrigin
 let isMinor = /dcinside\.com\/mgallery/g.test(window.location.href)
 let isGaeNyum = getParameterByName('exception_mode') == 'recommend'
-let isPageSpec = getParameterByName('page') != null
+let pgNum = getParameterByName('page') || 1
+let isPageSpec = pgNum != null
 let fetchURL =
   'https://gall.dcinside.com/' +
   (isMinor ? 'mgallery/' : '') +
   'board/lists?id=' +
   pgId +
   (isGaeNyum ? '&exception_mode=recommend' : '') +
-  (isPageSpec ? '&page=' + getParameterByName('page') : '')
+  (isPageSpec ? '&page=' + pgNum : '')
 
 /**
  * 새 글 알림 캐쉬에 추가하는 함수입니다.
@@ -153,6 +154,8 @@ let getInfofromDocument = (d, id) => {
 let pressRecommend = async (is_up, gall_id, post_id, code) => {
   let response = await fetch('https://gall.dcinside.com/board/recommend/vote', {
     method: 'POST',
+    async: false,
+    crossDomain: true,
     mode: 'cors',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -172,6 +175,40 @@ let pressRecommend = async (is_up, gall_id, post_id, code) => {
   } else {
     return false
   }
+}
+
+/**
+ * DC인사이드 쿠키 저장 스크립트
+ * @param {*} cname
+ * @param {*} cvalue
+ * @param {*} exdays
+ * @param {*} domain
+ */
+var setCookie = function (cname, cvalue, exdays, domain) {
+  var d = new Date()
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000)
+  var expires = 'expires=' + d.toUTCString()
+  document.cookie =
+    cname + '=' + cvalue + ';' + expires + ';path=/;domain=' + domain
+}
+
+let fetchComments = async (gall_id, post_id, esno) => {
+  let response = await fetch('https://gall.dcinside.com/board/comment/', {
+    method: 'POST',
+    dataType: 'json',
+    headers: {
+      Accept: 'application/json, text/javascript, */*; q=0.01',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    cache: 'no-store',
+    referrer: `https://gall.dcinside.com/${
+      isMinor ? 'mgallery/' : ''
+    }board/view/?id=${gall_id}&no=${post_id}&page=${pgNum}`,
+    body: `id=${gall_id}&no=${post_id}&cmt_id=${gall_id}&cmt_no=${post_id}&e_s_n_o=${esno}&comment_page=1&sort=`
+  })
+
+  return response.json()
 }
 
 /**
@@ -254,9 +291,16 @@ let fetchPostInfo = async (div, id) => {
       </div>
     </div>
     <div class="__hoverBox_seperater"></div>
-
   `
+
+  var ftchCmts = fetchComments(pgId, id, domPs.getElementById('e_s_n_o').value)
+
+  var bottomComments = document.createElement('div')
+  bottomComments.className = '__hoverBox_comment'
+  bottomComments.innerHTML = JSON.stringify(ftchCmts)
+
   cntWrap.appendChild(bottomContents)
+  cntWrap.appendChild(bottomComments)
   div.appendChild(cntWrap)
 
   document
@@ -375,6 +419,8 @@ window.addEventListener('DOMContentLoaded', () => {
   for (let i = 0, l = gElements.length; i < l; i++) {
     gElements[i].style.fontFamily = "'Noto Sans CJK KR', sans-serif"
   }
+
+  setCookie('_gat_mgall_web', 1, 3, 'dcinside.com')
 
   if (
     /\/board\/lists/g.test(window.location.href) ||
