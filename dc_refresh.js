@@ -49,7 +49,7 @@ let fetchURL =
 
 /**
  * 새 글 알림 캐쉬에 추가하는 함수입니다.
- * @param {HTMLDocument} t 가져올 ID의 Document
+ * @param {DocumentFragment} t 가져올 ID의 Document
  * @param {Boolean} Isinit 초기화 인가? (새로운 class 변경 없음)
  */
 
@@ -88,8 +88,21 @@ let recalcLeftRight = (div, w, h) => {
 }
 
 /**
+ * 아이콘 URL을 파싱해 닉네임 종류를 알아냅니다.
+ * @param {String} iconUrl 아이콘의 URL
+ */
+let iconParse = iconUrl => {
+  if (/\/fix_nik\.gif/.test(iconUrl)) return 1
+  if (/\/nik\.gif/.test(iconUrl)) return 2
+  if (/\/fix_sub_managernik\.gif/.test(iconUrl)) return 3
+  if (/\/fix_managernik\.gif/.test(iconUrl)) return 4
+
+  return 0
+}
+
+/**
  * HTML 데이터에서 유용한 데이터를 파싱하여 결과를 Object로 반환합니다.
- * @param {HTMLDocument} d 값 데이터 Document
+ * @param {DocumentFragment} d 값 데이터 Document
  * @param {String} id 게시글 ID
  * @returns {Object} 도큐멘트에서 파싱한 값
  */
@@ -117,17 +130,7 @@ let getInfofromDocument = (d, id) => {
   let viewContent = d.getElementsByClassName('gallview_head')[0]
   let __nickCon = viewContent.getElementsByTagName('img')[0]
   let __nickTypeURL = typeof __nickCon !== 'undefined' ? __nickCon.src : ''
-  let nickType = 0
-
-  if (/\/fix_nik\.gif/.test(__nickTypeURL)) {
-    nickType = 1
-  } else if (/\/nik\.gif/.test(__nickTypeURL)) {
-    nickType = 2
-  } else if (/\/fix_sub_managernik\.gif/.test(__nickTypeURL)) {
-    nickType = 3
-  } else if (/\/fix_managernik\.gif/.test(__nickTypeURL)) {
-    nickType = 4
-  }
+  let nickType = iconParse(__nickTypeURL)
 
   return {
     upvotes,
@@ -142,6 +145,72 @@ let getInfofromDocument = (d, id) => {
     nickType,
     voteCodeImage
   }
+}
+
+/**
+ * 닉네임 Dom을 렌더링합니다.
+ * @param {Object} postData 데이터 구조
+ */
+let renderNicks = postData => {
+  return `<div class="__hoverBox_nickWrap">
+  <span class="__hoverBox_nickIcon __hoverBox_icon${postData.nickType}"></span>
+  <span class="__hoverBox_nickName">${postData.nick}</span>
+  <span class="__hoverBox_nickId" title="해당 유저의 갤로그를 엽니다." onclick="window.open('https://gallog.dcinside.com/${
+  postData.unique_id
+}')">${postData.unique_id}</span>
+  <span class="__hoverBox_nickIP">${postData.ip_addr}</span>
+  <span class="__hoverBox_date">${postData.date}</span>
+</div>`
+}
+
+let commentsRender = fetchedData => {
+  var dcCrediv = document.createDocumentFragment()
+
+  if (!fetchedData.comments) return [0, dcCrediv]
+  for (var i = 0; i < fetchedData.comments.length; i++) {
+    var c = fetchedData.comments[i]
+    // 댓글돌이일 경우 건너 뜀
+    if (c.nicktype === 'COMMENT_BOY') continue
+
+    var getIcon = new DOMParser().parseFromString(c.gallog_icon, 'text/html')
+    var imgElem = getIcon.getElementsByTagName('img')[0]
+
+    var postData = {
+      nick: c.name,
+      unique_id: c.user_id,
+      ip_addr: c.ip,
+      date: c.reg_date,
+      nickType: iconParse(imgElem ? imgElem.src : '')
+    }
+
+    var cs = document.createElement('div')
+    cs.className = '__hoverBox_commentWraps __hoverBox_pushLeft' + c.depth
+    cs.innerHTML = renderNicks(postData)
+
+    var commentContent = document.createElement('div')
+    commentContent.className = '__hoverBox_commentContent'
+
+    var getIcon = new DOMParser().parseFromString(c.memo, 'text/html')
+    var checkDcCon = getIcon.getElementsByTagName('img')
+
+    if (checkDcCon[0]) {
+      var dcConElem = document.createElement('img')
+      dcConElem.src = checkDcCon[0].src
+      dcConElem.className = '__hoverBox_dccon __hoverBox_dcconLoading'
+      dcConElem.onload = () => {
+        dcConElem.classList.toggle('__hoverBox_dcconLoading')
+      }
+      commentContent.appendChild(dcConElem)
+    } else {
+      commentContent.innerHTML = c.memo
+    }
+
+    cs.appendChild(commentContent)
+
+    dcCrediv.appendChild(cs)
+  }
+
+  return [fetchedData.total_cnt, dcCrediv]
 }
 
 /**
@@ -192,6 +261,12 @@ var setCookie = function (cname, cvalue, exdays, domain) {
     cname + '=' + cvalue + ';' + expires + ';path=/;domain=' + domain
 }
 
+/**
+ * 디시인사이드 API를 이용해 댓글을 받아옵니다.
+ * @param {*} gall_id 갤러리 ID
+ * @param {*} post_id 게시글 ID
+ * @param {*} esno ESNO csrf_token
+ */
 let fetchComments = async (gall_id, post_id, esno) => {
   let response = await fetch('https://gall.dcinside.com/board/comment/', {
     method: 'POST',
@@ -208,7 +283,7 @@ let fetchComments = async (gall_id, post_id, esno) => {
     body: `id=${gall_id}&no=${post_id}&cmt_id=${gall_id}&cmt_no=${post_id}&e_s_n_o=${esno}&comment_page=1&sort=`
   })
 
-  return response.json()
+  return await response.json()
 }
 
 /**
@@ -232,7 +307,6 @@ let fetchPostInfo = async (div, id) => {
     'text/html'
   )
   let postData = getInfofromDocument(domPs, id)
-
   div.innerHTML = ''
   let cntWrap = document.createElement('div')
   cntWrap.className = '__hoverBox_contentWrap'
@@ -241,15 +315,7 @@ let fetchPostInfo = async (div, id) => {
   headers.className = '__hoverBox_header'
   headers.innerHTML = `
     <span class="__hoverBox_postTitle">${postData.title}</span>
-    <div class="__hoverBox_nickWrap">
-      <span class="__hoverBox_nickIcon __hoverBox_icon${
-  postData.nickType
-}"></span>
-      <span class="__hoverBox_nickName">${postData.nick}</span>
-      <span class="__hoverBox_nickId">${postData.unique_id}</span>
-      <span class="__hoverBox_nickIP">${postData.ip_addr}</span>
-      <span class="__hoverBox_date">${postData.date}</span>
-    </div>
+    ${renderNicks(postData)}
   `
   cntWrap.appendChild(headers)
 
@@ -293,11 +359,15 @@ let fetchPostInfo = async (div, id) => {
     <div class="__hoverBox_seperater"></div>
   `
 
-  var ftchCmts = fetchComments(pgId, id, domPs.getElementById('e_s_n_o').value)
-
+  var ftchCmts = await fetchComments(
+    pgId,
+    id,
+    domPs.getElementById('e_s_n_o').value
+  )
+  var renderedComments = commentsRender(ftchCmts)
   var bottomComments = document.createElement('div')
   bottomComments.className = '__hoverBox_comment'
-  bottomComments.innerHTML = JSON.stringify(ftchCmts)
+  bottomComments.append(renderedComments[1])
 
   cntWrap.appendChild(bottomContents)
   cntWrap.appendChild(bottomComments)
@@ -316,9 +386,18 @@ let fetchPostInfo = async (div, id) => {
     })
 }
 
+let renderErrorPage = (div, code, msg) => {
+  div.innerHTML = `<div class="__hoverBox_error">
+  <h3 class="__hoverBox_errTitle">오류 발생</h3>
+  <p>글을 받아와 파싱하려는 도중 오류가 발생 하였습니다.</p>
+  <br>
+  <p class="__hoverBox_muteText">${msg}</p>
+  </div>`
+}
+
 /**
  * 오른쪽 클릭시 오버레이 생성
- * @param {HTMLDocument} t 파싱된 게시판 HTML 소스
+ * @param {DocumentFragment} t 파싱된 게시판 HTML 소스
  */
 let addHoverListener = t => {
   if (typeof t === 'undefined' || t == null) return
@@ -338,7 +417,12 @@ let addHoverListener = t => {
         createOuterOverlay(createdOverlay)
         fillWithLoader(createdOverlay)
         recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
-        await fetchPostInfo(createdOverlay, postId)
+
+        try {
+          await fetchPostInfo(createdOverlay, postId)
+        } catch (e) {
+          renderErrorPage(createdOverlay, e.code, e.message)
+        }
         recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
 
         return ev.preventDefault()
@@ -352,6 +436,7 @@ let addHoverListener = t => {
  * @param {HTMLElement} div
  */
 let fillWithLoader = div => {
+  div.innerHTML = ''
   var outerLoader = document.createElement('div')
   outerLoader.className = '__hoverBox_loader'
 
@@ -432,14 +517,21 @@ window.addEventListener('DOMContentLoaded', () => {
   addNewCaching(gTableOrigin, true)
   addHoverListener(gTableOrigin)
 
+  var YuSikDaeJangMandooZoGong = () => {}
   if (
     (/board\/view/g.test(window.location.href) ||
       /board\/lists/g.test(window.location.href)) &&
     pgId != null
   ) {
     setInterval(() => {
-      fetch(fetchURL, { method: 'GET', mode: 'cors', cache: 'no-store' }).then(
-        async response => {
+      if (!window.navigator.onLine) return false
+
+      try {
+        fetch(fetchURL, {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-store'
+        }).then(async response => {
           let domPs = new DOMParser().parseFromString(
             await response.text(),
             'text/html'
@@ -450,8 +542,12 @@ window.addEventListener('DOMContentLoaded', () => {
           gTableOrigin.innerHTML = ''
           gTableOrigin.append(gTable)
           addHoverListener(gTableOrigin)
-        }
-      )
+        })
+      } catch (e) {
+        YuSikDaeJangMandooZoGong()
+      }
     }, 5000)
   }
 })
+
+chrome.browserAction.setPopup({ popup: 'dc_refresh.html' })

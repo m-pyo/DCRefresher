@@ -2,7 +2,7 @@
   border-radius: 10px;
   background-color: transparent;
   color: black;
-  animation: newPost 3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation: bg_loop 3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .__hoverBox_loader {
@@ -46,6 +46,7 @@
   overflow: auto;
   font-family: "Nanum Gothic", sans-serif;
   font-size: 14px;
+  padding: 1% 2.5%;
 }
 
 .__hoverBox_header {
@@ -87,6 +88,32 @@
 .__hoverBox_nickId {
   font-size: 12px;
   color: #a8a8a8;
+  cursor: pointer;
+  transition: color 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.__hoverBox_nickId:hover {
+  color: #c0c0c0;
+}
+
+.__hoverBox_nickId:active {
+  color: #d8d8d8;
+}
+
+.__hoverBox_error {
+  width: 500px;
+  height: 200px;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: center;
+}
+
+.__hoverBox_errTitle {
+  font-size: 24px;
+}
+
+.__hoverBox_muteText {
+  color: #c0c0c0;
 }
 
 .__hoverBox_nickIP {
@@ -142,7 +169,8 @@
 }
 
 /* 주딱 */
-.__hoverBox_icon4 {
+.__hoverBox_icon4,
+.__hoverBox_icon20 {
   background: -webkit-linear-gradient(
     330deg,
     rgb(255, 136, 0) 0%,
@@ -267,4 +295,33 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.__hoverBox_commentWraps {
+  display: block;
+  margin-bottom: 10px;
+  padding: 1.5%;
+}
+
+.__hoverBox_commentContent {
+  display: block;
+}
+
+.__hoverBox_dccon {
+  width: 100px;
+  height: 100px;
+}
+
+.__hoverBox_dcconLoading {
+  background-size: 500 500%;
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(131, 131, 131) 30%,
+    rgb(211, 211, 211) 100%
+  );
+  animation: bg_loop 3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.__hoverBox_pushLeft1 {
+  margin-left: 20px;
 }
