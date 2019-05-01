@@ -1,6 +1,6 @@
 {
   "name": "DC Refresher",
-  "description": "DC 페이지를 자동으로 새로 고칩니다.",
+  "description": "DC 페이지를 자동으로 고치고, 미리 보기를 생성합니다.",
   "version": "1.0.0",
   "manifest_version": 2,
   "permissions": [
@@ -19,6 +19,7 @@
   "browser_action": {
     "default_popup": "popup/ppup.html",
     "default_icon": {
+      "128": "icns/dc_ref_128.png",
       "300": "icns/dc_ref.png"
     },
     "default_title": "DC Refresher"

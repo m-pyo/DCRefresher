@@ -36,16 +36,13 @@ let pgId = getParameterByName('id')
 let cachedNew = []
 let gTableOrigin
 let isMinor = /dcinside\.com\/mgallery/g.test(window.location.href)
-let isGaeNyum = getParameterByName('exception_mode') == 'recommend'
 let pgNum = getParameterByName('page') || 1
 let isPageSpec = pgNum != null
 let fetchURL =
   'https://gall.dcinside.com/' +
   (isMinor ? 'mgallery/' : '') +
-  'board/lists?id=' +
-  pgId +
-  (isGaeNyum ? '&exception_mode=recommend' : '') +
-  (isPageSpec ? '&page=' + pgNum : '')
+  'board/lists' +
+  window.location.search
 
 /**
  * 새 글 알림 캐쉬에 추가하는 함수입니다.
@@ -119,13 +116,8 @@ let getInfofromDocument = (d, id) => {
   let date = d.getElementsByClassName('gall_date')[0].title
 
   let __voteCodeParentElem = d.getElementsByClassName('recommend_kapcode')[0]
-  let voteCodeImage =
-    typeof __voteCodeParentElem !== 'undefined'
-      ? 'https://gall.dcinside.com/kcaptcha/image/?kcaptcha_type=recommend&time=' +
-        new Date().getTime()
-      : null
-
-  // let voteCodeImage = __voteCodeParentElem.getElementsByTagName('img')[0].src
+  let isCaptcha =
+    __voteCodeParentElem != null && typeof __voteCodeParentElem !== 'undefined'
 
   let viewContent = d.getElementsByClassName('gallview_head')[0]
   let __nickCon = viewContent.getElementsByTagName('img')[0]
@@ -143,7 +135,7 @@ let getInfofromDocument = (d, id) => {
     ip_addr,
     date,
     nickType,
-    voteCodeImage
+    isCaptcha
   }
 }
 
@@ -184,7 +176,9 @@ let commentsRender = fetchedData => {
     }
 
     var cs = document.createElement('div')
-    cs.className = '__hoverBox_commentWraps __hoverBox_pushLeft' + c.depth
+    cs.className = `__hoverBox_commentWraps ${
+      c.is_delete > 0 ? '__hoverBox_deletedCmt ' : ''
+    }__hoverBox_pushLeft${c.depth}`
     cs.innerHTML = renderNicks(postData)
 
     var commentContent = document.createElement('div')
@@ -197,10 +191,19 @@ let commentsRender = fetchedData => {
       var dcConElem = document.createElement('img')
       dcConElem.src = checkDcCon[0].src
       dcConElem.className = '__hoverBox_dccon __hoverBox_dcconLoading'
+      dcConElem.onclick = () => {
+        window.open(checkDcCon[0].src)
+      }
       dcConElem.onload = () => {
-        dcConElem.classList.toggle('__hoverBox_dcconLoading')
+        dcConElem.classList.remove('__hoverBox_dcconLoading')
       }
       commentContent.appendChild(dcConElem)
+    } else if (c.vr_player) {
+      var dcAudio = document.createElement('audio')
+      dcAudio.controls = true
+      dcAudio.src =
+        'https://vr.dcinside.com/' + c.memo.replace(/\@\^dc\^\@/g, '')
+      commentContent.appendChild(dcAudio)
     } else {
       commentContent.innerHTML = c.memo
     }
@@ -217,41 +220,48 @@ let commentsRender = fetchedData => {
  * 디시 서버에 개념글 추천 요청을 보냅니다.
  *
  * @param {Boolean} is_up 개념글 추천 버튼인가?
- * @param {*} gall_id 갤러리 ID
- * @param {*} post_id 게시글 ID
+ * @param {String} gall_id 갤러리 ID
+ * @param {String} post_id 게시글 ID
  */
 let pressRecommend = async (is_up, gall_id, post_id, code) => {
-  let response = await fetch('https://gall.dcinside.com/board/recommend/vote', {
-    method: 'POST',
-    async: false,
-    crossDomain: true,
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    cache: 'no-store',
-    body: `ci_t=${getCookie('ci_c')}&id=${gall_id}&no=${post_id}&mode=${
-      is_up ? 'U' : 'D'
-    }&code_recommend=${code}`
-  })
+  try {
+    set_cookie_tmp(
+      gall_id + post_id + '_Firstcheck' + (!is_up ? '_down' : ''),
+      'Y',
+      3,
+      'dcinside.com'
+    )
 
-  let gottenData = response.text()
+    let response = await fetch(
+      'https://gall.dcinside.com/board/recommend/vote',
+      {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          DNT: 1
+        },
+        cache: 'no-store',
+        body: `ci_t=${getCookie('ci_c')}&id=${gall_id}&no=${post_id}&mode=${
+          is_up ? 'U' : 'D'
+        }&code_recommend=${code}`
+      }
+    )
 
-  if (gottenData) {
-    let parsedResponse = gottenData.split('|')
-    return parsedResponse
-  } else {
-    return false
+    let txt = response.text()
+    return txt
+  } catch (e) {
+    if (e) return false
   }
 }
 
 /**
  * DC인사이드 쿠키 저장 스크립트
- * @param {*} cname
- * @param {*} cvalue
- * @param {*} exdays
- * @param {*} domain
+ * @param {String} cname
+ * @param {String} cvalue
+ * @param {Number} exdays
+ * @param {String} domain
  */
 var setCookie = function (cname, cvalue, exdays, domain) {
   var d = new Date()
@@ -261,11 +271,49 @@ var setCookie = function (cname, cvalue, exdays, domain) {
     cname + '=' + cvalue + ';' + expires + ';path=/;domain=' + domain
 }
 
+function set_cookie_tmp (e, t, o, i) {
+  var n = new Date()
+  n.setTime(n.getTime() + 36e5 * o),
+  (document.cookie =
+      e +
+      '=' +
+      escape(t) +
+      '; path=/; domain=' +
+      i +
+      '; expires=' +
+      n.toGMTString() +
+      ';')
+}
+
+/**
+ * 디시인사이드에서 Captcha 코드를 받아옵니다.
+ * @param {String} type 캡챠 요청 종류
+ * @param {String} token csrf 토큰
+ * @param {String} gall_id 갤러리 ID
+ */
+let getCaptcha = async (type, token, gall_id) => {
+  let response = await fetch('https://gall.dcinside.com/kcaptcha/session', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    cache: 'no-store',
+    body: `ci_t=${token}&gall_id=${gall_id}&kcaptcha_type=${type}`
+  })
+
+  return [
+    `https://gall.dcinside.com/kcaptcha/image/?kcaptcha_type=${type}&time=${new Date().getTime()}`,
+    String(await response.text()).trim()
+  ]
+}
+
 /**
  * 디시인사이드 API를 이용해 댓글을 받아옵니다.
- * @param {*} gall_id 갤러리 ID
- * @param {*} post_id 게시글 ID
- * @param {*} esno ESNO csrf_token
+ * @param {String} gall_id 갤러리 ID
+ * @param {String} post_id 게시글 ID
+ * @param {String} esno ESNO csrf_token
  */
 let fetchComments = async (gall_id, post_id, esno) => {
   let response = await fetch('https://gall.dcinside.com/board/comment/', {
@@ -307,7 +355,6 @@ let fetchPostInfo = async (div, id) => {
     'text/html'
   )
   let postData = getInfofromDocument(domPs, id)
-  div.innerHTML = ''
   let cntWrap = document.createElement('div')
   cntWrap.className = '__hoverBox_contentWrap'
 
@@ -325,18 +372,20 @@ let fetchPostInfo = async (div, id) => {
   fetchedWrittingBox[0].style.width = '100%'
   cntWrap.appendChild(fetchedWrittingBox[0])
 
+  var captchaImg = await getCaptcha('recommend', getCookie('ci_c'), pgId)
+
   var bottomContents = document.createElement('div')
   bottomContents.className = '__hoverBox_bottom'
   bottomContents.innerHTML = `
     ${
-  postData.voteCodeImage
+  postData.isCaptcha
     ? `
       <div class="__hoverBox_voteCodeWrap">
-        <img src="${postData.voteCodeImage}"></img>
+        <img id="__hoverBox_captchaImg"src="${captchaImg[0]}"></img>
         <input type="text" id="__hoverBox_voteCodeTexts"></input>
       </div>
     `
-    : ''
+    : '<input class="__hoverBox_nosee" type="text" id="__hoverBox_voteCodeTexts"></input>'
 }
     <div class="__hoverBox_voteWrap">
       <div class="__hoverBox_upvoteWrap" id="__hoverBox_upvoteId_${id}">
@@ -371,22 +420,66 @@ let fetchPostInfo = async (div, id) => {
 
   cntWrap.appendChild(bottomContents)
   cntWrap.appendChild(bottomComments)
+  div.innerHTML = ''
   div.appendChild(cntWrap)
 
-  document
-    .getElementById('__hoverBox_upvoteId_' + id)
-    .addEventListener('click', () => {
-      pressRecommend(true, pgId, id)
-    })
+  var upvoteBtn = document.getElementById('__hoverBox_upvoteId_' + id)
+  upvoteBtn.addEventListener('click', async () => {
+    var res = await pressRecommend(
+      true,
+      pgId,
+      id,
+      document.getElementById('__hoverBox_voteCodeTexts').value
+    )
+    var splds = res.replace(/\|\|/g, '|').split('|')
 
-  document
-    .getElementById('__hoverBox_downvoteId_' + id)
-    .addEventListener('click', () => {
-      pressRecommend(false, pgId, id)
-    })
+    if (splds[0] == 'true' && splds[1] != '') {
+      document.getElementById('__hoverBox_upvoteBtn').innerText = splds[1]
+      return
+    }
+
+    if (!res || splds[0] != 'true') {
+      upvoteBtn.classList.add('__hoverBox_shakeAnime')
+
+      setTimeout(() => {
+        upvoteBtn.classList.remove('__hoverBox_shakeAnime')
+      }, 321)
+    }
+  })
+
+  var downvoteBtn = document.getElementById('__hoverBox_downvoteId_' + id)
+  downvoteBtn.addEventListener('click', async () => {
+    var res = await pressRecommend(
+      false,
+      pgId,
+      id,
+      document.getElementById('__hoverBox_voteCodeTexts').value
+    )
+    var splds = res.replace(/\|\|/g, '|').split('|')
+
+    console.log(splds)
+
+    if (splds[0] == 'true' && splds[1] != '') {
+      document.getElementById('__hoverBox_downvoteBtn').innerText = splds[1]
+      return
+    }
+
+    if (!res || splds[0] != 'true') {
+      downvoteBtn.classList.add('__hoverBox_shakeAnime')
+
+      setTimeout(() => {
+        downvoteBtn.classList.remove('__hoverBox_shakeAnime')
+      }, 321)
+    }
+  })
 }
 
-let renderErrorPage = (div, code, msg) => {
+/**
+ * 오류 페이지 템플릿 만들기
+ * @param {HTMLElement} div 적용할 div
+ * @param {String} msg
+ */
+let renderErrorPage = (div, msg) => {
   div.innerHTML = `<div class="__hoverBox_error">
   <h3 class="__hoverBox_errTitle">오류 발생</h3>
   <p>글을 받아와 파싱하려는 도중 오류가 발생 하였습니다.</p>
@@ -421,7 +514,7 @@ let addHoverListener = t => {
         try {
           await fetchPostInfo(createdOverlay, postId)
         } catch (e) {
-          renderErrorPage(createdOverlay, e.code, e.message)
+          renderErrorPage(createdOverlay, e.message)
         }
         recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
 
@@ -549,5 +642,3 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 5000)
   }
 })
-
-chrome.browserAction.setPopup({ popup: 'dc_refresh.html' })

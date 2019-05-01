@@ -2,7 +2,12 @@
   border-radius: 10px;
   background-color: transparent;
   color: black;
-  animation: bg_loop 3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation: bg_loop 3s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+}
+
+.__hoverBox_nosee {
+  display: none;
+  visibility: hidden;
 }
 
 .__hoverBox_loader {
@@ -19,11 +24,11 @@
   }
 
   50% {
-    background-position: 100% 100%;
+    background-position: 100% 50%;
   }
 
   100% {
-    background-position: 50% 0%;
+    background-position: 0% 50%;
   }
 }
 
@@ -71,6 +76,7 @@
   font-weight: 100;
   font-size: 14px;
   margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .__hoverBox_nickName {
@@ -101,7 +107,7 @@
 }
 
 .__hoverBox_error {
-  width: 500px;
+  width: 400px;
   height: 200px;
   margin-top: auto;
   margin-bottom: auto;
@@ -134,6 +140,9 @@
   border: 0;
   border-radius: 50%;
   box-shadow: 0px 0px 6px rgba(97, 97, 97, 0.15);
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 2px;
 }
 
 /* 유동 */
@@ -305,23 +314,72 @@
 
 .__hoverBox_commentContent {
   display: block;
+  margin-left: 12px;
 }
 
 .__hoverBox_dccon {
   width: 100px;
   height: 100px;
+  margin-top: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 8px rgba(136, 136, 136, 0.3);
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  cursor: pointer;
+}
+
+.__hoverBox_dccon:hover {
+  box-shadow: 0px 0px 16px rgba(136, 136, 136, 0.4);
+}
+
+.__hoverBox_dccon:active {
+  box-shadow: 0px 0px 18px rgba(136, 136, 136, 0.6);
 }
 
 .__hoverBox_dcconLoading {
-  background-size: 500 500%;
-  background: -webkit-linear-gradient(
+  background: linear-gradient(
     330deg,
     rgb(131, 131, 131) 30%,
     rgb(211, 211, 211) 100%
   );
-  animation: bg_loop 3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation: bg_loop 10s infinite;
+  background-size: 400 400%;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.__hoverBox_deletedCmt {
+  color: #b4b4b4;
 }
 
 .__hoverBox_pushLeft1 {
-  margin-left: 20px;
+  margin-left: 25px;
+}
+
+.__hoverBox_shakeAnime {
+  animation: shake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
 }
