@@ -17,6 +17,34 @@ let getParameterByName = (name, url) => {
 }
 
 /**
+ * 옵션을 크롬 Sync API를 사용해 저장합니다.
+ * @param {String} key 저장할 값의 key ID
+ * @param {String} value 저장할 값
+ */
+const save_opt = (key, value) => {
+  var d = {}
+  d[key] = value
+
+  return chrome.storage.sync.set(d, () => {})
+}
+
+/**
+ * 옵션을 크롬 Sync API를 사용해 저장합니다.
+ * @param {String} key 불러올 값의 key ID
+ */
+const get_opt = async key => {
+  return new Promise((resolve, reject) => {
+    try {
+      chrome.storage.sync.get(key, i => {
+        resolve(i[key])
+      })
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
+
+/**
  * 쿠키를 가져옵니다.
  * @param {String} name 쿠키 key 이름
  */
@@ -35,14 +63,33 @@ let getCookie = name => {
 let pgId = getParameterByName('id')
 let cachedNew = []
 let gTableOrigin
+let outerTooltip
 let isMinor = /dcinside\.com\/mgallery/g.test(window.location.href)
 let pgNum = getParameterByName('page') || 1
 let isPageSpec = pgNum != null
+let centrePage = false
+let refreshRate = 5000
 let fetchURL =
   'https://gall.dcinside.com/' +
   (isMinor ? 'mgallery/' : '') +
   'board/lists' +
   window.location.search
+
+get_opt('centre_page')
+  .then(v => {
+    centrePage = v
+  })
+  .catch(e => {
+    console.log(e)
+  })
+
+get_opt('refresh_rate')
+  .then(v => {
+    refreshRate = Number(v)
+  })
+  .catch(e => {
+    console.log(e)
+  })
 
 /**
  * 새 글 알림 캐쉬에 추가하는 함수입니다.
@@ -71,6 +118,13 @@ let addNewCaching = (t, Isinit) => {
  */
 let recalcLeftRight = (div, w, h) => {
   var bnd_rect = div.getBoundingClientRect()
+
+  if (centrePage) {
+    div.style.left = window.innerWidth / 2 - bnd_rect.width / 2 + 'px'
+    div.style.top = window.innerHeight / 2 - bnd_rect.height / 2 + 'px'
+    return
+  }
+
   if (h + bnd_rect.height > window.innerHeight) {
     div.style.bottom = window.innerHeight - h + 'px'
   } else {
@@ -115,6 +169,9 @@ let getInfofromDocument = (d, id) => {
   let ip_addr = __nick_obj.dataset.ip
   let date = d.getElementsByClassName('gall_date')[0].title
 
+  let isManager =
+    typeof d.getElementsByClassName('useradmin_go')[0] !== 'undefined'
+
   let __voteCodeParentElem = d.getElementsByClassName('recommend_kapcode')[0]
   let isCaptcha =
     __voteCodeParentElem != null && typeof __voteCodeParentElem !== 'undefined'
@@ -135,7 +192,8 @@ let getInfofromDocument = (d, id) => {
     ip_addr,
     date,
     nickType,
-    isCaptcha
+    isCaptcha,
+    isManager
   }
 }
 
@@ -257,6 +315,89 @@ let pressRecommend = async (is_up, gall_id, post_id, code) => {
 }
 
 /**
+ * Serialize all form data into a query string
+ * (c) 2018 Chris Ferdinandi, MIT License, https://gomakethings.com
+ * @param  {Node}   form The form to serialize
+ * @return {String}      The serialized form data
+ */
+var serialize = function (form) {
+  // Setup our serialized data
+  var serialized = []
+
+  // Loop through each field in the form
+  for (var i = 0; i < form.elements.length; i++) {
+    var field = form.elements[i]
+
+    // Don't serialize fields without a name, submits, buttons, file and reset inputs, and disabled fields
+    if (
+      !field.name ||
+      field.disabled ||
+      field.type === 'file' ||
+      field.type === 'reset' ||
+      field.type === 'submit' ||
+      field.type === 'button'
+    ) {
+      continue
+    }
+
+    // If a multi-select, get all selections
+    if (field.type === 'select-multiple') {
+      for (var n = 0; n < field.options.length; n++) {
+        if (!field.options[n].selected) continue
+        serialized.push(
+          encodeURIComponent(field.name) +
+            '=' +
+            encodeURIComponent(field.options[n].value)
+        )
+      }
+    }
+
+    // Convert field data to a query string
+    else if (
+      (field.type !== 'checkbox' && field.type !== 'radio') ||
+      field.checked
+    ) {
+      serialized.push(
+        encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value)
+      )
+    }
+  }
+
+  return serialized.join('&')
+}
+
+/**
+ * 마갤 주딱 / 파딱 전용 게시글 지우기 기능
+ * @param {*} gall_id 갤러리 ID
+ * @param {*} post_no 게시글 번호
+ */
+let deletePost = async (gall_id, post_no) => {
+  try {
+    let serverResponse = await fetch(
+      'https://gall.dcinside.com/ajax/minor_manager_board_ajax/delete_list',
+      {
+        method: 'POST',
+        dataType: 'json',
+        mode: 'cors',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          DNT: 1
+        },
+        cache: 'no-store',
+        body: `ci_t=${getCookie('ci_c')}&id=${gall_id}&nos[]=${Number(
+          post_no
+        )}`
+      }
+    )
+
+    return serverResponse.json()
+  } catch (e) {
+    if (e) return false
+  }
+}
+
+/**
  * DC인사이드 쿠키 저장 스크립트
  * @param {String} cname
  * @param {String} cvalue
@@ -343,8 +484,8 @@ let fetchPostInfo = async (div, id) => {
   let response = await fetch(
     'https://gall.dcinside.com/' +
       (isMinor ? 'mgallery/' : '') +
-      'board/view/?id=' +
-      pgId +
+      'board/view/' +
+      window.location.search +
       '&no=' +
       id,
     { method: 'GET', mode: 'cors', cache: 'no-store' }
@@ -354,6 +495,7 @@ let fetchPostInfo = async (div, id) => {
     await response.text(),
     'text/html'
   )
+
   let postData = getInfofromDocument(domPs, id)
   let cntWrap = document.createElement('div')
   cntWrap.className = '__hoverBox_contentWrap'
@@ -404,6 +546,16 @@ let fetchPostInfo = async (div, id) => {
   postData.downvotes
 }</div>
       </div>
+      ${
+  postData.isManager
+    ? `
+      <div class="__hoverBox_manageDelete" id="__hoverBox_manageDeleteBtn">
+      <img src="${chrome.extension.getURL(
+    '/icns/delete.png'
+  )}" class="__hoverBox_voteIcon"></img>
+      </div>`
+    : ``
+}
     </div>
     <div class="__hoverBox_seperater"></div>
   `
@@ -457,8 +609,6 @@ let fetchPostInfo = async (div, id) => {
     )
     var splds = res.replace(/\|\|/g, '|').split('|')
 
-    console.log(splds)
-
     if (splds[0] == 'true' && splds[1] != '') {
       document.getElementById('__hoverBox_downvoteBtn').innerText = splds[1]
       return
@@ -472,6 +622,32 @@ let fetchPostInfo = async (div, id) => {
       }, 321)
     }
   })
+
+  var deleteBtn = document.getElementById('__hoverBox_manageDeleteBtn')
+
+  if (typeof deleteBtn !== 'undefined' && deleteBtn != null) {
+    deleteBtn.addEventListener('click', async () => {
+      var res = await deletePost(pgId, id)
+
+      if (res && res.result === 'success') {
+        // TODO : 창 닫기
+        outerTooltip.style.opacity = 0
+        div.style.opacity = 0
+        setTimeout(() => {
+          destroyTooltipOverlay(div, div.dataset.postid)
+          outerTooltip.parentNode.removeChild(outerTooltip)
+        }, 300)
+      }
+
+      if (!res || res.result == 'fail') {
+        deleteBtn.classList.add('__hoverBox_shakeAnime')
+
+        setTimeout(() => {
+          deleteBtn.classList.remove('__hoverBox_shakeAnime')
+        }, 321)
+      }
+    })
+  }
 }
 
 /**
@@ -499,6 +675,12 @@ let addHoverListener = t => {
 
   for (var z = 0; z < postBox.length; z++) {
     var postId = postBox[z].getElementsByClassName('gall_num')[0].innerHTML
+    if (isNaN(postId)) {
+      postId = getParameterByName(
+        'no',
+        postBox[z].getElementsByTagName('a')[0].href
+      )
+    }
 
     var createdOverlay = null
     ;(function (e, postId) {
@@ -509,12 +691,21 @@ let addHoverListener = t => {
         createdOverlay = await createTooltipOverlay(postId)
         createOuterOverlay(createdOverlay)
         fillWithLoader(createdOverlay)
-        recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
+        if (!centrePage) {
+          recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
+        } else {
+          recalcLeftRight(
+            createdOverlay,
+            window.innerWidth / 2,
+            window.innerHeight / 2
+          )
+        }
 
         try {
           await fetchPostInfo(createdOverlay, postId)
         } catch (e) {
           renderErrorPage(createdOverlay, e.message)
+          console.log(e)
         }
         recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
 
@@ -566,11 +757,11 @@ let destroyTooltipOverlay = e => e.parentNode.removeChild(e)
  * @param {HTMLElement} inner 오버레이 element
  */
 let createOuterOverlay = inner => {
-  var outer = document.createElement('div')
-  outer.className = '__hoverBox_outer'
-  outer.id = '__hoverBox_outerId'
+  outerTooltip = document.createElement('div')
+  outerTooltip.className = '__hoverBox_outer'
+  outerTooltip.id = '__hoverBox_outerId'
 
-  document.getElementsByTagName('body')[0].append(outer)
+  document.getElementsByTagName('body')[0].append(outerTooltip)
   ;(function (inner, outer) {
     outer.addEventListener('click', () => {
       outer.style.opacity = 0
@@ -580,12 +771,12 @@ let createOuterOverlay = inner => {
         outer.parentNode.removeChild(outer)
       }, 300)
     })
-  })(inner, outer)
+  })(inner, outerTooltip)
 
   setTimeout(() => {
-    outer.style.opacity = 1
+    outerTooltip.style.opacity = 1
   }, 1)
-  return outer
+  return outerTooltip
 }
 
 /**
@@ -616,6 +807,7 @@ window.addEventListener('DOMContentLoaded', () => {
       /board\/lists/g.test(window.location.href)) &&
     pgId != null
   ) {
+    if (refreshRate < 2000) refreshRate = 2000
     setInterval(() => {
       if (!window.navigator.onLine) return false
 
@@ -639,6 +831,6 @@ window.addEventListener('DOMContentLoaded', () => {
       } catch (e) {
         YuSikDaeJangMandooZoGong()
       }
-    }, 5000)
+    }, refreshRate)
   }
 })

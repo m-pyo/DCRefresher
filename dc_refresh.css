@@ -202,14 +202,16 @@
 }
 
 .__hoverBox_upvoteWrap,
-.__hoverBox_downvoteWrap {
-  width: 50%;
+.__hoverBox_downvoteWrap,
+.__hoverBox_manageDelete {
   display: flex;
   justify-content: center;
+  flex: 1;
 }
 
 .__hoverBox_upvoteWrap:hover,
-.__hoverBox_downvoteWrap:hover {
+.__hoverBox_downvoteWrap:hover,
+.__hoverBox_manageDelete:hover {
   transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
   border-radius: 5px;
 }
@@ -222,12 +224,20 @@
   background-color: rgba(0, 162, 255, 0.23);
 }
 
+.__hoverBox_manageDelete:hover {
+  background-color: rgba(255, 0, 0, 0.23);
+}
+
 .__hoverBox_upvoteWrap:active {
   background-color: rgba(255, 136, 0, 0.53);
 }
 
 .__hoverBox_downvoteWrap:active {
   background-color: rgba(0, 162, 255, 0.53);
+}
+
+.__hoverBox_manageDelete:active {
+  background-color: rgba(255, 0, 0, 0.53);
 }
 
 .__hoverBox_voteIcon {

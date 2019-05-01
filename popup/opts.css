@@ -1,0 +1,37 @@
+html,
+body {
+  width: 500px;
+  height: 600px;
+  overflow: hidden;
+  margin: 0;
+}
+
+h1,
+h3,
+h5,
+p,
+span {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+h1 {
+  font-weight: 500;
+}
+
+.ctr_blck {
+  text-align: center;
+}
+
+.opts_wrap {
+  width: 100%;
+  display: flex;
+}
+
+.opts_wrap label {
+  flex: 0.9;
+}
+
+.opts_wrap checkbox {
+  flex: 0.1;
+}
