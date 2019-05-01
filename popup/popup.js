@@ -1,5 +1,10 @@
-const openDevPage = () => window.open('https://sochiru.pw')
+const openLink = l => window.open(l)
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('desc').onclick = openDevPage
+  document.getElementById('desc').onclick = () => {
+    openLink('https://sochiru.pw')
+  }
+  document.getElementById('desc_github').onclick = () => {
+    openLink('https://github.com/So-chiru/DCRefresher')
+  }
 })
