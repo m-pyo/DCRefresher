@@ -1,3 +1,7 @@
+.__dcRef_blockedPosts {
+  display: none;
+}
+
 .__dc_newPost {
   border-radius: 10px;
   background-color: transparent;
