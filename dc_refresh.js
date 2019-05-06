@@ -630,7 +630,6 @@ let fetchPostInfo = async (div, id) => {
       var res = await deletePost(pgId, id)
 
       if (res && res.result === 'success') {
-        // TODO : 창 닫기
         outerTooltip.style.opacity = 0
         div.style.opacity = 0
         setTimeout(() => {
