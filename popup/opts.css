@@ -4,6 +4,35 @@ body {
   height: 600px;
   overflow: hidden;
   margin: 0;
+  background: linear-gradient(
+    220deg,
+    rgb(0, 195, 255),
+    rgb(0, 162, 255),
+    rgb(87, 41, 255),
+    rgb(41, 116, 255)
+  );
+  animation: bg_loop 10s infinite;
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  color: white;
+}
+
+body {
+  display: flex;
+}
+
+@keyframes bg_loop {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 h1,
@@ -13,19 +42,27 @@ p,
 span {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: white;
 }
 
 h1 {
+  font-size: 18px;
   font-weight: 500;
 }
 
 .ctr_blck {
   text-align: center;
+  margin: auto;
+  width: 100%;
 }
 
 .opts_wrap {
-  width: 100%;
+  width: 90%;
   display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  margin-bottom: 10px;
 }
 
 .opts_wrap label {

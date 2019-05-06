@@ -751,6 +751,55 @@ let createTooltipOverlay = async id => {
  */
 let destroyTooltipOverlay = e => e.parentNode.removeChild(e)
 
+let refFromObj = (org, lists_oValues) => {
+  if (findSeperate.test(lists_oValues)) {
+    let splitValues = lists_oValues.split('||')
+    let splLen = splitValues.length
+    for (var d = 0; d < splLen; d++) {
+      if (org != '' && org.indexOf(splitValues[d]) != -1) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  console.log(org == '', org.indexOf(lists_oValues), org, lists_oValues)
+  return org != '' && org.indexOf(lists_oValues) != -1
+}
+
+let findSeperate = /\|\|/g
+
+let hideBlockUsersPosts = table => {
+  let fntUsers = table.getElementsByClassName('gall_writer')
+  let blockedObjs = localStorage.getItem('block_all')
+  blockedObjs =
+    typeof blockedObjs !== 'object' ? JSON.parse(blockedObjs) : blockedObjs
+
+  for (var i = 0; i < fntUsers.length; i++) {
+    var dSet = fntUsers[i].dataset
+    if (typeof blockedObjs.on === 'undefined' || !blockedObjs.on) break
+
+    var IpBlocked =
+      blockedObjs.ip == null || blockedObjs.ip == ''
+        ? false
+        : refFromObj(dSet.ip, blockedObjs.ip)
+    var NickBlocked =
+      blockedObjs.nick == null || blockedObjs.nick == ''
+        ? false
+        : refFromObj(dSet.nick, blockedObjs.nick)
+    var IDBlocked =
+      blockedObjs.id == null || blockedObjs.id == ''
+        ? false
+        : refFromObj(dSet.id, blockedObjs.id)
+
+    if (IpBlocked || NickBlocked || IDBlocked) {
+      fntUsers[i].parentNode.classList.add('__dcRef_blockedPosts')
+    }
+  }
+
+  return table
+}
 /**
  * 오버레이 밖을 덮을 반투명한 검은 창을 만듭니다.
  * @param {HTMLElement} inner 오버레이 element
@@ -797,6 +846,7 @@ window.addEventListener('DOMContentLoaded', () => {
     gTableOrigin = document.getElementsByClassName('gall_list')[0]
   }
 
+  gTableOrigin = hideBlockUsersPosts(gTableOrigin)
   addNewCaching(gTableOrigin, true)
   addHoverListener(gTableOrigin)
 
@@ -822,6 +872,7 @@ window.addEventListener('DOMContentLoaded', () => {
           )
 
           let gTable = domPs.getElementsByClassName('gall_list')[0]
+          gTable = hideBlockUsersPosts(gTable)
           addNewCaching(gTable, false)
           gTableOrigin.innerHTML = ''
           gTableOrigin.append(gTable)
