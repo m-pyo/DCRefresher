@@ -778,7 +778,13 @@ let hideBlockUsersPosts = table => {
 
   for (var i = 0; i < fntUsers.length; i++) {
     var dSet = fntUsers[i].dataset
-    if (typeof blockedObjs.on === 'undefined' || !blockedObjs.on) break
+    if (
+      blockedObjs == null ||
+      typeof blockedObjs.on === 'undefined' ||
+      !blockedObjs.on
+    ) {
+      break
+    }
 
     var IpBlocked =
       blockedObjs.ip == null || blockedObjs.ip == ''
