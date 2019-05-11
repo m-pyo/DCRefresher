@@ -863,30 +863,33 @@ window.addEventListener('DOMContentLoaded', () => {
     pgId != null
   ) {
     if (refreshRate < 2000) refreshRate = 2000
-    setInterval(() => {
-      if (!window.navigator.onLine) return false
+    setInterval(
+      () => {
+        if (!window.navigator.onLine || document.hidden) return false
 
-      try {
-        fetch(fetchURL, {
-          method: 'GET',
-          mode: 'cors',
-          cache: 'no-store'
-        }).then(async response => {
-          let domPs = new DOMParser().parseFromString(
-            await response.text(),
-            'text/html'
-          )
+        try {
+          fetch(fetchURL, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-store'
+          }).then(async response => {
+            let domPs = new DOMParser().parseFromString(
+              await response.text(),
+              'text/html'
+            )
 
-          let gTable = domPs.getElementsByClassName('gall_list')[0]
-          gTable = hideBlockUsersPosts(gTable)
-          addNewCaching(gTable, false)
-          gTableOrigin.innerHTML = ''
-          gTableOrigin.append(gTable)
-          addHoverListener(gTableOrigin)
-        })
-      } catch (e) {
-        YuSikDaeJangMandooZoGong()
-      }
-    }, refreshRate)
+            let gTable = domPs.getElementsByClassName('gall_list')[0]
+            gTable = hideBlockUsersPosts(gTable)
+            addNewCaching(gTable, false)
+            gTableOrigin.innerHTML = ''
+            gTableOrigin.append(gTable)
+            addHoverListener(gTableOrigin)
+          })
+        } catch (e) {
+          YuSikDaeJangMandooZoGong()
+        }
+      },
+      isNaN(refreshRate) ? 5000 : refreshRate
+    )
   }
 })
