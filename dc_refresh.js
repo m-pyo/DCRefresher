@@ -68,12 +68,21 @@ let isMinor = /dcinside\.com\/mgallery/g.test(window.location.href)
 let pgNum = getParameterByName('page') || 1
 let isPageSpec = pgNum != null
 let centrePage = false
+let darkMode = false
 let refreshRate = 5000
 let fetchURL =
   'https://gall.dcinside.com/' +
   (isMinor ? 'mgallery/' : '') +
   'board/lists' +
   window.location.search
+
+get_opt('dark_mode')
+  .then(v => {
+    darkMode = v
+  })
+  .catch(e => {
+    console.log(e)
+  })
 
 get_opt('centre_page')
   .then(v => {
@@ -738,7 +747,7 @@ let fillWithLoader = div => {
 let createTooltipOverlay = async id => {
   var div = document.createElement('div')
   div.id = '__hoverBox_num_' + id
-  div.className = '__hoverBox_wrap'
+  div.className = '__hoverBox_wrap ' + (darkMode ? '__dark ' : '')
   div.dataset.id = id
 
   document.getElementsByTagName('body')[0].appendChild(div)
@@ -764,7 +773,6 @@ let refFromObj = (org, lists_oValues) => {
     return false
   }
 
-  console.log(org == '', org.indexOf(lists_oValues), org, lists_oValues)
   return org != '' && org.indexOf(lists_oValues) != -1
 }
 

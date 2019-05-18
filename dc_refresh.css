@@ -2,6 +2,10 @@
   display: none;
 }
 
+::selection {
+  background-color: #20dbb3;
+}
+
 .__dc_newPost {
   border-radius: 10px;
   background-color: transparent;
@@ -58,6 +62,11 @@
   padding: 1% 2.5%;
 }
 
+.__dark.__hoverBox_wrap {
+  background-color: #2c2c2c;
+  color: rgb(255, 255, 255);
+}
+
 .__hoverBox_header {
   display: block;
   position: relative;
@@ -85,6 +94,10 @@
 
 .__hoverBox_nickName {
   color: #424242;
+}
+
+.__dark .__hoverBox_nickName {
+  color: rgb(233, 233, 233);
 }
 
 .__hoverBox_nickName::after,
@@ -126,14 +139,26 @@
   color: #c0c0c0;
 }
 
+.__dark .__hoverBox_muteText {
+  color: rgb(185, 185, 185);
+}
+
 .__hoverBox_nickIP {
   font-size: 12px;
   color: #636363;
 }
 
+.__dark .__hoverBox_nickIP {
+  color: rgb(207, 207, 207);
+}
+
 .__hoverBox_date {
   font-size: 12px;
   color: #555555;
+}
+
+.__dark .__hoverBox_date {
+  color: rgb(201, 201, 201);
 }
 
 .__hoverBox_nickIcon {
@@ -213,6 +238,12 @@
   flex: 1;
 }
 
+.__dark .__hoverBox_upvoteWrap,
+.dark .__hoverBox_downvoteWrap,
+.dark .__hoverBox_manageDelete {
+  color: white;
+}
+
 .__hoverBox_upvoteWrap:hover,
 .__hoverBox_downvoteWrap:hover,
 .__hoverBox_manageDelete:hover {
@@ -249,6 +280,10 @@
   height: 24px;
 }
 
+.__dark .__hoverBox_voteIcon {
+  filter: invert(100%);
+}
+
 .__hoverBox_upvoteCounts,
 .__hoverBox_downvoteCounts {
   margin-top: auto;
@@ -265,6 +300,11 @@
   margin-top: 20px;
   margin-bottom: 20px;
   box-shadow: 0px 0px 4px rgba(194, 194, 194, 0.35);
+}
+
+.__dark .__hoverBox_seperater {
+  background-color: #414141;
+  box-shadow: 0px 0px 4px rgba(124, 124, 124, 0.35);
 }
 
 .__hoverBox_loader {
@@ -311,6 +351,12 @@
   border-color: #000 transparent #000 transparent;
   animation: __hoverBox_dual-ring-anime 1.2s linear infinite;
 }
+
+.__dark .__hoverBox_dual-ring:after {
+  border: 5px solid #fff;
+  border-color: #fff transparent #fff transparent;
+}
+
 @keyframes __hoverBox_dual-ring-anime {
   0% {
     transform: rotate(0deg);
@@ -362,6 +408,10 @@
 
 .__hoverBox_deletedCmt {
   color: #b4b4b4;
+}
+
+.__dark .__hoverBox_deletedCmt {
+  color: #838383;
 }
 
 .__hoverBox_pushLeft1 {

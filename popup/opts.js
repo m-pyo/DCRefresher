@@ -1,5 +1,6 @@
 const opts_db = {
   centre_page: [false, 'checkbox'],
+  dark_mode: [false, 'checkbox'],
   refresh_rate: [5000, 'text']
 }
 
