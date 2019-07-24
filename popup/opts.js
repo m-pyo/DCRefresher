@@ -1,5 +1,5 @@
 const opts_db = {
-  centre_page: [false, 'checkbox'],
+  centre_page: [true, 'checkbox'],
   dark_mode: [false, 'checkbox'],
   refresh_rate: [5000, 'text']
 }
@@ -64,6 +64,62 @@ const ref_opts = async () => {
   }
 }
 
+const renderBlocked = async () => {
+  var outputElem = document.getElementById('manage_blocked')
+  var lists = await get_opt('blocked_dccon')
+  var errorOccured = false
+
+  try {
+    lists = JSON.parse(lists)
+  } catch (e) {
+    errorOccured = true
+  }
+
+  outputElem.innerHTML = ''
+
+  if (errorOccured || lists == null || lists.length < 1) {
+    outputElem.innerHTML = '<p>차단된 디시콘이 없습니다.</p>'
+    return
+  }
+
+  let arrObj = Object.keys(lists)
+
+  arrObj.forEach((v, i) => {
+    var blockedObj = lists[v]
+
+    if (!blockedObj.n) return
+
+    var rootBlocked = document.createElement('div')
+    rootBlocked.className = 'opts_blcked_done'
+
+    var blockedConTitle = document.createElement('p')
+    blockedConTitle.className = 'opts_blcked_title'
+    blockedConTitle.innerHTML = blockedObj.n
+
+    var blockedConSeller = document.createElement('p')
+    blockedConSeller.className = 'opts_blcked_seller'
+    blockedConSeller.innerHTML = blockedObj.s
+
+    var blockedConRemoveBtn = document.createElement('div')
+    blockedConRemoveBtn.className = 'opts_blcked_delete'
+    blockedConRemoveBtn.innerHTML = `<img src="${chrome.extension.getURL(
+      '/icns/delete.png'
+    )}">`
+
+    blockedConRemoveBtn.onclick = () => {
+      delete lists[v]
+      save_opt('blocked_dccon', JSON.stringify(lists))
+      renderBlocked()
+    }
+
+    rootBlocked.appendChild(blockedConTitle)
+    rootBlocked.appendChild(blockedConSeller)
+    rootBlocked.appendChild(blockedConRemoveBtn)
+    outputElem.appendChild(rootBlocked)
+  })
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   ref_opts()
+  renderBlocked()
 })

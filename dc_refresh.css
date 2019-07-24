@@ -41,11 +41,14 @@
 }
 
 .__hoverBox_wrap,
+.__hoverBox_dccon_wrap,
+.__hoverBox_dccon_outer,
 .__hoverBox_outer {
   transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.__hoverBox_wrap {
+.__hoverBox_wrap,
+.__hoverBox_dccon_wrap {
   position: fixed;
   width: fit-content;
   height: fit-content;
@@ -62,7 +65,12 @@
   padding: 1% 2.5%;
 }
 
-.__dark.__hoverBox_wrap {
+.__hoverBox_dccon_wrap {
+  z-index: 10001;
+}
+
+.__dark.__hoverBox_wrap,
+.__dark.__hoverBox_dccon_wrap {
   background-color: #2c2c2c;
   color: rgb(255, 255, 255);
 }
@@ -231,6 +239,8 @@
 }
 
 .__hoverBox_upvoteWrap,
+.__hoverBox_purchaseWrap,
+.__hoverBox_blockWrap,
 .__hoverBox_downvoteWrap,
 .__hoverBox_manageDelete {
   display: flex;
@@ -239,16 +249,28 @@
 }
 
 .__dark .__hoverBox_upvoteWrap,
+.__dark .__hoverBox_purchaseWrap,
+.__dark .__hoverBox_blockWrap,
 .dark .__hoverBox_downvoteWrap,
 .dark .__hoverBox_manageDelete {
   color: white;
 }
 
 .__hoverBox_upvoteWrap:hover,
+.__hoverBox_purchaseWrap:hover,
+.__hoverBox_blockWrap:hover,
 .__hoverBox_downvoteWrap:hover,
 .__hoverBox_manageDelete:hover {
   transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
   border-radius: 5px;
+}
+
+.__hoverBox_purchaseWrap:hover {
+  background-color: rgba(0, 102, 255, 0.55);
+}
+
+.__hoverBox_blockWrap:hover {
+  background-color: rgba(255, 17, 0, 0.55);
 }
 
 .__hoverBox_upvoteWrap:hover {
@@ -261,6 +283,14 @@
 
 .__hoverBox_manageDelete:hover {
   background-color: rgba(255, 0, 0, 0.23);
+}
+
+.__hoverBox_purchaseWrap:hover {
+  background-color: rgba(0, 102, 255, 0.75);
+}
+
+.__hoverBox_blockWrap:hover {
+  background-color: rgba(255, 17, 0, 0.75);
 }
 
 .__hoverBox_upvoteWrap:active {
@@ -284,8 +314,7 @@
   filter: invert(100%);
 }
 
-.__hoverBox_upvoteCounts,
-.__hoverBox_downvoteCounts {
+.__hoverBox_btnCountsText {
   margin-top: auto;
   margin-bottom: auto;
   margin-left: 10px;
@@ -311,7 +340,8 @@
   display: flex;
 }
 
-.__hoverBox_outer {
+.__hoverBox_outer,
+.__hoverBox_dccon_outer {
   position: fixed;
   z-index: 9999;
   width: 100%;
@@ -320,6 +350,10 @@
   left: 0;
   top: 0;
   background-color: rgba(39, 39, 39, 0.23);
+}
+
+.__hoverBox_dccon_outer {
+  z-index: 10000;
 }
 
 @keyframes newPost {
@@ -377,13 +411,17 @@
   margin-left: 12px;
 }
 
+.__hoverBox_dcconBlocked {
+  opacity: 0.5;
+  margin-top: 5px;
+}
+
 .__hoverBox_dccon {
+  margin-top: 10px;
   width: 100px;
   height: 100px;
-  margin-top: 10px;
   border-radius: 5px;
   box-shadow: 0px 0px 8px rgba(136, 136, 136, 0.3);
-  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;
 }
 
@@ -446,4 +484,46 @@
   60% {
     transform: translate3d(4px, 0, 0);
   }
+}
+
+.__hoverConBox_alignCenter {
+  text-align: center;
+}
+
+.__hoverConBox_mainImg {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+}
+
+.__hoverConBox_mainImg img {
+  width: 128px;
+  height: 128px;
+  border-radius: 25%;
+  box-shadow: 0px 8px 30px rgba(51, 51, 51, 0.4);
+}
+
+.__hoverConBox_title {
+  font-size: 23px;
+  margin-bottom: 5px;
+}
+
+.__hoverConBox_desc {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.__hoverConBox_info_detail {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+.__hoverConBox_img_more {
+  width: 100px;
+  height: 100px;
+  background-color: rgba(32, 32, 32, 0.3);
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
