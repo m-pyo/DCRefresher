@@ -300,8 +300,9 @@ const addDCConHandler = (f_elem, src) => {
         createdOverlay,
         ev,
         data,
-        blockedDCConCache[con_id] && blockedDCConCache[con_id].length > 0,
-        false
+        typeof blockedDCConCache[data.info.package_idx] !== 'undefined' &&
+          Object.keys(blockedDCConCache[data.info.package_idx]).length !== 0,
+        false // TODO : Purchase 구현
       )
       recalcOverlay(createdOverlay, ev)
     })
@@ -1103,7 +1104,7 @@ const replaceURLtoAHREF = arr => {
           v = replaceGoogleText(v)
           v =
             '<a class="__hoverBox_aLink" href="' +
-            (v.substring(0, 3) != 'http' ? 'https://' + v : 'http' ) +
+            (v.substring(0, 3) != 'http' ? 'https://' + v : 'http') +
             v +
             '"> ' +
             v.trim() +
