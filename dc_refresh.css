@@ -10,7 +10,21 @@
   border-radius: 10px;
   background-color: transparent;
   color: black;
-  animation: bg_loop 3s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+  animation: newPostBG 2s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes newPostBG {
+  0% {
+    background: rgba(0, 140, 255, 0);
+  }
+
+  20% {
+    background: rgba(0, 140, 255, 0.3);
+  }
+
+  100% {
+    background: rgba(0, 140, 255, 0);
+  }
 }
 
 .__hoverBox_nosee {
@@ -526,4 +540,30 @@
   border-radius: 5px;
   margin-right: 10px;
   margin-bottom: 10px;
+}
+
+.__hoverBox_aLink,
+.__hoverBox_commentContent a {
+  margin-top: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  color: rgb(0, 140, 255);
+  transition: color 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.__dark .__hoverBox_contentWrap .__hoverBox_aLink,
+.__dark .__hoverBox_commentContent a {
+  background-color: #222222;
+  color: rgb(0, 140, 255);
+}
+
+.__hoverBox_aLink:hover,
+.__hoverBox_commentContent a:hover {
+  color: rgb(0, 120, 255);
+}
+
+.__hoverBox_aLink:active,
+.__hoverBox_commentContent a:active {
+  color: rgb(0, 100, 255);
 }

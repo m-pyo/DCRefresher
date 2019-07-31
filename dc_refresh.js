@@ -67,7 +67,7 @@ let outerTooltip
 let isMinor = /dcinside\.com\/mgallery/g.test(window.location.href)
 let pgNum = getParameterByName('page') || 1
 let isPageSpec = pgNum != null
-let centrePage = false
+let centrePage = true
 let darkMode = false
 let refreshRate = 5000
 let blockedDCConCache = {}
@@ -341,12 +341,10 @@ let commentsRender = fetchedData => {
     var checkDcCon = getIcon.getElementsByTagName('img')
 
     if (checkDcCon[0]) {
-      var dcConElem = document.createElement('img')
+      var dcConElem
 
       if (checkIsBlockedDCCon(checkDcCon[0].src)) {
-        var dcConElem = document.createElement('p')
-        dcConElem.innerHTML = '차단된 디시콘입니다.'
-        dcConElem.className = '__hoverBox_dcconBlocked'
+        dcConElem = createBlockedDCConText(checkDcCon[0].src)
       } else {
         var dcConElem = document.createElement('img')
         dcConElem.src = checkDcCon[0].src
@@ -584,12 +582,7 @@ let fetchPostInfo = async (div, id) => {
   let fetchedWrittingBox = domPs.getElementsByClassName('writing_view_box')
 
   if (fetchedWrittingBox[0].innerHTML.indexOf('dccon') != -1) {
-    var getAllDCCon = domPs.querySelectorAll('img.written_dccon')
-    replaceBlockedDCCon(getAllDCCon)
-
-    getAllDCCon.forEach(v => {
-      addDCConHandler(v, v.src)
-    })
+    addContentFilter(domPs)
   }
 
   fetchedWrittingBox[0].style.float = 'unset'
@@ -1039,6 +1032,27 @@ let createOuterDCOverlay = inner => {
   return Con_outerTooltip
 }
 
+const addContentFilter = elem => {
+  var getAllDCCon = elem.querySelectorAll('img.written_dccon')
+  replaceBlockedDCCon(getAllDCCon)
+
+  var getAllTexts = elem.querySelectorAll('div.writing_view_box p')
+  replaceURLtoAHREF(getAllTexts)
+
+  getAllDCCon.forEach(v => {
+    addDCConHandler(v, v.src)
+  })
+}
+
+const createBlockedDCConText = origin => {
+  var r = document.createElement('p')
+  r.className = '__hoverBox_dcconBlocked'
+  r.innerHTML = '차단된 디시콘입니다.'
+
+  addDCConHandler(r, origin)
+  return r
+}
+
 /**
  * 게시글 안에서 차단된 DC콘을 제거합니다.
  *
@@ -1047,11 +1061,76 @@ let createOuterDCOverlay = inner => {
 const replaceBlockedDCCon = arr => {
   arr.forEach(e => {
     if (checkIsBlockedDCCon(e.src)) {
-      var replacedText = document.createElement('p')
-      replacedText.className = '__hoverBox_dcconBlocked'
-      replacedText.innerHTML = '차단된 디시콘입니다.'
+      var repl = createBlockedDCConText(e.src)
+      e.parentNode.replaceChild(repl, e)
+    }
+  })
+}
 
-      e.parentNode.replaceChild(replacedText, e)
+const blockedServices = ['drive.구글.com', '비틀리']
+const blockedServicesReplace = ['drive.google.com', 'bitly']
+const replaceGoogleText = t => {
+  var rd = t
+  blockedServices.forEach((v, i) => {
+    var tIndex = t.indexOf(v)
+
+    if (tIndex != -1) {
+      rd = t.replace(v, blockedServicesReplace[i])
+    }
+  })
+
+  return rd
+}
+
+// from https://www.regextester.com/94502
+const urlCheckRegex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/
+const urlSchemeRegex = /^(http|https|ftps):\/\//g
+/**
+ * 게시글 안에 있는 a href 처리되지 않은 텍스트를 a href 로 변환합니다.
+ * @param {*} arr
+ */
+const replaceURLtoAHREF = arr => {
+  arr.forEach(e => {
+    if (
+      urlCheckRegex.test(e.innerText) &&
+      e.innerHTML.indexOf('<a href') == -1
+    ) {
+      var splitE = e.innerHTML.split(' ')
+
+      var finalized = []
+      splitE.forEach(v => {
+        if (urlCheckRegex.test(v)) {
+          v = replaceGoogleText(v)
+          v =
+            '<a class="__hoverBox_aLink" href="' +
+            (v.substring(0, 3) != 'http' ? 'https://' + v : 'http' ) +
+            v +
+            '"> ' +
+            v.trim() +
+            ' </a>'
+        }
+        finalized.push(v)
+      })
+
+      var domText = document.createElement('p')
+      domText.innerHTML = finalized.join(' ')
+      e.parentNode.replaceChild(domText, e)
+    }
+
+    if (e.firstChild) {
+      var cNodes = e.childNodes
+
+      cNodes.forEach(v => {
+        if (
+          typeof v.tagName !== 'undefined' &&
+          v.tagName.toLowerCase() == 'a' &&
+          !Array.from(v.childNodes).some(
+            d => (d.tagName || 'null').toLowerCase() == 'img'
+          )
+        ) {
+          v.className += ' __hoverBox_aLink'
+        }
+      })
     }
   })
 }
@@ -1083,12 +1162,7 @@ window.addEventListener('DOMContentLoaded', () => {
   addHoverListener(gTableOrigin)
 
   if (testView) {
-    var getAllDCCon = document.querySelectorAll('img.written_dccon')
-    replaceBlockedDCCon(getAllDCCon)
-
-    getAllDCCon.forEach(v => {
-      addDCConHandler(v, v.src)
-    })
+    addContentFilter(document)
   }
 
   if ((testView || testList) && pgId != null) {
