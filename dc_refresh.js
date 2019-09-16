@@ -70,7 +70,6 @@ let isPageSpec = pgNum != null
 let centrePage = true
 let darkMode = false
 let refreshRate = 5000
-let blockedDCConCache = {}
 let fetchURL =
   'https://gall.dcinside.com/' +
   (isMinor ? 'mgallery/' : '') +
@@ -103,20 +102,313 @@ get_opt('refresh_rate')
 
 get_opt('blocked_dccon')
   .then(v => {
-    blockedDCConCache = JSON.parse(v)
+    DCCon.block.lists = JSON.parse(v)
   })
   .catch(e => {
     console.log(e)
   })
 
-const DCConSaveBlockLists = (k, s) => {
-  blockedDCConCache[k] = s
-  save_opt('blocked_dccon', JSON.stringify(blockedDCConCache))
+let DCRefresher = {
+  util: {
+    shake: e => {
+      e.classList.add('__hoverBox_shakeAnime')
+
+      setTimeout(() => {
+        e.classList.remove('__hoverBox_shakeAnime')
+      }, 321)
+    }
+  }
 }
 
-const DCConRMFromBlockLists = k => {
-  delete blockedDCConCache[k]
-  save_opt('blocked_dccon', JSON.stringify(blockedDCConCache))
+let DCCon = {
+  block: {
+    lists: {},
+    save: (k, s) => {
+      DCCon.block.lists[k] = s
+      save_opt('blocked_dccon', JSON.stringify(DCCon.block.lists))
+    },
+    remove: k => {
+      delete DCCon.block.lists[k]
+      save_opt('blocked_dccon', JSON.stringify(DCCon.block.lists))
+    },
+    /**
+     * 해당 URL이 차단된 디시콘 목록에 있는지 확인합니다.
+     * @param {*} url DC콘 URL
+     */
+    check: url => {
+      url =
+        url.indexOf('dcinside.com') != -1 ? getParameterByName('no', url) : url
+      var cacheKeyObj = Object.keys(DCCon.block.lists)
+
+      var r = false
+      cacheKeyObj.forEach(en => {
+        if (
+          url != '' &&
+          typeof DCCon.block.lists[en] !== 'undefined' &&
+          typeof DCCon.block.lists[en].l !== 'undefined' &&
+          DCCon.block.lists[en].l.indexOf(url) != -1
+        ) {
+          r = true
+        }
+      })
+      return r
+    }
+  },
+  util: {
+    serialize: detail_con => {
+      let u = ''
+      detail_con.forEach(v => {
+        u += v.path + '|'
+      })
+
+      return u
+    }
+  },
+  popup: {
+    handler: (f_elem, src) => {
+      f_elem.addEventListener('click', async ev => {
+        if (!ev.isTrusted) return false
+
+        var con_id = getParameterByName('no', src)
+        var createdOverlay = await createTooltipOverlay(con_id, true)
+        createOuterDCOverlay(createdOverlay)
+
+        fillWithLoader(createdOverlay)
+        recalcOverlay(createdOverlay, ev)
+
+        var cookieCi_t = getCookie('ci_c')
+        DCCon.network.fetch(cookieCi_t, '', con_id).then(async data => {
+          DCCon.popup.render(
+            createdOverlay,
+            ev,
+            data,
+            typeof DCCon.block.lists[data.info.package_idx] !== 'undefined' &&
+              Object.keys(DCCon.block.lists[data.info.package_idx]).length !==
+                0,
+            data.info.residual,
+            cookieCi_t
+          )
+          recalcOverlay(createdOverlay, ev)
+        })
+      })
+    },
+
+    render: (createdOverlay, ev, data, getBlocked, getPurchased, ci_c) => {
+      createdOverlay.innerHTML = ''
+      let cntWrap = document.createElement('div')
+      cntWrap.className = '__hoverBox_contentWrap'
+
+      cntWrap.innerHTML = `
+            <div class="__hoverConBox_alignCenter">
+              <div class="__hoverConBox_mainImg">
+                <img id="__hoverConBox_img_${
+  data.info.main_img_path
+}" src="https://dcimg5.dcinside.com/dccon.php?no=${
+  data.info.main_img_path
+}"></img>
+              </div>
+              <div class="__hoverConBox_title">
+                ${data.info.title}
+              </div>
+              <div class="__hoverConBox_desc">
+                ${data.info.description}
+              </div>
+              <div class="__hoverConBox_info_detail">
+                by ${data.info.seller_name} | 등록일 ${
+  data.info.reg_date_short
+} | ${data.info.sale_count}회 판매
+              </div>
+            </div>
+            <div class="__hoverBox_bottom">
+            <div class="__hoverBox_voteWrap">
+                <div class="__hoverBox_purchaseWrap" id="__hoverBox_purchaseId_${
+  data.info.package_idx
+}">
+                  <img src="${chrome.extension.getURL(
+    '/icns/downvote.png'
+  )}" class="__hoverBox_voteIcon"></img>
+                  <div class="__hoverBox_btnCountsText${
+  getPurchased ? ' __hoverBox_purchased' : ''
+}" id="__hoverBox_purchaseBtn">${
+  getPurchased
+    ? '이미 소유중 (' + data.info.residual + '일 남음)'
+    : '디시콘 구매'
+}</div>
+                </div>
+                <div class="__hoverBox_blockWrap" id="__hoverBox_blockConId_${
+  data.info.package_idx
+}">
+                  <img src="${chrome.extension.getURL(
+    '/icns/block.png'
+  )}" class="__hoverBox_voteIcon"></img>
+                  <div class="__hoverBox_btnCountsText" id="__hoverBox_blockBtn">${
+  getBlocked ? '차단 해제' : '차단'
+}</div>
+          </div>
+      </div>
+    </div>
+    <div class="__hoverBox_seperater"></div>
+          `
+
+      for (var i = 0; i < data.detail.length; i++) {
+        var dcconImg = document.createElement('img')
+        dcconImg.className = '__hoverConBox_img_more'
+        dcconImg.src =
+          'https://dcimg5.dcinside.com/dccon.php?no=' + data.detail[i].path
+
+        cntWrap.appendChild(dcconImg)
+      }
+      createdOverlay.appendChild(cntWrap)
+
+      document
+        .getElementById('__hoverConBox_img_' + data.info.main_img_path)
+        .addEventListener('load', () => {
+          recalcOverlay(createdOverlay, ev)
+        })
+
+      document
+        .getElementById('__hoverBox_purchaseId_' + data.info.package_idx)
+        .addEventListener('click', async ev => {
+          if (!getPurchased) {
+            try {
+              var tokens = await DCCon.network.getToken(document.cookie)
+
+              var buyInfo = await DCCon.network.info(tokens, 'A08')
+
+              if (buyInfo.indexOf('ok') != -1) {
+                var boughtResponse = await DCCon.network.buy(
+                  tokens,
+                  data.info.package_idx
+                )
+              }
+            } catch (e) {
+              console.error(e)
+
+              DCRefresher.util.shake(
+                document.getElementById('__hoverBox_purchaseBtn')
+              )
+              alert('디시콘을 구매하는 도중 오류가 발생 하였습니다.')
+              return false
+            }
+          } else {
+            DCRefresher.util.shake(
+              document.getElementById('__hoverBox_purchaseBtn')
+            )
+            return false
+          }
+
+          if (boughtResponse != 'ok') {
+            DCRefresher.util.shake(
+              document.getElementById('__hoverBox_purchaseBtn')
+            )
+            alert(boughtResponse)
+            return
+          }
+
+          getPurchased = true
+          document.getElementById('__hoverBox_purchaseBtn').innerHTML =
+            '이미 구매한 디시콘'
+
+          recalcOverlay(createdOverlay, ev)
+        })
+
+      document
+        .getElementById('__hoverBox_blockConId_' + data.info.package_idx)
+        .addEventListener('click', ev => {
+          if (getBlocked) {
+            DCCon.block.remove(data.info.package_idx)
+          } else {
+            DCCon.block.save(data.info.package_idx, {
+              n: data.info.title,
+              s: data.info.seller_name,
+              l: DCCon.util.serialize(data.detail)
+            })
+          }
+          getBlocked = !getBlocked
+          document.getElementById('__hoverBox_blockBtn').innerHTML = getBlocked
+            ? '차단 해제'
+            : '차단'
+
+          recalcOverlay(createdOverlay, ev)
+        })
+    }
+  },
+
+  network: {
+    /**
+     * 디시인사이드 API를 이용해 디시콘 정보를 받아옵니다.
+     * @param {String} token ci_t 토큰
+     * @param {String} con_id 디시콘 셋 ID
+     * @param {String} con_code 디시콘 개별 ID (no=XXXXX)
+     */
+    fetch: async (token, con_id, con_code) => {
+      let response = await fetch(
+        'https://gall.dcinside.com/dccon/package_detail',
+        {
+          method: 'POST',
+          dataType: 'json',
+          headers: {
+            Accept: 'application/json, text/javascript, */*; q=0.01',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          cache: 'no-store',
+          body: `ci_t=${token}&package_idx=${con_id}&code=${con_code}`
+        }
+      )
+
+      return await response.json()
+    },
+
+    getToken: async cookies => {
+      let response = await fetch('https://dccon.dcinside.com/', {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store'
+      })
+
+      let responseParse = await response.text()
+
+      let domPs = new DOMParser().parseFromString(
+        await response.text(),
+        'text/html'
+      )
+
+      return responseParse
+    },
+
+    info: async (token, con_code) => {
+      let response = await fetch('https://dccon.dcinside.com/index/get_info', {
+        method: 'POST',
+        dataType: 'json',
+        headers: {
+          Accept: 'application/json, text/javascript, */*; q=0.01',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        cache: 'no-store',
+        body: `ci_t=${token}&code=${con_code}`
+      })
+
+      return await response.text()
+    },
+
+    buy: async (token, con_id) => {
+      let response = await fetch('https://dccon.dcinside.com/index/buy', {
+        method: 'POST',
+        dataType: 'json',
+        headers: {
+          Accept: 'application/json, text/javascript, */*; q=0.01',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        cache: 'no-store',
+        body: `ci_t=${token}&package_idx=${con_id}`
+      })
+
+      return await response.text()
+    }
+  }
 }
 
 /**
@@ -171,10 +463,14 @@ let recalcLeftRight = (div, w, h) => {
  * @param {String} iconUrl 아이콘의 URL
  */
 let iconParse = iconUrl => {
+  console.log(iconUrl)
   if (/\/fix_nik\.gif/.test(iconUrl)) return 1
   if (/\/nik\.gif/.test(iconUrl)) return 2
   if (/\/fix_sub_managernik\.gif/.test(iconUrl)) return 3
   if (/\/fix_managernik\.gif/.test(iconUrl)) return 4
+  if (/\/dc20th_wgallcon2\.png/.test(iconUrl)) return 5 // 주딱 풍선 바이러스
+  if (/\/dc20th_wgallcon3\.png/.test(iconUrl)) return 6 // 파딱 풍선 바이러스
+  if (/\/dc20th_wgallcon\.png/.test(iconUrl)) return 7 // (반)고닉 풍선 바이러스
 
   return 0
 }
@@ -253,63 +549,7 @@ const recalcOverlay = (createdOverlay, ev) => {
   }
 }
 
-/**
- * 해당 URL이 차단된 디시콘 목록에 있는지 확인합니다.
- * @param {*} url DC콘 URL
- */
-const checkIsBlockedDCCon = url => {
-  url = url.indexOf('dcinside.com') != -1 ? getParameterByName('no', url) : url
-  var cacheKeyObj = Object.keys(blockedDCConCache)
-
-  var r = false
-  cacheKeyObj.forEach(en => {
-    if (
-      url != '' &&
-      typeof blockedDCConCache[en] !== 'undefined' &&
-      typeof blockedDCConCache[en].l !== 'undefined' &&
-      blockedDCConCache[en].l.indexOf(url) != -1
-    ) {
-      r = true
-    }
-  })
-  return r
-}
-
-const serializeDCCon = detail_con => {
-  let u = ''
-  detail_con.forEach(v => {
-    u += v.path + '|'
-  })
-
-  return u
-}
-
-const addDCConHandler = (f_elem, src) => {
-  f_elem.addEventListener('click', async ev => {
-    if (!ev.isTrusted) return false
-
-    var con_id = getParameterByName('no', src)
-    var createdOverlay = await createTooltipOverlay(con_id, true)
-    createOuterDCOverlay(createdOverlay)
-
-    fillWithLoader(createdOverlay)
-    recalcOverlay(createdOverlay, ev)
-
-    fetchDCCon(getCookie('ci_t'), '', con_id).then(async data => {
-      renderDCConInfo(
-        createdOverlay,
-        ev,
-        data,
-        typeof blockedDCConCache[data.info.package_idx] !== 'undefined' &&
-          Object.keys(blockedDCConCache[data.info.package_idx]).length !== 0,
-        false // TODO : Purchase 구현
-      )
-      recalcOverlay(createdOverlay, ev)
-    })
-  })
-}
-
-let commentsRender = fetchedData => {
+let commentsRender = (fetchedData, page, pgId, id, esno) => {
   var dcCrediv = document.createDocumentFragment()
 
   if (!fetchedData.comments) return [0, dcCrediv]
@@ -343,14 +583,13 @@ let commentsRender = fetchedData => {
 
     if (checkDcCon[0]) {
       var dcConElem
-
-      if (checkIsBlockedDCCon(checkDcCon[0].src)) {
+      if (DCCon.block.check(checkDcCon[0].src)) {
         dcConElem = createBlockedDCConText(checkDcCon[0].src)
       } else {
         var dcConElem = document.createElement('img')
         dcConElem.src = checkDcCon[0].src
         dcConElem.className = '__hoverBox_dccon __hoverBox_dcconLoading'
-        addDCConHandler(dcConElem, checkDcCon[0].src)
+        DCCon.popup.handler(dcConElem, checkDcCon[0].src)
 
         dcConElem.onload = () => {
           dcConElem.classList.remove('__hoverBox_dcconLoading')
@@ -371,6 +610,25 @@ let commentsRender = fetchedData => {
     cs.appendChild(commentContent)
 
     dcCrediv.appendChild(cs)
+  }
+
+  if (fetchedData.total_cnt >= 100) {
+    var pagination = document.createElement('div')
+    pagination.className = '__hoverBox_pageNCollect'
+    var page = Math.ceil(fetchedData.total_cnt / 100)
+
+    for (var i = 1; i < page + 1; i++) {
+      var clickBtn = document.createElement('div')
+      clickBtn.innerHTML = i
+      clickBtn.className = `__hoverBox_frPage${
+        i == page ? ' __hoverBox_frCurPage' : ''
+      }`
+      clickBtn.dataset.cmtp = i
+
+      pagination.appendChild(clickBtn)
+    }
+
+    dcCrediv.appendChild(pagination)
   }
 
   return [fetchedData.total_cnt, dcCrediv]
@@ -500,26 +758,22 @@ let getCaptcha = async (type, token, gall_id) => {
   ]
 }
 
-/**
- * 디시인사이드 API를 이용해 디시콘 정보를 받아옵니다.
- * @param {String} token ci_t 토큰
- * @param {String} con_id 디시콘 셋 ID
- * @param {String} con_code 디시콘 개별 ID (no=XXXXX)
- */
-let fetchDCCon = async (token, con_id, con_code) => {
-  let response = await fetch('https://gall.dcinside.com/dccon/package_detail', {
-    method: 'POST',
-    dataType: 'json',
-    headers: {
-      Accept: 'application/json, text/javascript, */*; q=0.01',
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    cache: 'no-store',
-    body: `ci_t=${token}&package_idx=${con_id}&code=${con_code}`
+let getCommentsAsHTML = async (div, pgId, id, esno, cmtPage) => {
+  var ftchCmts = await fetchComments(pgId, id, esno, cmtPage)
+  var renderedComments = await commentsRender(ftchCmts, cmtPage, pgId, id, esno)
+
+  var findCommentPage = renderedComments[1].querySelectorAll('[data-cmtp]')
+
+  findCommentPage.forEach(cmtNav => {
+    ;((r) => {
+      cmtNav.addEventListener('click', async () => {
+        r.innerHTML = ''
+        r.appendChild(await getCommentsAsHTML(r, pgId, id, esno, cmtNav.dataset.cmtp))
+      })
+    })(div)
   })
 
-  return await response.json()
+  return renderedComments[1]
 }
 
 /**
@@ -528,7 +782,7 @@ let fetchDCCon = async (token, con_id, con_code) => {
  * @param {String} post_id 게시글 ID
  * @param {String} esno ESNO csrf_token
  */
-let fetchComments = async (gall_id, post_id, esno) => {
+let fetchComments = async (gall_id, post_id, esno, page) => {
   let response = await fetch('https://gall.dcinside.com/board/comment/', {
     method: 'POST',
     dataType: 'json',
@@ -541,7 +795,8 @@ let fetchComments = async (gall_id, post_id, esno) => {
     referrer: `https://gall.dcinside.com/${
       isMinor ? 'mgallery/' : ''
     }board/view/?id=${gall_id}&no=${post_id}&page=${pgNum}`,
-    body: `id=${gall_id}&no=${post_id}&cmt_id=${gall_id}&cmt_no=${post_id}&e_s_n_o=${esno}&comment_page=1&sort=`
+    body: `id=${gall_id}&no=${post_id}&cmt_id=${gall_id}&cmt_no=${post_id}&e_s_n_o=${esno}&comment_page=${page ||
+      1}&sort=`
   })
 
   return await response.json()
@@ -637,16 +892,18 @@ let fetchPostInfo = async (div, id) => {
     <div class="__hoverBox_seperater"></div>
   `
 
-  var ftchCmts = await fetchComments(
-    pgId,
-    id,
-    domPs.getElementById('e_s_n_o').value
-  )
-  var renderedComments = commentsRender(ftchCmts)
   var bottomComments = document.createElement('div')
+  bottomComments.id = '__hoverBox_commentBox'
   bottomComments.className = '__hoverBox_comment'
-  bottomComments.append(renderedComments[1])
-
+  bottomComments.append(
+    await getCommentsAsHTML(
+      bottomComments,
+      pgId,
+      id,
+      domPs.getElementById('e_s_n_o').value,
+      1
+    )
+  )
   cntWrap.appendChild(bottomContents)
   cntWrap.appendChild(bottomComments)
   div.innerHTML = ''
@@ -668,11 +925,7 @@ let fetchPostInfo = async (div, id) => {
     }
 
     if (!res || splds[0] != 'true') {
-      upvoteBtn.classList.add('__hoverBox_shakeAnime')
-
-      setTimeout(() => {
-        upvoteBtn.classList.remove('__hoverBox_shakeAnime')
-      }, 321)
+      DCRefresher.util.shake(upvoteBtn)
     }
   })
 
@@ -692,11 +945,7 @@ let fetchPostInfo = async (div, id) => {
     }
 
     if (!res || splds[0] != 'true') {
-      downvoteBtn.classList.add('__hoverBox_shakeAnime')
-
-      setTimeout(() => {
-        downvoteBtn.classList.remove('__hoverBox_shakeAnime')
-      }, 321)
+      DCRefresher.util.shake(downvoteBtn)
     }
   })
 
@@ -716,106 +965,10 @@ let fetchPostInfo = async (div, id) => {
       }
 
       if (!res || res.result == 'fail') {
-        deleteBtn.classList.add('__hoverBox_shakeAnime')
-
-        setTimeout(() => {
-          deleteBtn.classList.remove('__hoverBox_shakeAnime')
-        }, 321)
+        DCRefresher.util.shake(deleteBtn)
       }
     })
   }
-}
-
-let renderDCConInfo = (createdOverlay, ev, data, getBlocked, getPurchased) => {
-  createdOverlay.innerHTML = ''
-  let cntWrap = document.createElement('div')
-  cntWrap.className = '__hoverBox_contentWrap'
-
-  cntWrap.innerHTML = `
-            <div class="__hoverConBox_alignCenter">
-              <div class="__hoverConBox_mainImg">
-                <img id="__hoverConBox_img_${
-  data.info.main_img_path
-}" src="https://dcimg5.dcinside.com/dccon.php?no=${
-  data.info.main_img_path
-}"></img>
-              </div>
-              <div class="__hoverConBox_title">
-                ${data.info.title}
-              </div>
-              <div class="__hoverConBox_desc">
-                ${data.info.description}
-              </div>
-              <div class="__hoverConBox_info_detail">
-                by ${data.info.seller_name} | 등록일 ${
-  data.info.reg_date_short
-} | ${data.info.sale_count}회 판매
-              </div>
-            </div>
-            <div class="__hoverBox_bottom">
-            <div class="__hoverBox_voteWrap">
-                <div class="__hoverBox_purchaseWrap" id="__hoverBox_purchaseId_${
-  data.info.package_idx
-}">
-                  <img src="${chrome.extension.getURL(
-    '/icns/downvote.png'
-  )}" class="__hoverBox_voteIcon"></img>
-                  <div class="__hoverBox_btnCountsText${
-  getPurchased ? ' __hoverBox_purchased' : ''
-}" id="__hoverBox_purchaseBtn">${
-  getPurchased ? '이미 구매한 디시콘' : '구매 (구현 중)'
-}</div>
-                </div>
-                <div class="__hoverBox_blockWrap" id="__hoverBox_blockConId_${
-  data.info.package_idx
-}">
-                  <img src="${chrome.extension.getURL(
-    '/icns/block.png'
-  )}" class="__hoverBox_voteIcon"></img>
-                  <div class="__hoverBox_btnCountsText" id="__hoverBox_blockBtn">${
-  getBlocked ? '차단 해제' : '차단'
-}</div>
-          </div>
-      </div>
-    </div>
-    <div class="__hoverBox_seperater"></div>
-          `
-
-  for (var i = 0; i < data.detail.length; i++) {
-    var dcconImg = document.createElement('img')
-    dcconImg.className = '__hoverConBox_img_more'
-    dcconImg.src =
-      'https://dcimg5.dcinside.com/dccon.php?no=' + data.detail[i].path
-
-    cntWrap.appendChild(dcconImg)
-  }
-  createdOverlay.appendChild(cntWrap)
-
-  document
-    .getElementById('__hoverConBox_img_' + data.info.main_img_path)
-    .addEventListener('load', () => {
-      recalcOverlay(createdOverlay, ev)
-    })
-
-  document
-    .getElementById('__hoverBox_blockConId_' + data.info.package_idx)
-    .addEventListener('click', ev => {
-      if (getBlocked) {
-        DCConRMFromBlockLists(data.info.package_idx)
-      } else {
-        DCConSaveBlockLists(data.info.package_idx, {
-          n: data.info.title,
-          s: data.info.seller_name,
-          l: serializeDCCon(data.detail)
-        })
-      }
-      getBlocked = !getBlocked
-      document.getElementById('__hoverBox_blockBtn').innerHTML = getBlocked
-        ? '차단 해제'
-        : '차단'
-
-      recalcOverlay(createdOverlay, ev)
-    })
 }
 
 /**
@@ -1041,7 +1194,7 @@ const addContentFilter = elem => {
   replaceURLtoAHREF(getAllTexts)
 
   getAllDCCon.forEach(v => {
-    addDCConHandler(v, v.src)
+    DCCon.popup.handler(v, v.src)
   })
 }
 
@@ -1050,7 +1203,7 @@ const createBlockedDCConText = origin => {
   r.className = '__hoverBox_dcconBlocked'
   r.innerHTML = '차단된 디시콘입니다.'
 
-  addDCConHandler(r, origin)
+  DCCon.popup.handler(r, origin)
   return r
 }
 
@@ -1061,7 +1214,7 @@ const createBlockedDCConText = origin => {
  */
 const replaceBlockedDCCon = arr => {
   arr.forEach(e => {
-    if (checkIsBlockedDCCon(e.src)) {
+    if (DCCon.block.check(e.src)) {
       var repl = createBlockedDCConText(e.src)
       e.parentNode.replaceChild(repl, e)
     }
@@ -1102,10 +1255,12 @@ const replaceURLtoAHREF = arr => {
       splitE.forEach(v => {
         if (urlCheckRegex.test(v)) {
           v = replaceGoogleText(v)
+
+
           v =
             '<a class="__hoverBox_aLink" href="' +
-            (v.substring(0, 3) != 'http' ? 'https://' + v : 'http') +
-            v +
+            ((v.substring(0, 4) != 'http' ? 'https://' : '') +
+            v) +
             '"> ' +
             v.trim() +
             ' </a>'
