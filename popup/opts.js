@@ -5,7 +5,7 @@ const opts_db = {
 }
 
 /**
- * 옵션을 크롬 Sync API를 사용해 저장합니다.
+ * 옵션을 Sync API를 사용해 저장합니다.
  * @param {String} key 저장할 값의 key ID
  * @param {String} value 저장할 값
  */
@@ -13,19 +13,29 @@ const save_opt = (key, value) => {
   var d = {}
   d[key] = value
 
-  return chrome.storage.sync.set(d, () => {})
+  if (chrome) {
+    return chrome.storage.sync.set(d, () => {})
+  }
+
+  return storage.sync.set(d, () => {})
 }
 
 /**
- * 옵션을 크롬 Sync API를 사용해 저장합니다.
+ * 옵션을 Sync API를 사용해 불러옵니다.
  * @param {String} key 불러올 값의 key ID
  */
 const get_opt = async key => {
   return new Promise((resolve, reject) => {
     try {
-      chrome.storage.sync.get(key, i => {
+      let resolve_func = i => {
         resolve(i[key])
-      })
+      }
+
+      if (chrome) {
+        chrome.storage.sync.get(key, resolve_func)
+      } else {
+        storage.sync.get(key)
+      }
     } catch (e) {
       reject(e)
     }

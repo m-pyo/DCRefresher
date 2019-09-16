@@ -463,7 +463,6 @@ let recalcLeftRight = (div, w, h) => {
  * @param {String} iconUrl 아이콘의 URL
  */
 let iconParse = iconUrl => {
-  console.log(iconUrl)
   if (/\/fix_nik\.gif/.test(iconUrl)) return 1
   if (/\/nik\.gif/.test(iconUrl)) return 2
   if (/\/fix_sub_managernik\.gif/.test(iconUrl)) return 3
@@ -765,10 +764,12 @@ let getCommentsAsHTML = async (div, pgId, id, esno, cmtPage) => {
   var findCommentPage = renderedComments[1].querySelectorAll('[data-cmtp]')
 
   findCommentPage.forEach(cmtNav => {
-    ;((r) => {
+    ;(r => {
       cmtNav.addEventListener('click', async () => {
         r.innerHTML = ''
-        r.appendChild(await getCommentsAsHTML(r, pgId, id, esno, cmtNav.dataset.cmtp))
+        r.appendChild(
+          await getCommentsAsHTML(r, pgId, id, esno, cmtNav.dataset.cmtp)
+        )
       })
     })(div)
   })
@@ -1107,6 +1108,34 @@ let hideBlockUsersPosts = table => {
   return table
 }
 
+let addSelectButtonWanjang = table => {
+  let found_data = table.querySelectorAll('.ub-content')
+
+  let colgroup = table.querySelector('colgroup')
+  let col_s = document.createElement('col')
+  col_s.style.width = '3%'
+  colgroup.insertBefore(col_s, colgroup.childNodes[0])
+
+  let thr_get = table.querySelector('thead tr')
+  let thscope = document.createElement('th')
+  thscope.className = 'chkbox_th'
+  thscope.setAttribute('scope', 'col')
+  thscope.innerHTML = `<span class="checkbox"><input type="checkbox" id="comment_chk_all" onclick="article_chk_all(this)"><em class="checkmark"></em><label for="comment_chk_all" class="blind">전체 글 선택</label></span>`
+  thr_get.insertBefore(thscope, thr_get.childNodes[0])
+
+  for (var i = 0; i < found_data.length; i++) {
+    if (found_data[i].querySelector('.gall_chk')) continue
+
+    let dom_create = document.createElement('td')
+    dom_create.className = 'gall_chk'
+    dom_create.innerHTML =
+      '<span class="checkbox"><input type="checkbox" name="chk_article[]" class="list_chkbox article_chkbox"><em class="checkmark"></em><label class="blind">글 선택</label></span>'
+    found_data[i].insertBefore(dom_create, found_data[i].childNodes[0])
+  }
+
+  return table
+}
+
 /**
  * 툴팁 오버레이 구조를 만들고 body에 append 합니다.
  * @param {String} id 게시글 ID
@@ -1256,11 +1285,9 @@ const replaceURLtoAHREF = arr => {
         if (urlCheckRegex.test(v)) {
           v = replaceGoogleText(v)
 
-
           v =
             '<a class="__hoverBox_aLink" href="' +
-            ((v.substring(0, 4) != 'http' ? 'https://' : '') +
-            v) +
+            ((v.substring(0, 4) != 'http' ? 'https://' : '') + v) +
             '"> ' +
             v.trim() +
             ' </a>'
@@ -1327,19 +1354,35 @@ window.addEventListener('DOMContentLoaded', () => {
       () => {
         if (!window.navigator.onLine || document.hidden) return false
 
+        let select_btn = document.querySelectorAll(
+          'input[name="chk_article[]"]:checked'
+        )
+
+        if (select_btn && select_btn.length) {
+          return false
+        }
+
+        if (document.querySelector('#user_data_lyr')) {
+          return false
+        }
+
         try {
           fetch(fetchURL, {
             method: 'GET',
-            mode: 'cors',
-            cache: 'no-store'
+            mode: 'cors'
           }).then(async response => {
             let domPs = new DOMParser().parseFromString(
               await response.text(),
               'text/html'
             )
 
+            let dsd = `<td class="gall_chk">   <span class="checkbox">  <input type="checkbox" name="chk_article[]" class="list_chkbox article_chkbox">  <em class="checkmark"></em>  <label class="blind">글 선택</label>   </span> </td>`
+
             let gTable = domPs.getElementsByClassName('gall_list')[0]
             gTable = hideBlockUsersPosts(gTable)
+            if (document.querySelector('.useradmin_btnbox')) {
+              gTable = addSelectButtonWanjang(gTable)
+            }
             addNewCaching(gTable, false)
             gTableOrigin.innerHTML = ''
             gTableOrigin.append(gTable)
