@@ -35,5 +35,10 @@
     "chrome_style": true,
     "page": "popup/options.html"
   },
-  "web_accessible_resources": ["icns/*", "popup/*"]
+  "web_accessible_resources": ["icns/*", "popup/*"],
+  "applications": {
+    "gecko": {
+      "id": "dcrefresher@sochiru.pw"
+    }
+  }
 }

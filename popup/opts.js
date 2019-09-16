@@ -17,7 +17,7 @@ const save_opt = (key, value) => {
     return chrome.storage.sync.set(d, () => {})
   }
 
-  return storage.sync.set(d, () => {})
+  return browser.storage.local.set(d, () => {})
 }
 
 /**
@@ -34,7 +34,7 @@ const get_opt = async key => {
       if (chrome) {
         chrome.storage.sync.get(key, resolve_func)
       } else {
-        storage.sync.get(key)
+        browser.storage.local.get(key)
       }
     } catch (e) {
       reject(e)
