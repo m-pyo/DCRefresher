@@ -79,6 +79,7 @@ let pgNum = getParameterByName('page') || 1
 let isPageSpec = pgNum != null
 let centrePage = true
 let darkMode = false
+let blockNotLogin = false
 let refreshRate = 5000
 let fetchURL =
   'https://gall.dcinside.com/' +
@@ -97,6 +98,14 @@ get_opt('dark_mode')
 get_opt('centre_page')
   .then(v => {
     centrePage = v
+  })
+  .catch(e => {
+    console.log(e)
+  })
+
+get_opt('block_notlogin')
+  .then(v => {
+    blockNotLogin = v
   })
   .catch(e => {
     console.log(e)
@@ -126,6 +135,181 @@ let DCRefresher = {
       setTimeout(() => {
         e.classList.remove('__hoverBox_shakeAnime')
       }, 321)
+    }
+  },
+
+  object: {
+    ip: {
+      '203.226': 'skt3g',
+      '211.234': 'skt3g',
+      '203.226': 'sktlte',
+      '223.32': 'sktlte',
+      '223.33': 'sktlte',
+      '223.34': 'sktlte',
+      '223.35': 'sktlte',
+      '223.36': 'sktlte',
+      '223.37': 'sktlte',
+      '223.38': 'sktlte',
+      '223.39': 'sktlte',
+      '223.40': 'sktlte',
+      '223.41': 'sktlte',
+      '223.42': 'sktlte',
+      '223.43': 'sktlte',
+      '223.44': 'sktlte',
+      '223.45': 'sktlte',
+      '223.46': 'sktlte',
+      '223.47': 'sktlte',
+      '223.48': 'sktlte',
+      '223.49': 'sktlte',
+      '223.50': 'sktlte',
+      '223.51': 'sktlte',
+      '223.52': 'sktlte',
+      '223.53': 'sktlte',
+      '223.54': 'sktlte',
+      '223.55': 'sktlte',
+      '223.56': 'sktlte',
+      '223.57': 'sktlte',
+      '223.58': 'sktlte',
+      '223.59': 'sktlte',
+      '223.60': 'sktlte',
+      '223.61': 'sktlte',
+      '223.62': 'sktlte',
+      '223.63': 'sktlte',
+      '39.7': 'kt',
+      '110.70': 'kt',
+      '175.223': 'kt',
+      '175.252': 'kt',
+      '211.246': 'kt',
+      '118.235': 'kt5g',
+      '61.43': 'up3g',
+      '211.234': 'up3g',
+      '117.111': 'uplte',
+      '211.36': 'uplte',
+      '106.102': 'uplte',
+      '60.100': 'sftb',
+      '60.106': 'sftb',
+      '60.107': 'sftb',
+      '60.108': 'sftb',
+      '60.109': 'sftb',
+      '60.110': 'sftb',
+      '60.111': 'sftb',
+      '60.112': 'sftb',
+      '60.113': 'sftb',
+      '60.114': 'sftb',
+      '60.115': 'sftb',
+      '60.116': 'sftb',
+      '60.117': 'sftb',
+      '60.118': 'sftb',
+      '60.119': 'sftb',
+      '60.120': 'sftb',
+      '60.121': 'sftb',
+      '60.122': 'sftb',
+      '60.123': 'sftb',
+      '60.124': 'sftb',
+      '60.125': 'sftb',
+      '60.126': 'sftb',
+      '60.127': 'sftb',
+      '60.128': 'sftb',
+      '60.129': 'sftb',
+      '60.130': 'sftb',
+      '60.131': 'sftb',
+      '60.132': 'sftb',
+      '60.133': 'sftb',
+      '60.134': 'sftb',
+      '60.135': 'sftb',
+      '60.136': 'sftb',
+      '60.137': 'sftb',
+      '60.138': 'sftb',
+      '60.139': 'sftb',
+      '60.140': 'sftb',
+      '60.141': 'sftb',
+      '60.142': 'sftb',
+      '60.143': 'sftb',
+      '60.144': 'sftb',
+      '60.146': 'sftb',
+      '60.147': 'sftb',
+      '60.148': 'sftb',
+      '60.149': 'sftb',
+      '60.150': 'sftb',
+      '60.40': 'sftb',
+      '60.80': 'sftb',
+      '60.86': 'sftb',
+      '60.90': 'sftb',
+      '60.91': 'sftb',
+      '60.94': 'sftb',
+      '60.96': 'sftb',
+      '60.97': 'sftb',
+      '126.204': 'sftb',
+      '126.206': 'sftb',
+      '126.234': 'sftb',
+      '126.235': 'sftb',
+      '126.236': 'sftb',
+      '126.237': 'sftb',
+      '126.238': 'sftb',
+      '126.239': 'sftb',
+      '126.240': 'sftb',
+      '126.241': 'sftb',
+      '126.242': 'sftb',
+      '126.33': 'sftb',
+      '126.40': 'sftb',
+      '126.43': 'sftb',
+      '1.66': 'docomo',
+      '1.72': 'docomo',
+      '1.73': 'docomo',
+      '1.75': 'docomo',
+      '1.78': 'docomo',
+      '1.79': 'docomo',
+      '49.96': 'docomo',
+      '49.97': 'docomo',
+      '49.98': 'docomo',
+      '49.99': 'docomo',
+      '49.100': 'docomo',
+      '49.104': 'docomo',
+      '49.105': 'docomo',
+      '49.106': 'docomo',
+      '49.110': 'docomo',
+      '49.111': 'docomo',
+      '110.163': 'docomo',
+      '220.159': 'docomo',
+      '111.239': 'au'
+    },
+
+    ip_lis: {
+      skt3g: {
+        text: 'SKT 3G'
+      },
+
+      sktlte: {
+        text: 'SKT LTE'
+      },
+
+      kt: {
+        text: 'KT'
+      },
+
+      kt5g: {
+        text: 'KT 5G'
+      },
+
+      up3g: {
+        text: 'U+ 3G'
+      },
+
+      uplte: {
+        text: 'U+ LTE'
+      },
+
+      docomo: {
+        text: 'JP docomo'
+      },
+
+      sftb: {
+        text: 'JP Softbank'
+      },
+
+      au: {
+        text: 'JP au'
+      }
     }
   }
 }
@@ -441,6 +625,50 @@ let addNewCaching = (t, Isinit) => {
 }
 
 /**
+ * IP 정보를 IP 뒤에 표시합니다.
+ *
+ * @param {DocumentFragment} t 가져올 ID의 Document
+ */
+let addIPInfo = t => {
+  if (typeof t === 'undefined' || t == null) return
+
+  let all_writter = t.querySelectorAll('.gall_writer')
+
+  let writter_length = all_writter.length
+  for (var i = 0; i < writter_length; i++) {
+    let cur_writter = all_writter[i]
+    if (!cur_writter.dataset.ip || cur_writter.dataset.ip == '') continue
+    if (cur_writter.querySelector('span.__dcref_ip')) continue
+    let ip_type = DCRefresher.object.ip[cur_writter.dataset.ip]
+    if (!ip_type) continue
+
+    let ip_text = DCRefresher.object.ip_lis[ip_type].text
+
+    let cre_ipinfo = document.createElement('span')
+    cre_ipinfo.innerText = ip_text
+    cre_ipinfo.className = '__dcref_ip'
+    cur_writter.appendChild(cre_ipinfo)
+  }
+}
+
+/**
+ * 유동을 숨깁니다.
+ * @param {DocumentFragment} t 가져올 ID의 Document
+ */
+let removeNotLoginUser = t => {
+  var all_writter = t.querySelectorAll('.gall_writer')
+
+  let writter_length = all_writter.length
+  for (var i = 0; i < writter_length; i++) {
+    let cur_writter = all_writter[i]
+    if (!cur_writter.dataset.ip || cur_writter.dataset.ip == '') continue
+    cur_writter.parentElement.parentElement.removeChild(
+      cur_writter.parentElement
+    )
+  }
+}
+
+/**
  * div의 가로 세로를 w, h 에 맞춰 정렬하는 함수입니다.
  * @param {HTMLElement} div top, bottom 등을 맞출 element
  * @param {Number} w 마우스 포인터의 x 값
@@ -536,13 +764,16 @@ let getInfofromDocument = (d, id) => {
  * @param {Object} postData 데이터 구조
  */
 let renderNicks = postData => {
+  let ip_obj = DCRefresher.object.ip[postData.ip_addr]
+  let ip_inf = (ip_obj) ? ' (' + DCRefresher.object.ip_lis[ip_obj].text + ')' : ''
+
   return `<div class="__hoverBox_nickWrap">
   <span class="__hoverBox_nickIcon __hoverBox_icon${postData.nickType}"></span>
   <span class="__hoverBox_nickName">${postData.nick}</span>
   <span class="__hoverBox_nickId" title="해당 유저의 갤로그를 엽니다." onclick="window.open('https://gallog.dcinside.com/${
   postData.unique_id
 }')">${postData.unique_id}</span>
-  <span class="__hoverBox_nickIP">${postData.ip_addr}</span>
+  <span class="__hoverBox_nickIP">${postData.ip_addr}${ip_inf}</span>
   <span class="__hoverBox_date">${postData.date}</span>
 </div>`
 }
@@ -1352,6 +1583,11 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   gTableOrigin = hideBlockUsersPosts(gTableOrigin)
+  if (blockNotLogin) {
+    removeNotLoginUser(gTableOrigin)
+  } else {
+    addIPInfo(gTableOrigin)
+  }
   addNewCaching(gTableOrigin, true)
   addHoverListener(gTableOrigin)
 
@@ -1387,13 +1623,18 @@ window.addEventListener('DOMContentLoaded', () => {
               'text/html'
             )
 
-            let dsd = `<td class="gall_chk">   <span class="checkbox">  <input type="checkbox" name="chk_article[]" class="list_chkbox article_chkbox">  <em class="checkmark"></em>  <label class="blind">글 선택</label>   </span> </td>`
-
             let gTable = domPs.getElementsByClassName('gall_list')[0]
             gTable = hideBlockUsersPosts(gTable)
             if (document.querySelector('.useradmin_btnbox')) {
               gTable = addSelectButtonWanjang(gTable)
             }
+
+            if (blockNotLogin) {
+              removeNotLoginUser(gTable)
+            } else {
+              addIPInfo(gTable)
+            }
+
             addNewCaching(gTable, false)
             gTableOrigin.innerHTML = ''
             gTableOrigin.append(gTable)

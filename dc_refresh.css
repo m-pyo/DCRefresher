@@ -625,3 +625,10 @@
 .__hoverBox_frCurPage {
   font-weight: 900;
 }
+
+.__dcref_ip {
+  letter-spacing: -0.1em;
+  margin-left: 2px;
+  font-size: 11px;
+  color: #999;
+}
