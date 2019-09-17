@@ -479,7 +479,8 @@ let iconParse = iconUrl => {
   if (/\/fix_managernik\.gif/.test(iconUrl)) return 4
   if (/\/dc20th_wgallcon2\.png/.test(iconUrl)) return 5 // 주딱 풍선 바이러스
   if (/\/dc20th_wgallcon3\.png/.test(iconUrl)) return 6 // 파딱 풍선 바이러스
-  if (/\/dc20th_wgallcon\.png/.test(iconUrl)) return 7 // (반)고닉 풍선 바이러스
+  if (/\/dc20th_wgallcon\.png/.test(iconUrl)) return 7 // 반고닉 풍선 바이러스
+  if (/\/dc20th_wgallcon4\.png/.test(iconUrl)) return 8 // 고닉 풍선 바이러스
 
   return 0
 }
