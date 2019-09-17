@@ -7,6 +7,9 @@
 [![forthebadge](https://forthebadge.com/images/badges/designed-in-ms-paint.svg)](https://forthebadge.com)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/gpipaoeekcphlmilndfdbfdgijjjiklh.svg?style=for-the-badge)](https://chrome.google.com/webstore/detail/dc-refresher/gpipaoeekcphlmilndfdbfdgijjjiklh)
 
+Chrome 확장 프로그램 : https://chrome.google.com/webstore/detail/dc-refresher/gpipaoeekcphlmilndfdbfdgijjjiklh
+Firefox 확장 프로그램 : https://addons.mozilla.org/addon/dc-refresher/
+
 페이지를 자동으로 새로 고쳐주고, 미리보기 창을 만들어 줍니다.
 
 - 미리보기 창
