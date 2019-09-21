@@ -186,6 +186,7 @@ let DCRefresher = {
       '117.111': 'uplte',
       '211.36': 'uplte',
       '106.102': 'uplte',
+      '106.101': 'up5g',
       '60.100': 'sftb',
       '60.106': 'sftb',
       '60.107': 'sftb',
@@ -271,44 +272,132 @@ let DCRefresher = {
       '49.111': 'docomo',
       '110.163': 'docomo',
       '220.159': 'docomo',
-      '111.239': 'au'
+      '111.239': 'au',
+      '13.125': 'aws',
+      '54.180': 'aws',
+      '52.92': 'aws',
+      '52.93': 'aws',
+      '52.94': 'aws',
+      '52.95': 'aws',
+      '52.79': 'aws',
+      '13.124': 'aws',
+      '13.209': 'aws',
+      '52.78': 'aws',
+      '15.164': 'aws',
+      '99.78': 'aws',
+      '54.193': 'aws',
+      '54.238': 'aws',
+      '54.168': 'aws',
+      '52.74': 'aws',
+      '52.18': 'aws',
+      '52.79': 'aws',
+      '52.61': 'aws',
+      '52.58': 'aws',
+      '18.230': 'aws',
+      '184.72': 'aws',
+      '52.29': 'aws',
+      '13.124': 'aws',
+      '15.164': 'aws',
+      '34.64': 'gcp',
+      '34.96': 'gcp',
+      '34.98': 'gcp',
+      '35.184': 'gcp',
+      '35.188': 'gcp',
+      '35.190': 'gcp',
+      '35.192': 'gcp',
+      '35.196': 'gcp',
+      '35.199': 'gcp',
+      '35.198': 'gcp',
+      '35.200': 'gcp',
+      '35.202': 'gcp',
+      '35.203': 'gcp',
+      '35.204': 'gcp',
+      '35.206': 'gcp',
+      '35.208': 'gcp',
+      '35.216': 'gcp',
+      '35.220': 'gcp',
+      '35.224': 'gcp',
+      '35.234': 'gcp',
+      '35.235': 'gcp',
+      '35.236': 'gcp',
+      '35.240': 'gcp',
+      '35.242': 'gcp',
+      '35.244': 'gcp',
+      '104.154': 'gcp',
+      '104.196': 'gcp',
+      '146.148': 'gcp',
+      '108.170': 'gcp',
+      '107.167': 'gcp',
+      '107.179': 'gcp',
+      '139.28': 'bnet',
+      '185.209': 'bnet',
+      '76.164': 'bnet',
+      '64.188': 'bnet',
+      '13.231': 'vpncat',
+      '13.231': 'vpnmst',
+      '108.61': 'vultr',
+      '173.199': 'vultr',
+      '31.171': 'zenmate',
+      '37.120': 'zenmate',
+      '27.50': 'zenmate',
+      '185.242': 'zenmate',
+      '27.255': 'zenmate',
+      '154.6': 'zenmate',
+      '193.7': 'zenmate',
+      '212.103': 'zenmate'
     },
 
     ip_lis: {
       skt3g: {
         text: 'SKT 3G'
       },
-
       sktlte: {
         text: 'SKT LTE'
       },
-
       kt: {
         text: 'KT'
       },
-
       kt5g: {
         text: 'KT 5G'
       },
-
       up3g: {
         text: 'U+ 3G'
       },
-
       uplte: {
         text: 'U+ LTE'
       },
-
+      up5g: {
+        text: 'U+ 5G'
+      },
       docomo: {
         text: 'JP docomo'
       },
-
       sftb: {
         text: 'JP Softbank'
       },
-
       au: {
         text: 'JP au'
+      },
+      aws: {
+        text: 'AWS (클라우드)'
+      },
+      gcp: {
+        text: 'GCP (클라우드)'
+      },
+      vultr: {
+        text: 'Vultr (클라우드)'
+      },
+      bnet: {
+        text: 'Betternet VPN'
+      },
+      vpncat: {
+        text: 'VPN Cat'
+      },
+      vpnmst: {
+        text: 'VPN Master'
+      },
+      zenmate: {
+        text: 'Zenmate (VPN)'
       }
     }
   }
@@ -703,12 +792,13 @@ let recalcLeftRight = (div, w, h) => {
 let iconParse = iconUrl => {
   if (/\/fix_nik\.gif/.test(iconUrl)) return 1
   if (/\/nik\.gif/.test(iconUrl)) return 2
-  if (/\/fix_sub_managernik\.gif/.test(iconUrl)) return 3
-  if (/\/fix_managernik\.gif/.test(iconUrl)) return 4
-  if (/\/dc20th_wgallcon2\.png/.test(iconUrl)) return 5 // 주딱 풍선 바이러스
-  if (/\/dc20th_wgallcon3\.png/.test(iconUrl)) return 6 // 파딱 풍선 바이러스
-  if (/\/dc20th_wgallcon\.png/.test(iconUrl)) return 7 // 반고닉 풍선 바이러스
-  if (/\/dc20th_wgallcon4\.png/.test(iconUrl)) return 8 // 고닉 풍선 바이러스
+  if (/\/sub_managernik\.gif/.test(iconUrl)) return 3
+  if (/\/fix_sub_managernik\.gif/.test(iconUrl)) return 4
+  if (/\/fix_managernik\.gif/.test(iconUrl)) return 5
+  if (/\/dc20th_wgallcon2\.png/.test(iconUrl)) return 6 // 주딱 풍선 바이러스
+  if (/\/dc20th_wgallcon3\.png/.test(iconUrl)) return 7 // 파딱 풍선 바이러스
+  if (/\/dc20th_wgallcon\.png/.test(iconUrl)) return 8 // 반고닉 풍선 바이러스
+  if (/\/dc20th_wgallcon4\.png/.test(iconUrl)) return 9 // 고닉 풍선 바이러스
 
   return 0
 }
@@ -765,7 +855,7 @@ let getInfofromDocument = (d, id) => {
  */
 let renderNicks = postData => {
   let ip_obj = DCRefresher.object.ip[postData.ip_addr]
-  let ip_inf = (ip_obj) ? ' (' + DCRefresher.object.ip_lis[ip_obj].text + ')' : ''
+  let ip_inf = ip_obj ? ' (' + DCRefresher.object.ip_lis[ip_obj].text + ')' : ''
 
   return `<div class="__hoverBox_nickWrap">
   <span class="__hoverBox_nickIcon __hoverBox_icon${postData.nickType}"></span>

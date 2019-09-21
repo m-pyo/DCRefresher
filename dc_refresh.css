@@ -228,8 +228,17 @@
   );
 }
 
+/* 고닉 파딱 */
+.__hoverBox_icon4 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(0, 140, 255) 0%,
+    rgb(102, 173, 255) 100%
+  );
+}
+
 /* 주딱 */
-.__hoverBox_icon4,
+.__hoverBox_icon5,
 .__hoverBox_icon20 {
   background: -webkit-linear-gradient(
     330deg,
@@ -239,7 +248,7 @@
 }
 
 /* 주딱 풍선 바이러스 */
-.__hoverBox_icon5 {
+.__hoverBox_icon6 {
   background: -webkit-linear-gradient(
     330deg,
     rgb(255, 136, 0) 0%,
@@ -249,7 +258,7 @@
 }
 
 /* 파딱 풍선 바이러스 */
-.__hoverBox_icon6 {
+.__hoverBox_icon7 {
   background: -webkit-linear-gradient(
     330deg,
     rgb(0, 140, 255) 0%,
@@ -259,7 +268,7 @@
 }
 
 /* 반고닉 풍선 바이러스 */
-.__hoverBox_icon7 {
+.__hoverBox_icon8 {
   background: -webkit-linear-gradient(
     330deg,
     rgb(201, 201, 201) 30%,
@@ -269,7 +278,7 @@
 }
 
 /* 고닉 풍선 바이러스 */
-.__hoverBox_icon8 {
+.__hoverBox_icon9 {
   background: -webkit-linear-gradient(
     330deg,
     rgb(255, 242, 55) 30%,
