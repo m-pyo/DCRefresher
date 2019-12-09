@@ -17,6 +17,15 @@ let getParameterByName = (name, url) => {
 }
 
 /**
+ * 쿠키 목록을 Object 형식으로 가져옵니다.
+ *
+ * @copyright https://gist.github.com/rendro/525bbbf85e84fa9042c2, https://gist.github.com/etgrieco
+ */
+let getCookiesAsObject = cookie => {
+  return Object.fromEntries(cookie.split('; ').map(x => x.split('=')))
+}
+
+/**
  * 옵션을 Sync API를 사용해 저장합니다.
  * @param {String} key 저장할 값의 key ID
  * @param {String} value 저장할 값
@@ -72,12 +81,11 @@ let getCookie = name => {
 // 초기화 변수
 let pgId = getParameterByName('id')
 let cachedNew = []
-let gTableOrigin
+let list_table_bak
 let outerTooltip
 let isMinor = /dcinside\.com\/mgallery/g.test(window.location.href)
 let pgNum = getParameterByName('page') || 1
 let isPageSpec = pgNum != null
-let centrePage = true
 let darkMode = false
 let blockNotLogin = false
 let refreshRate = 5000
@@ -90,14 +98,6 @@ let fetchURL =
 get_opt('dark_mode')
   .then(v => {
     darkMode = v
-  })
-  .catch(e => {
-    console.log(e)
-  })
-
-get_opt('centre_page')
-  .then(v => {
-    centrePage = v
   })
   .catch(e => {
     console.log(e)
@@ -272,6 +272,265 @@ let DCRefresher = {
       '49.111': 'docomo',
       '110.163': 'docomo',
       '220.159': 'docomo',
+      '63.160': 'sprint',
+      '63.161': 'sprint',
+      '63.162': 'sprint',
+      '63.163': 'sprint',
+      '63.164': 'sprint',
+      '63.165': 'sprint',
+      '63.166': 'sprint',
+      '63.167': 'sprint',
+      '63.168': 'sprint',
+      '63.169': 'sprint',
+      '63.170': 'sprint',
+      '63.171': 'sprint',
+      '63.172': 'sprint',
+      '63.173': 'sprint',
+      '63.174': 'sprint',
+      '63.175': 'sprint',
+      '66.1': 'sprint',
+      '68.24': 'sprint',
+      '68.25': 'sprint',
+      '68.26': 'sprint',
+      '68.27': 'sprint',
+      '68.28': 'sprint',
+      '68.29': 'sprint',
+      '68.30': 'sprint',
+      '68.31': 'sprint',
+      '12.0': 'att',
+      '12.66': 'att',
+      '12.67': 'att',
+      '12.128': 'att',
+      '12.129': 'att',
+      '12.130': 'att',
+      '107.72': 'att',
+      '107.77': 'att',
+      '107.80': 'att',
+      '107.81': 'att',
+      '107.84': 'att',
+      '107.85': 'att',
+      '107.87': 'att',
+      '107.89': 'att',
+      '107.90': 'att',
+      '107.91': 'att',
+      '107.92': 'att',
+      '107.93': 'att',
+      '107.94': 'att',
+      '107.95': 'att',
+      '107.106': 'att',
+      '107.107': 'att',
+      '107.112': 'att',
+      '107.118': 'att',
+      '107.125': 'att',
+      '107.228': 'att',
+      '107.229': 'att',
+      '107.230': 'att',
+      '107.231': 'att',
+      '107.232': 'att',
+      '107.233': 'att',
+      '107.234': 'att',
+      '107.235': 'att',
+      '107.241': 'att',
+      '107.242': 'att',
+      '107.247': 'att',
+      '107.250': 'att',
+      '108.147': 'att',
+      '108.153': 'att',
+      '135.211': 'att',
+      '32.177': 'att',
+      '32.178': 'att',
+      '76.242': 'att',
+      '199.176': 'att',
+      '45.16': 'att',
+      '63.192': 'att',
+      '64.148': 'att',
+      '65.12': 'att',
+      '65.13': 'att',
+      '65.15': 'att',
+      '65.5': 'att',
+      '65.6': 'att',
+      '65.80': 'att',
+      '65.81': 'att',
+      '65.82': 'att',
+      '65.83': 'att',
+      '65.136': 'att',
+      '65.156': 'att',
+      '68.153': 'att',
+      '68.157': 'att',
+      '68.158': 'att',
+      '68.16': 'att',
+      '68.17': 'att',
+      '70.252': 'att',
+      '71.128': 'att',
+      '71.130': 'att',
+      '70.242': 'att',
+      '70.228': 'att',
+      '69.236': 'att',
+      '74.172': 'att',
+      '74.173': 'att',
+      '74.174': 'att',
+      '74.175': 'att',
+      '74.180': 'att',
+      '74.181': 'att',
+      '74.182': 'att',
+      '74.183': 'att',
+      '74.184': 'att',
+      '74.185': 'att',
+      '74.186': 'att',
+      '74.187': 'att',
+      '74.188': 'att',
+      '74.189': 'att',
+      '74.190': 'att',
+      '74.228': 'att',
+      '74.229': 'att',
+      '74.232': 'att',
+      '100.75': 'verizon',
+      '100.99': 'verizon',
+      '100.100': 'verizon',
+      '66.174': 'verizon',
+      '69.82': 'verizon',
+      '69.96': 'verizon',
+      '70.192': 'verizon',
+      '70.192': 'verizon',
+      '70.193': 'verizon',
+      '70.194': 'verizon',
+      '70.195': 'verizon',
+      '70.196': 'verizon',
+      '70.197': 'verizon',
+      '70.198': 'verizon',
+      '70.199': 'verizon',
+      '70.200': 'verizon',
+      '70.201': 'verizon',
+      '70.202': 'verizon',
+      '70.203': 'verizon',
+      '70.204': 'verizon',
+      '70.205': 'verizon',
+      '70.206': 'verizon',
+      '70.207': 'verizon',
+      '70.208': 'verizon',
+      '70.209': 'verizon',
+      '70.210': 'verizon',
+      '70.211': 'verizon',
+      '70.212': 'verizon',
+      '70.213': 'verizon',
+      '70.214': 'verizon',
+      '70.215': 'verizon',
+      '70.216': 'verizon',
+      '70.217': 'verizon',
+      '70.218': 'verizon',
+      '70.219': 'verizon',
+      '70.220': 'verizon',
+      '70.221': 'verizon',
+      '70.222': 'verizon',
+      '70.223': 'verizon',
+      '97.0': 'verizon',
+      '97.63': 'verizon',
+      '97.128': 'verizon',
+      '97.129': 'verizon',
+      '97.130': 'verizon',
+      '97.131': 'verizon',
+      '97.132': 'verizon',
+      '97.133': 'verizon',
+      '97.134': 'verizon',
+      '97.135': 'verizon',
+      '97.136': 'verizon',
+      '97.137': 'verizon',
+      '97.138': 'verizon',
+      '97.139': 'verizon',
+      '97.140': 'verizon',
+      '97.141': 'verizon',
+      '97.142': 'verizon',
+      '97.143': 'verizon',
+      '97.144': 'verizon',
+      '97.145': 'verizon',
+      '97.146': 'verizon',
+      '97.147': 'verizon',
+      '97.148': 'verizon',
+      '97.149': 'verizon',
+      '97.150': 'verizon',
+      '97.151': 'verizon',
+      '97.152': 'verizon',
+      '97.153': 'verizon',
+      '97.154': 'verizon',
+      '97.155': 'verizon',
+      '97.156': 'verizon',
+      '97.157': 'verizon',
+      '97.158': 'verizon',
+      '97.159': 'verizon',
+      '97.160': 'verizon',
+      '97.161': 'verizon',
+      '97.162': 'verizon',
+      '97.163': 'verizon',
+      '97.164': 'verizon',
+      '97.165': 'verizon',
+      '97.166': 'verizon',
+      '97.167': 'verizon',
+      '97.168': 'verizon',
+      '97.255': 'verizon',
+      '174.192': 'verizon',
+      '174.193': 'verizon',
+      '174.194': 'verizon',
+      '174.195': 'verizon',
+      '174.196': 'verizon',
+      '174.197': 'verizon',
+      '174.198': 'verizon',
+      '174.199': 'verizon',
+      '174.200': 'verizon',
+      '174.201': 'verizon',
+      '174.202': 'verizon',
+      '174.203': 'verizon',
+      '174.204': 'verizon',
+      '174.205': 'verizon',
+      '174.206': 'verizon',
+      '174.207': 'verizon',
+      '174.208': 'verizon',
+      '174.209': 'verizon',
+      '174.210': 'verizon',
+      '174.211': 'verizon',
+      '174.212': 'verizon',
+      '174.213': 'verizon',
+      '174.214': 'verizon',
+      '174.215': 'verizon',
+      '174.216': 'verizon',
+      '174.217': 'verizon',
+      '174.218': 'verizon',
+      '174.219': 'verizon',
+      '174.220': 'verizon',
+      '174.221': 'verizon',
+      '174.222': 'verizon',
+      '174.223': 'verizon',
+      '174.224': 'verizon',
+      '174.225': 'verizon',
+      '174.226': 'verizon',
+      '174.227': 'verizon',
+      '174.228': 'verizon',
+      '174.229': 'verizon',
+      '174.230': 'verizon',
+      '174.231': 'verizon',
+      '174.232': 'verizon',
+      '174.233': 'verizon',
+      '174.234': 'verizon',
+      '174.235': 'verizon',
+      '174.236': 'verizon',
+      '174.237': 'verizon',
+      '174.238': 'verizon',
+      '174.239': 'verizon',
+      '174.240': 'verizon',
+      '174.241': 'verizon',
+      '174.242': 'verizon',
+      '174.243': 'verizon',
+      '174.244': 'verizon',
+      '174.245': 'verizon',
+      '174.246': 'verizon',
+      '174.247': 'verizon',
+      '174.248': 'verizon',
+      '174.249': 'verizon',
+      '174.250': 'verizon',
+      '174.251': 'verizon',
+      '174.252': 'verizon',
+      '174.253': 'verizon',
+      '174.254': 'verizon',
+      '174.255': 'verizon',
       '111.239': 'au',
       '13.125': 'aws',
       '54.180': 'aws',
@@ -371,6 +630,15 @@ let DCRefresher = {
       },
       docomo: {
         text: 'JP docomo'
+      },
+      sprint: {
+        text: 'US Sprint'
+      },
+      att: {
+        text: 'US AT&T'
+      },
+      verizon: {
+        text: 'US Verizon'
       },
       sftb: {
         text: 'JP Softbank'
@@ -497,7 +765,7 @@ let DCCon = {
                 ${data.info.description}
               </div>
               <div class="__hoverConBox_info_detail">
-                by ${data.info.seller_name} | 등록일 ${
+                by <a href="https://gallog.dcinside.com/${data.info.seller_id}/">${data.info.seller_name}</a> | 등록일 ${
   data.info.reg_date_short
 } | ${data.info.sale_count}회 판매
               </div>
@@ -644,20 +912,13 @@ let DCCon = {
     },
 
     getToken: async cookies => {
-      let response = await fetch('https://dccon.dcinside.com/', {
+      /*let response = await fetch('https://dccon.dcinside.com/', {
         method: 'GET',
         mode: 'cors',
         cache: 'no-store'
-      })
+      })*/
 
-      let responseParse = await response.text()
-
-      let domPs = new DOMParser().parseFromString(
-        await response.text(),
-        'text/html'
-      )
-
-      return responseParse
+      return getCookiesAsObject(document.cookie).ci_c
     },
 
     info: async (token, con_code) => {
@@ -766,23 +1027,8 @@ let removeNotLoginUser = t => {
 let recalcLeftRight = (div, w, h) => {
   var bnd_rect = div.getBoundingClientRect()
 
-  if (centrePage) {
-    div.style.left = window.innerWidth / 2 - bnd_rect.width / 2 + 'px'
-    div.style.top = window.innerHeight / 2 - bnd_rect.height / 2 + 'px'
-    return
-  }
-
-  if (h + bnd_rect.height > window.innerHeight) {
-    div.style.bottom = window.innerHeight - h + 'px'
-  } else {
-    div.style.top = h + 'px'
-  }
-
-  if (w + bnd_rect.width > window.innerWidth) {
-    div.style.right = window.innerWidth - w + 'px'
-  } else {
-    div.style.left = w + 'px'
-  }
+  div.style.left = window.innerWidth / 2 - bnd_rect.width / 2 + 'px'
+  div.style.top = window.innerHeight / 2 - bnd_rect.height / 2 + 'px'
 }
 
 /**
@@ -795,10 +1041,21 @@ let iconParse = iconUrl => {
   if (/\/sub_managernik\.gif/.test(iconUrl)) return 3
   if (/\/fix_sub_managernik\.gif/.test(iconUrl)) return 4
   if (/\/fix_managernik\.gif/.test(iconUrl)) return 5
-  if (/\/dc20th_wgallcon2\.png/.test(iconUrl)) return 6 // 주딱 풍선 바이러스
-  if (/\/dc20th_wgallcon3\.png/.test(iconUrl)) return 7 // 파딱 풍선 바이러스
-  if (/\/dc20th_wgallcon\.png/.test(iconUrl)) return 8 // 반고닉 풍선 바이러스
-  if (/\/dc20th_wgallcon4\.png/.test(iconUrl)) return 9 // 고닉 풍선 바이러스
+
+  if (/\/xmas_t3\.png/.test(iconUrl)) return 6 // 주딱 반고닉 트리 바이러스
+  if (/\/xmas_t4\.png/.test(iconUrl)) return 7 // 주딱 고닉 트리 바이러스
+  if (/\/xmas_s3\.png/.test(iconUrl)) return 8 // 주딱 반고닉 양말 바이러스
+  if (/\/xmas_s4\.png/.test(iconUrl)) return 9 // 주딱 고닉 양말 바이러스
+
+  if (/\/xmas_t5\.png/.test(iconUrl)) return 10 // 파딱 고닉 트리 바이러스
+  if (/\/xmas_t6\.png/.test(iconUrl)) return 11 // 파딱 반고닉 트리 바이러스
+  if (/\/xmas_s5\.png/.test(iconUrl)) return 12 // 파딱 반고닉 양말 바이러스
+  if (/\/xmas_s6\.png/.test(iconUrl)) return 13 // 파딱 고닉 양말 바이러스
+
+  if (/\/xmas_t1\.png/.test(iconUrl)) return 14 // 반고닉 트리 바이러스 // https://nstatic.dcinside.com/dc/event/xmas/xmas_t1.png
+  if (/\/xmas_s1\.png/.test(iconUrl)) return 15 // 반고닉 양말 바이러스 // https://nstatic.dcinside.com/dc/event/xmas/xmas_s1.png
+  if (/\/xmas_t2\.png/.test(iconUrl)) return 16 // 고닉 트리 바이러스 // https://nstatic.dcinside.com/dc/event/xmas/xmas_t2.png
+  if (/\/xmas_s2\.png/.test(iconUrl)) return 17 // 고닉 양말 바이러스 // https://nstatic.dcinside.com/dc/event/xmas/xmas_s2.png
 
   return 0
 }
@@ -869,15 +1126,7 @@ let renderNicks = postData => {
 }
 
 const recalcOverlay = (createdOverlay, ev) => {
-  if (!centrePage) {
-    recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
-  } else {
-    recalcLeftRight(
-      createdOverlay,
-      window.innerWidth / 2,
-      window.innerHeight / 2
-    )
-  }
+  recalcLeftRight(createdOverlay, window.innerWidth / 2, window.innerHeight / 2)
 }
 
 let commentsRender = (fetchedData, page, pgId, id, esno) => {
@@ -1345,15 +1594,11 @@ let addHoverListener = t => {
         createdOverlay = await createTooltipOverlay(postId)
         createOuterOverlay(createdOverlay)
         fillWithLoader(createdOverlay)
-        if (!centrePage) {
-          recalcLeftRight(createdOverlay, ev.clientX - 5, ev.clientY - 5)
-        } else {
-          recalcLeftRight(
-            createdOverlay,
-            window.innerWidth / 2,
-            window.innerHeight / 2
-          )
-        }
+        recalcLeftRight(
+          createdOverlay,
+          window.innerWidth / 2,
+          window.innerHeight / 2
+        )
 
         try {
           await fetchPostInfo(createdOverlay, postId)
@@ -1669,17 +1914,17 @@ window.addEventListener('DOMContentLoaded', () => {
   var testView = viewRegex.test(window.location.href)
 
   if (testList || testView) {
-    gTableOrigin = document.getElementsByClassName('gall_list')[0]
+    list_table_bak = document.querySelector('.gall_list')
   }
 
-  gTableOrigin = hideBlockUsersPosts(gTableOrigin)
+  list_table_bak = hideBlockUsersPosts(list_table_bak)
   if (blockNotLogin) {
-    removeNotLoginUser(gTableOrigin)
+    removeNotLoginUser(list_table_bak)
   } else {
-    addIPInfo(gTableOrigin)
+    addIPInfo(list_table_bak)
   }
-  addNewCaching(gTableOrigin, true)
-  addHoverListener(gTableOrigin)
+  addNewCaching(list_table_bak, true)
+  addHoverListener(list_table_bak)
 
   if (testView) {
     addContentFilter(document)
@@ -1713,22 +1958,24 @@ window.addEventListener('DOMContentLoaded', () => {
               'text/html'
             )
 
-            let gTable = domPs.getElementsByClassName('gall_list')[0]
-            gTable = hideBlockUsersPosts(gTable)
+            list_table_bak = document.querySelector('.gall_list')
+
+            let list_table = domPs.querySelector('.gall_list')
+            list_table = hideBlockUsersPosts(list_table)
             if (document.querySelector('.useradmin_btnbox')) {
-              gTable = addSelectButtonWanjang(gTable)
+              list_table = addSelectButtonWanjang(list_table)
             }
 
             if (blockNotLogin) {
-              removeNotLoginUser(gTable)
+              removeNotLoginUser(list_table)
             } else {
-              addIPInfo(gTable)
+              addIPInfo(list_table)
             }
 
-            addNewCaching(gTable, false)
-            gTableOrigin.innerHTML = ''
-            gTableOrigin.append(gTable)
-            addHoverListener(gTableOrigin)
+            addNewCaching(list_table, false)
+
+            list_table_bak.parentNode.replaceChild(list_table, list_table_bak)
+            addHoverListener(list_table)
           })
         } catch (e) {
           return false

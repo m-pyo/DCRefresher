@@ -1,5 +1,4 @@
 const opts_db = {
-  centre_page: [true, 'checkbox'],
   dark_mode: [false, 'checkbox'],
   block_notlogin: [false, 'checkbox'],
   refresh_rate: [5000, 'text']

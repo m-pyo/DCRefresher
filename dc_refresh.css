@@ -74,7 +74,7 @@
   box-shadow: 0px 0px 32px rgba(112, 112, 112, 0.35);
   z-index: 10000;
   overflow: auto;
-  font-family: "Nanum Gothic", sans-serif;
+  font-family: "Noto Sans CJK KR", "Nanum Gothic";
   font-size: 14px;
   padding: 1% 2.5%;
 }
@@ -196,6 +196,54 @@
   margin-right: 2px;
 }
 
+/* 크리스마스는 border 0 */
+.__hoverBox_icon6,
+.__hoverBox_icon7,
+.__hoverBox_icon8,
+.__hoverBox_icon9,
+.__hoverBox_icon10,
+.__hoverBox_icon11,
+.__hoverBox_icon12,
+.__hoverBox_icon13,
+.__hoverBox_icon14,
+.__hoverBox_icon15,
+.__hoverBox_icon16,
+.__hoverBox_icon17 {
+  width: 10px;
+  height: 10px;
+  border-radius: 0;
+}
+
+/* 트리 */
+.__hoverBox_icon6,
+.__hoverBox_icon7,
+.__hoverBox_icon10,
+.__hoverBox_icon11,
+.__hoverBox_icon14,
+.__hoverBox_icon16 {
+  clip-path: polygon(50% 0%, 10% 100%, 90% 100%);
+}
+
+/* 양말 */
+.__hoverBox_icon8,
+.__hoverBox_icon9,
+.__hoverBox_icon12,
+.__hoverBox_icon13,
+.__hoverBox_icon15,
+.__hoverBox_icon17 {
+  clip-path: polygon(
+    56% 0,
+    97% 0,
+    100% 63%,
+    93% 90%,
+    48% 100%,
+    14% 92%,
+    0 70%,
+    14% 54%,
+    49% 50%
+  );
+}
+
 /* 유동 */
 .__hoverBox_icon0 {
   background: #fff;
@@ -277,14 +325,48 @@
   border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
 }
 
-/* 고닉 풍선 바이러스 */
+/* 고닉 크리스마스 */
+.__hoverBox_icon16,
+.__hoverBox_icon17 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(255, 251, 232) 30%,
+    rgb(255, 242, 55) 60%
+  );
+}
+
+/* 반고닉 크리스마스 */
+.__hoverBox_icon14,
+.__hoverBox_icon15 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(255, 251, 232) 30%,
+    rgb(180, 180, 180) 60%
+  );
+}
+
+/* 파딱 크리스마스 */
+.__hoverBox_icon10,
+.__hoverBox_icon11,
+.__hoverBox_icon12,
+.__hoverBox_icon13 {
+  background: -webkit-linear-gradient(
+    330deg,
+    rgb(255, 251, 232) 30%,
+    rgb(0, 140, 255) 60%
+  );
+}
+
+/* 주딱 크리스마스 */
+.__hoverBox_icon6,
+.__hoverBox_icon7,
+.__hoverBox_icon8,
 .__hoverBox_icon9 {
   background: -webkit-linear-gradient(
     330deg,
-    rgb(255, 242, 55) 30%,
-    rgb(95, 185, 35) 80%
+    rgb(255, 251, 232) 30%,
+    rgb(255, 136, 0) 60%
   );
-  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
 }
 
 .__hoverBox_contentWrap {
@@ -412,7 +494,7 @@
   opacity: 0;
   left: 0;
   top: 0;
-  background-color: rgba(39, 39, 39, 0.23);
+  background-color: rgba(39, 39, 39, 0.33);
 }
 
 .__hoverBox_dccon_outer {
