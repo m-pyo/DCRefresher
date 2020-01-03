@@ -1,8 +1,6 @@
 {
   "name": "DC Refresher",
   "short_name": "디씨 Refresher",
-  "description": "DC 페이지를 자동으로 고치고, 미리 보기를 생성합니다.",
-  "version": "1.0.10",
   "manifest_version": 2,
   "permissions": [
     "https://dccon.dcinside.com/*",
@@ -13,21 +11,21 @@
   ],
   "content_scripts": [
     {
-      "js": ["dc_refresh.js"],
+      "js": ["refresher.bundle.js"],
       "run_at": "document_start",
-      "css": ["dc_refresh.css"],
+      "css": ["refresher.bundle.css"],
       "matches": ["https://gall.dcinside.com/*"]
     }
   ],
   "icons": {
-    "128": "icns/dc_ref_128.png",
-    "300": "icns/dc_ref.png"
+    "128": "icon_128.png",
+    "300": "icon_300.png"
   },
   "browser_action": {
     "default_popup": "popup/ppup.html",
     "default_icon": {
-      "128": "icns/dc_ref_128.png",
-      "300": "icns/dc_ref.png"
+      "128": "icon_128.png",
+      "300": "icon_300.png"
     },
     "default_title": "DC Refresher"
   },
