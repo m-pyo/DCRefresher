@@ -1,4 +1,4 @@
-![DC Refresher](https://github.com/So-chiru/DCRefresher/raw/master/icns/dc_ref.png)
+![DC Refresher](https://github.com/So-chiru/DCRefresher/raw/chika/src/assets/icons/logo/Icon.png)
 
 # [DCRefresher](https://chrome.google.com/webstore/detail/dc-refresher/gpipaoeekcphlmilndfdbfdgijjjiklh)
 
@@ -13,26 +13,4 @@ Firefox 확장 프로그램 : https://addons.mozilla.org/addon/dc-refresher/
 
 <hr>
 
-페이지를 자동으로 새로 고쳐주고, 미리보기 창을 만들어 줍니다.
-
-- 미리보기 창
-- 창에서 개념글 추천 / 비추천 가능
-- 댓글 확인 / 갤로그 이동 가능
-- 디시콘 차단 기능
-
-## 굳이 써야하냐?
-
-써보면 편해요
-
-## TODO 리스트
-
-- [ ] 댓글 작성 기능 추가
-- [x] 옵션 추가
-- [x] DC콘 차단 기능
-- [x] 유동 차단, 유저 차단 기능 추가
-  - [ ] 차단 유저의 댓글 숨기기
-- [ ] 주딱 / 파딱 갤러리 관리 기능
-  - [x] 게시글 삭제
-  - [ ] 게시글에서 바로 차단
-  - [ ] 개념글 내리기 / 올리기
-  - [ ] 공지 등록 / 해제
+게시글 목록을 자동으로 새로 불러오고 글 미리보기 창을 만들어주며, 기타 편의 기능도 함께 제공합니다.

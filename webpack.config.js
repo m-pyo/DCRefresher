@@ -64,6 +64,12 @@ module.exports = {
           )
         }
       }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: 'src/assets',
+        to: 'assets/'
+      }
     ])
   ],
   resolve: {
