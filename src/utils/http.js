@@ -1,5 +1,3 @@
-module.export = {}
-
 const urls = {
   base: 'https://gall.dcinside.com/',
   manage: {

@@ -14,7 +14,8 @@
       "js": ["refresher.bundle.js"],
       "run_at": "document_start",
       "css": ["refresher.bundle.css"],
-      "matches": ["https://gall.dcinside.com/*"]
+      "matches": ["https://gall.dcinside.com/*"],
+      "run_at": "document_start"
     }
   ],
   "icons": {
@@ -31,7 +32,7 @@
     "default_title": "DC Refresher"
   },
   "options_ui": {
-    "chrome_style": true
+    "chrome_style": false
   },
   "web_accessible_resources": ["assets/*", "popup/*"],
   "applications": {

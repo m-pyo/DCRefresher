@@ -3,13 +3,14 @@ const fs = require('fs')
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const dev = process.env.NODE_ENV !== 'production'
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
 module.exports = {
   mode: dev ? 'development' : 'production',
-  entry: path.resolve('src', 'index.js'),
+  entry: { app: ['babel-polyfill', path.resolve('src', 'index.js')] },
   output: {
     filename: 'refresher.bundle.js',
     path: path.resolve(__dirname, 'dist')
@@ -18,16 +19,16 @@ module.exports = {
     rules: [
       {
         exclude: /(node_modules|_old_src|(sa|sc|c)ss)/,
-        test: /\.js$/,
+        test: /\.js|\.ts$/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
+            presets: ['@babel/preset-env', '@babel/preset-typescript']
           }
         }
       },
       {
-        exclude: /\.js/,
+        exclude: /\.js|\.ts/,
         test: /\.(sa|sc|c)ss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
@@ -44,6 +45,10 @@ module.exports = {
         options: {
           name: '[name].[ext]'
         }
+      },
+      {
+        test: /\.pug$/,
+        use: ['pug-loader']
       }
     ]
   },
@@ -70,7 +75,12 @@ module.exports = {
         from: 'src/assets',
         to: 'assets/'
       }
-    ])
+    ]),
+    new HtmlWebpackPlugin({
+      template: './src/views/index.pug',
+      filename: 'views/index.html',
+      inject: false
+    })
   ],
   resolve: {
     extensions: ['.js', '.css'],

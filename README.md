@@ -1,4 +1,4 @@
-![DC Refresher](https://github.com/So-chiru/DCRefresher/raw/chika/src/assets/icons/logo/Icon.png)
+![DC Refresher](https://github.com/So-chiru/DCRefresher/raw/2.0/src/assets/icons/logo/Icon.png)
 
 # [DCRefresher](https://chrome.google.com/webstore/detail/dc-refresher/gpipaoeekcphlmilndfdbfdgijjjiklh)
 
