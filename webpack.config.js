@@ -10,7 +10,9 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
 module.exports = {
   mode: dev ? 'development' : 'production',
-  entry: { app: ['babel-polyfill', path.resolve('src', 'index.js')] },
+  entry: {
+    app: ['babel-polyfill', path.resolve('src', 'index.js')]
+  },
   output: {
     filename: 'refresher.bundle.js',
     path: path.resolve(__dirname, 'dist')
@@ -28,7 +30,7 @@ module.exports = {
         }
       },
       {
-        exclude: /\.js|\.ts/,
+        exclude: /\.js|\.ts|\.woff2/,
         test: /\.(sa|sc|c)ss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },

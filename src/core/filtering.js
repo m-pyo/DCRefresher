@@ -1,4 +1,6 @@
 const strings = require('../utils/string.js')
+const observe = require('../utils/observe.js')
+
 ;(() => {
   let lists = {}
 
@@ -6,12 +8,10 @@ const strings = require('../utils/string.js')
     /**
      * lists에 등록된 필터 함수를 호출합니다.
      *
-     * @param {string} scope 필터를 작동시킬 DOM Element string, 미 지정시 body 선택.
+     * @param {Boolean} non_blocking 비차단 방식으로 렌더링 합니다. (페이지 로드 후)
      */
-    run: scope => {
-      if (!scope) {
-        scope = document.querySelector('body')
-      }
+    run: async (non_blocking) => {
+      var scope = document.querySelector('body')
 
       let listsKeys = Object.keys(lists)
 
@@ -19,31 +19,36 @@ const strings = require('../utils/string.js')
       while (len--) {
         let filterObj = lists[listsKeys[len]]
 
-        if (typeof filterObj.funcs === 'object' && filterObj.funcs.length) {
-          let funcIter = filterObj.funcs.length
-
-          while (funcIter--) {
-            filterObj.funcs[funcIter](scope)
-          }
+        if (filterObj.scope) {
+          scope = filterObj.scope
         }
+
+        await observe.find(scope, non_blocking).then(elem => {
+          if (!elem.length) return false
+
+          let elemIter = elem.length
+
+          while (elemIter--) {
+            filterObj.func(elem[elemIter])
+          }
+        })
       }
     },
 
     /**
      * 필터 lists 에 필터 함수를 등록합니다.
      */
-    add: cb => {
+    add: (scope, cb) => {
       let uuid = strings.uuid()
 
       if (typeof lists[uuid] === 'undefined') {
         lists[uuid] = {
-          funcs: [],
+          func: cb,
+          scope,
           status: {},
           events: {}
         }
       }
-
-      lists[uuid].funcs.push(cb)
 
       return uuid
     },

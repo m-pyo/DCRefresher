@@ -7,21 +7,13 @@
     memory: {},
     enable: true,
     default_enable: true,
-    func: (filter) => {
-      let cb = scope => {
-        let q = [...scope.querySelectorAll('.stickyunit, .rightbanner, .trc_related_container')]
-        let qIter = q.length
-
-        while (qIter--) {
-          q[qIter].parentElement.removeChild(q[qIter])
+    func: filter => {
+      MODULE.memory.uuid = filter.add(
+        '.stickyunit, .rightbanner, .trc_rbox, .trc_related_container, .trc_rbox_container, #zzbang_ad, .trc_rbox_container, #ad_floating',
+        elem => {
+          elem.parentElement.removeChild(elem)
         }
-      }
-
-      MODULE.memory.uuid = filter.add(cb)
-
-      filter.on(MODULE.memory.uuid, 'remove', () => {
-        console.log('removing')
-      })
+      )
     }
   }
 

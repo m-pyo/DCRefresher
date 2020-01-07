@@ -8,20 +8,14 @@
     enable: true,
     default_enable: true,
     func: filter => {
-      let cb = scope => {
-        let q = [...scope.querySelectorAll('.wrap_inner, .gall_list thead, .gall_list tbody')]
-        let qIter = q.length
-
-        while (qIter--) {
-          if (q[qIter].className.indexOf('refresherFont') == -1) {
-            q[qIter].className += ' refresherFont'
+      MODULE.memory.uuid = filter.add(
+        '.wrap_inner',
+        elem => {
+          if (elem.className.indexOf('refresherFont') == -1) {
+            elem.className += ' refresherFont'
           }
         }
-      }
-
-      MODULE.memory.uuid = filter.add(cb)
-
-      console.log(this.memory)
+      )
     }
   }
 
