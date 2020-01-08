@@ -24,6 +24,9 @@ const refresherMain = async () => {
 ;(async () => {
   if (typeof window !== 'undefined' && window.addEventListener) {
     window.addEventListener('DOMContentLoaded', refresherMain)
+    window.addEventListener('load', () => {
+      filter.run(true)
+    })
   }
 
   await filter.run()

@@ -28,6 +28,7 @@
       "180": "assets/icons/logo/icon_60pt@3x.png",
       "1024": "assets/icons/logo/Icon.png"
     },
+    "default_popup": "views/index.html",
     "default_title": "DC Refresher"
   },
   "options_ui": {

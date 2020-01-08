@@ -9,7 +9,7 @@
     default_enable: true,
     func: filter => {
       MODULE.memory.uuid = filter.add(
-        '.wrap_inner',
+        'body',
         elem => {
           if (elem.className.indexOf('refresherFont') == -1) {
             elem.className += ' refresherFont'
