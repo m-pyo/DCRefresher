@@ -11,16 +11,16 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'))
 module.exports = {
   mode: dev ? 'development' : 'production',
   entry: {
-    app: ['babel-polyfill', path.resolve('src', 'index.js')]
+    refresher: ['babel-polyfill', path.resolve('src', 'index.js')]
   },
   output: {
-    filename: 'refresher.bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
       {
-        exclude: /(node_modules|_old_src|(sa|sc|c)ss)/,
+        exclude: /(node_modules|_old_src|(sa|sc|c)ss|background)/,
         test: /\.js|\.ts$/,
         use: {
           loader: 'babel-loader',
@@ -76,6 +76,12 @@ module.exports = {
       {
         from: 'src/assets',
         to: 'assets/'
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: 'src/root',
+        to: './'
       }
     ]),
     new HtmlWebpackPlugin({

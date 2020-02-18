@@ -9,8 +9,9 @@ log('🍊⚓ Initializing DCRefresher.')
 
 const modules = require('./core/modules')
 const filter = require('./core/filtering')
+const frame = require('./core/frame')
 
-modules.register(require('./modules/ads.js'), filter)
+modules.register(require('./modules/adblock.js'), filter)
 modules.register(require('./modules/comment_ads.js'), filter)
 modules.register(require('./modules/fonts.js'), filter)
 modules.register(require('./modules/refresh.js'), filter)
@@ -24,8 +25,8 @@ const refresherMain = async () => {
 ;(async () => {
   if (typeof window !== 'undefined' && window.addEventListener) {
     window.addEventListener('DOMContentLoaded', refresherMain)
-    window.addEventListener('load', () => {
-      filter.run(true)
+    window.addEventListener('load', async () => {
+      await filter.run(true)
     })
   }
 

@@ -3,14 +3,51 @@ body {
     Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+// AdBlocks
+
+.refresherAdblock {
+  .stickyunit,
+  ins.kakao_ad_area,
+  #wif_adx_banner_wrap,
+  .rightbanner,
+  .trc_rbox,
+  .trc_related_container,
+  .trc_rbox_container,
+  #zzbang_ad,
+  .trc_rbox_container,
+  #ad_floating,
+  .ad-layer,
+  .kakao_ad_area,
+  .ad_bottom_list,
+  .adop-rb,
+  #adop-video-total,
+  .ad_left_wing_list_top,
+  a[href*="addc.dcinside.com/"],
+  .con_banner {
+    display: none !important;
+  }
+}
+
+// Fonts Module
+
 .refresherFont,
 .refresherFont .gall_list,
+.refresherFont button,
+.refresherFont input,
 .refresherFont .view_comment div,
 .refresherFont .view_content_wrap,
 .refresherFont .view_content_wrap a {
   font-family: "NanumGothic", sans-serif;
   font-display: "block";
 }
+
+// Comment Dory Block Module
+
+.refresherNoDory .dcwrap .wrap_inner .dory {
+  display: none;
+}
+
+// Refresh Module
 
 .refNewPost {
   animation: refTopIn 0.362s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -31,7 +68,6 @@ body {
   }
 }
 
-
 @keyframes refFadeIn {
   0% {
     opacity: 0;
@@ -40,4 +76,14 @@ body {
   100% {
     opacity: 1;
   }
+}
+
+// Options Page
+
+.refPopup body {
+  height: 300px;
+  width: 300px;
+}
+
+.refPopup {
 }

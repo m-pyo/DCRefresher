@@ -10,7 +10,7 @@ const observe = require('../utils/observe.js')
      *
      * @param {Boolean} non_blocking 비차단 방식으로 렌더링 합니다. (페이지 로드 후)
      */
-    run: async (non_blocking) => {
+    run: async non_blocking => {
       var scope = document.querySelector('body')
 
       let listsKeys = Object.keys(lists)
@@ -23,15 +23,21 @@ const observe = require('../utils/observe.js')
           scope = filterObj.scope
         }
 
-        await observe.find(scope, non_blocking).then(elem => {
-          if (!elem.length) return false
+        let find = observe
+          .find(scope, document.documentElement)
+          .then(async elem => {
+            if (!elem.length) return false
 
-          let elemIter = elem.length
+            let elemIter = elem.length
 
-          while (elemIter--) {
-            filterObj.func(elem[elemIter])
-          }
-        })
+            while (elemIter--) {
+              filterObj.func(elem[elemIter])
+            }
+          })
+
+        if (!non_blocking) {
+          await find
+        }
       }
     },
 

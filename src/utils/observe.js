@@ -1,10 +1,9 @@
 const observe = {
-  find: (elem, no_observe) =>
+  find: (elem, parent) =>
     new Promise((resolve, reject) => {
-      if (no_observe || (document && document.querySelectorAll(elem).length)) {
-        resolve(document.querySelectorAll(elem))
-
-        return
+      let parentFind = parent.querySelectorAll(elem)
+      if (parentFind.length) {
+        resolve(parentFind)
       }
 
       var observer = new MutationObserver(muts => {
@@ -15,23 +14,22 @@ const observe = {
           executed = muts[mutIter].addedNodes.length
         }
 
-        if (!executed) return false
+        if (!executed) return
+        let lists = document.querySelectorAll(elem)
+        if (!lists.length) return
 
-        if (document.querySelectorAll(elem).length) {
-          observer.disconnect()
-          resolve(document.querySelectorAll(elem))
-        }
-
-        document.addEventListener("load", () => {
-          if (observer) { 
-            observer.disconnect()
-            reject('Too long execution.')
-          }
-        })
+        observer.disconnect()
+        resolve(lists)
       })
 
       observer.observe(document.documentElement, {
         childList: true
+      })
+
+      document.addEventListener('load', () => {
+        if (!observer) return
+        observer.disconnect()
+        reject('Too long execution.')
       })
     })
 }

@@ -7,15 +7,13 @@
     memory: {},
     enable: true,
     default_enable: true,
-    func: filter => {
-      MODULE.memory.uuid = filter.add(
-        'body',
-        elem => {
-          if (elem.className.indexOf('refresherFont') == -1) {
-            elem.className += ' refresherFont'
-          }
+    require: ['filter'],
+    func (filter) {
+      this.memory.uuid = filter.add('body', elem => {
+        if (elem.className.indexOf('refresherFont') == -1) {
+          elem.className += ' refresherFont'
         }
-      )
+      })
     }
   }
 
