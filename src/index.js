@@ -11,10 +11,12 @@ const modules = require('./core/modules')
 const filter = require('./core/filtering')
 const frame = require('./core/frame')
 
-modules.register(require('./modules/adblock.js'), filter)
-modules.register(require('./modules/comment_ads.js'), filter)
-modules.register(require('./modules/fonts.js'), filter)
-modules.register(require('./modules/refresh.js'), filter)
+modules.register(require('./modules/adblock.js'))
+modules.register(require('./modules/comment_ads.js'))
+modules.register(require('./modules/fonts.js'))
+modules.register(require('./modules/refresh.js'))
+modules.register(require('./modules/preview.js'))
+modules.register(require('./modules/ip.js'))
 
 const refresherMain = async () => {
   await filter.run(true)

@@ -1,5 +1,3 @@
-const http = require('../utils/http')
-
 ;(() => {
   let MODULE = {
     name: '글 목록 새로고침',
@@ -15,8 +13,8 @@ const http = require('../utils/http')
     },
     enable: true,
     default_enable: true,
-    require: [],
-    func() {
+    require: ['http', 'eventBus'],
+    func (http, eventBus) {
       let url = http.view(location.href)
       const body = () => {
         return new Promise(async (resolve, reject) => {
@@ -57,13 +55,15 @@ const http = require('../utils/http')
 
               newListNums.forEach(v => {
                 if (cached.indexOf(v.innerHTML) == -1) {
-                  v.parentElement.className += ' refNewPost'
+                  v.parentElement.className += ' refresherNewPost'
                   v.parentElement.style.animationDelay =
                     this.memory.newCounts * 23 + 'ms'
                   this.memory.newCounts++
                 }
               })
             }
+
+            eventBus.emit('refresh', newList)
           })
         }
 
@@ -91,9 +91,7 @@ const http = require('../utils/http')
       run()
     },
 
-    beforeDestroy() {
-      
-    }
+    beforeDestroy () {}
   }
 
   module.exports = MODULE

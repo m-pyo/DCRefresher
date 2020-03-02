@@ -7,9 +7,23 @@
     memory: {},
     enable: true,
     default_enable: true,
-    require: ['filter'],
-    func (filter) {
-      console.log('')
+    require: ['filter', 'eventBus'],
+    func(filter, eventBus) {
+      let previewFrame = () => {
+
+      }
+
+      this.memory.uuid = filter.add('.ub-word', elem => {
+        console.log(elem)
+
+        elem.addEventListener('click', () => {
+          previewFrame()
+        })
+      })
+
+      eventBus.on('refresh', () => {
+        
+      })
     }
   }
 
