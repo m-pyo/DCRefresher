@@ -1,5 +1,6 @@
 const strings = require('../utils/string.js')
 const observe = require('../utils/observe.js')
+const log = require('../utils/logger.js')
 
 ;(() => {
   let lists = {}
@@ -24,7 +25,7 @@ const observe = require('../utils/observe.js')
 
             if (!elemIter) return false
             while (elemIter--) {
-              filterObj.func(elem[elemIter])
+              await filterObj.func(elem[elemIter])
             }
           })
 

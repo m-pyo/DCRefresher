@@ -3,6 +3,7 @@ const store = require('../utils/store')
 
 let ACCESSIBLE_UTILS = {
   filter: require('./filtering'),
+  Frame: require('./frame'),
   eventBus: require('./eventbus'),
   http: require('../utils/http'),
   ip: require('../utils/ip')
@@ -32,8 +33,16 @@ let ACCESSIBLE_UTILS = {
         store.set(`${mod.name}.enable`, mod.default_enable)
       }
 
+      mod.enable = JSON.parse(store.get(`${mod.name}.enable`))
       mod.status = JSON.parse(store.get(`${mod.name}.status`))
       module_store[mod.name] = mod
+
+      if (!mod.enable) {
+        log(
+          `📁 ignoring ${mod.name}. The module is disabled.`
+        )
+        return
+      }
 
       if (mod.url && !mod.url.test(location.href)) {
         log(

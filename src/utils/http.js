@@ -4,6 +4,7 @@ const urls = {
     major: 'https://gall.dcinside.com/gallery/',
     minor: 'https://gall.dcinside.com/mgallery/'
   },
+  view: 'board/view/?id=',
   manage: {
     delete:
       'https://gall.dcinside.com/ajax/minor_manager_board_ajax/delete_list'
@@ -69,9 +70,12 @@ const make = (url, options) =>
     })
   )
 
+const checkMinor = url => /\.com\/mgallery/g.test(url || location.href)
+
 module.exports = {
   make,
   urls,
   view,
-  heads
+  heads,
+  checkMinor
 }

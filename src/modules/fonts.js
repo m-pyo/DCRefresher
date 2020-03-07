@@ -8,8 +8,8 @@
     enable: true,
     default_enable: true,
     require: ['filter'],
-    func (filter) {
-      this.memory.uuid = filter.add('html, body', elem => {
+    func(filter) {
+      this.memory.uuid = filter.add('body', elem => {
         if (elem.className.indexOf('refresherFont') == -1) {
           elem.className += ' refresherFont'
         }

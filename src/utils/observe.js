@@ -8,21 +8,22 @@ const observe = {
 
       var observer = new MutationObserver(muts => {
         let executed = false
-        let mutIter = muts.length
-        while (mutIter--) {
-          if (executed) break
-          executed = muts[mutIter].addedNodes.length
+        let iter = muts.length
+        while (iter--) {
+          if (!muts[iter].addedNodes.length) continue
+          executed = true
+          break
         }
 
         if (!executed) return
         let lists = document.querySelectorAll(elem)
         if (!lists.length) return
 
-        observer.disconnect()
         resolve(lists)
+        observer.disconnect()
       })
 
-      observer.observe(document.documentElement, {
+      observer.observe(parent || document.documentElement, {
         childList: true
       })
 

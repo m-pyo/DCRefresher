@@ -10,19 +10,25 @@
     require: ['filter', 'ip', 'eventBus'],
     func (filter, ip, eventBus) {
       let ipInfoAdd = elem => {
-        if (!elem.dataset.ip || elem.dataset.refresherIP) return false
+        if (!elem || !elem.dataset.ip || elem.dataset.refresherIp) return false
         let ip_str = ip.ISPString(elem.dataset.ip)
 
         let text = document.createElement('span')
-        text.className = 'ip'
+        text.className = 'ip refresherIP'
         text.innerHTML = ip_str
-        elem.appendChild(text)
 
-        elem.dataset.refresherIP = ip_str
+        let fl = elem.querySelector('.fl')
+        if (fl) {
+          fl.insertBefore(text, fl.querySelector('.ip').nextSibling)
+        } else {
+          elem.appendChild(text)
+        }
+
+        elem.dataset.refresherIp = ip_str
       }
 
       this.memory.uuid = filter.add('.ub-writer', elem => {
-        ipInfoAdd()
+        ipInfoAdd(elem)
       })
 
       eventBus.on('refresh', elem => {
