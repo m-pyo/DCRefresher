@@ -107,14 +107,15 @@
         }
       }
 
-      this.memory.uuid = filter.add('.ub-word', elem => {
+      this.memory.uuid = filter.add('.left_content article .us-post .ub-word', elem => {
         elem.addEventListener('mouseup', handleMousePress)
         elem.addEventListener('mousedown', handleMousePress)
         elem.addEventListener('contextmenu', previewFrame)
       })
 
       eventBus.on('refresh', e => {
-        let elems = e.querySelectorAll('.ub-word')
+        let elems = e.querySelectorAll('.left_content article .us-post .ub-word')
+
         let iter = elems.length
         while (iter--) {
           elems[iter].addEventListener('mouseup', handleMousePress)

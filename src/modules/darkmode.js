@@ -5,7 +5,7 @@
     author: 'Sochiru',
     status: false,
     memory: {},
-    enable: false,
+    enable: true,
     default_enable: false,
     require: ['filter'],
     func(filter) {
