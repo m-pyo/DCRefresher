@@ -1,6 +1,8 @@
 const queryString = require('../utils/query')
+const User = require('../structs/user')
+const PostInfo = require('../structs/post')
 
-; (() => {
+;(() => {
   const findNeighbor = (el, find, max, current) => {
     if (!find) {
       return el
@@ -41,6 +43,59 @@ const queryString = require('../utils/query')
     default_enable: true,
     require: ['filter', 'eventBus', 'Frame', 'http'],
     func (filter, eventBus, Frame, http) {
+      let parse = (id, body) => {
+        let dom = new DOMParser().parseFromString(body, 'text/html')
+
+        let header = (
+          dom.querySelector(
+            '.view_content_wrap > header > div > h3 > span.title_headtext'
+          ) || {}
+        ).innerHTML
+
+        if (header) {
+          header = header.replace(/(\[|\])/g, '')
+        }
+
+        let title = dom.querySelector(
+          '.view_content_wrap > header > div > h3 > span.title_subject'
+        ).innerHTML
+
+        let date = dom.querySelector(
+          '.view_content_wrap > header > div > div > div.fl > span.gall_date'
+        ).innerHTML
+
+        let views = dom
+          .querySelector(
+            '.view_content_wrap > header > div > div > div.fr > span.gall_count'
+          )
+          .innerHTML.replace(/조회\s/, '')
+        let upvotes = dom
+          .querySelector(
+            '.view_content_wrap > header > div > div > div.fr > span.gall_reply_num'
+          )
+          .innerHTML.replace(/추천\s/, '')
+
+        let contents = dom.querySelector(
+          '.view_content_wrap > div > div.inner.clear > div.writing_view_box'
+        ).innerHTML
+        let comments = []
+
+        return new PostInfo(id, {
+          header,
+          title,
+          date,
+          user: new User().import(
+            dom.querySelector(
+              'div.view_content_wrap > header > div > div.gall_writer'
+            )
+          ),
+          views,
+          upvotes,
+          contents,
+          comments
+        })
+      }
+
       let previewFrame = ev => {
         if (this.memory.preventOpen) {
           this.memory.preventOpen = false
@@ -72,6 +127,9 @@ const queryString = require('../utils/query')
 
             <refresher-preview-meta>
           </refresher-preview-info>
+          <refresher-preview-contents data-load="true">
+
+          </refresher-preview-contents>
         `
 
         http
@@ -80,8 +138,12 @@ const queryString = require('../utils/query')
               http.urls.view +
               queryString('id')}&no=${preId}`
           )
-          .then(v => {
-            console.log(v)
+          .then(v => parse(preId, v))
+          .then(obj => {
+            let contents = fr.querySelector('refresher-preview-contents')
+
+            contents.innerHTML = obj.contents
+            contents.dataset.load = 'false'
           })
 
         ev.preventDefault()
@@ -109,14 +171,19 @@ const queryString = require('../utils/query')
         }
       }
 
-      this.memory.uuid = filter.add('.left_content article .us-post .ub-word', elem => {
-        elem.addEventListener('mouseup', handleMousePress)
-        elem.addEventListener('mousedown', handleMousePress)
-        elem.addEventListener('contextmenu', previewFrame)
-      })
+      this.memory.uuid = filter.add(
+        '.left_content article .us-post .ub-word',
+        elem => {
+          elem.addEventListener('mouseup', handleMousePress)
+          elem.addEventListener('mousedown', handleMousePress)
+          elem.addEventListener('contextmenu', previewFrame)
+        }
+      )
 
       eventBus.on('refresh', e => {
-        let elems = e.querySelectorAll('.left_content article .us-post .ub-word')
+        let elems = e.querySelectorAll(
+          '.left_content article .us-post .ub-word'
+        )
 
         let iter = elems.length
         while (iter--) {

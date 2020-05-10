@@ -4,8 +4,7 @@ body {
 }
 
 $shadow-0dp: none;
-$shadow-1dp: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
-  0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+$shadow-1dp: 0px 0px 16px rgba(0, 0, 0, 0.08);
 $shadow-2dp: 0px 0px 16px rgba(0, 0, 0, 0.12);
 
 // Frame core
@@ -57,11 +56,14 @@ refresher-frame {
   position: absolute;
   min-width: 100px;
   min-height: 100px;
+  max-width: 70%;
+  max-height: 80%;
   background-color: #fff;
   transform: translateY(10px);
   box-shadow: $shadow-2dp;
   border-radius: 5px;
-  padding: 2vh 2.5vw;
+  padding: 3vh 2.5vw;
+  overflow: auto;
 
   &.center {
     margin: auto;
@@ -115,6 +117,19 @@ $dark-text-subcolor: #777;
 $dark-text-divcolor: #444;
 $dark-dc-color: #4987f7;
 $dark-highlight: #045de2;
+
+.refresherDark {
+  refresher-frame {
+    background-color: $dark-tint-light;
+    color: $dark-text-color-bright;
+  }
+
+  refresher-frame-outer {
+    &.background {
+      background-color: rgba(82, 82, 82, 0.6);
+    }
+  }
+}
 
 .refresherDark {
   body,
@@ -204,6 +219,11 @@ $dark-highlight: #045de2;
   .gall_guide .caption_box,
   .bottom_paging_box a,
   .pop_tipbox.minor_tip .inner,
+  .tabcontent,
+  .cont_tit,
+  .pop_info,
+  .favorite_list .list_box li a,
+  .tab_menubox button, .block_tab button,
   .info_policy a,
   a,
   .usertxt {
@@ -344,6 +364,7 @@ $dark-highlight: #045de2;
   .pop_wrap,
   .pop_tipbox .inner,
   .rcont_wiki,
+  .tab_menubox button.on, .tab_menubox button:first-child.on, .block_tab button.on, .block_tab button:first-child.on,
   .output_array .option_box,
   .reply_box {
     background-color: $dark-tint-light;
@@ -370,6 +391,7 @@ $dark-highlight: #045de2;
   .btn_report,
   .select_box.array_latest,
   .btn_lightblue,
+  .set_cont input[type="text"],
   .select_arraybox,
   .gall_guide,
   .option_box,
@@ -559,4 +581,14 @@ refresher-preview-title {
 
 refresher-preview-meta {
   display: flex;
+}
+
+refresher-preview-contents {
+ 
+  &[data-load="true"] {
+    position: absolute;
+    width: 90%;
+    height: 30px;
+    background-color: #fff;
+  }
 }

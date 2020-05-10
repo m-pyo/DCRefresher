@@ -33,28 +33,26 @@
       }
 
       let run = () => {
-        this.memory.delay = this.status.delay < 2000 ? 2000 : this.status.delay
-        this.memory.refresh = setTimeout(
-          load,
-          Math.max(2000, this.memory.delay)
-        )
+        this.memory.delay = Math.max(2000, this.status.delay || 2500)
+        this.memory.refresh = setTimeout(load, this.memory.delay)
       }
 
-
-      let load = visible => {
+      let load = _ => {
         if (!document.hidden) {
           this.memory.newCounts = 0
 
           body().then(newList => {
             let oldList = document.querySelector('.gall_list')
+            if (!oldList) return
 
             oldList.parentElement.appendChild(newList)
             oldList.parentElement.removeChild(oldList)
 
-            if (this.status.fadeIn || true) {
+            if (this.status.fadeIn) {
               var cached = Array.from(oldList.querySelectorAll('td.gall_num'))
                 .map(v => v.innerHTML)
                 .join('|')
+
               var newListNums = newList.querySelectorAll('td.gall_num')
 
               newListNums.forEach(v => {
@@ -69,9 +67,9 @@
 
             eventBus.emit('refresh', newList)
           })
-        }
 
-        run()
+          run()
+        }
       }
 
       document.addEventListener('visibilitychange', () => {
@@ -86,7 +84,7 @@
         }
 
         if (Date.now() - (this.memory.lastAccess || 0) > this.memory.delay) {
-          load(true)
+          load()
         } else {
           run()
         }

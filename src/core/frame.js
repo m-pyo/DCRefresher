@@ -99,6 +99,10 @@
     set innerHTML (html) {
       this.frame.innerHTML = html
     }
+
+    querySelector(...a) {
+      return this.frame.querySelector(...a)
+    }
   }
 
   module.exports = frame

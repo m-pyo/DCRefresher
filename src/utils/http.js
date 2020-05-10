@@ -1,7 +1,7 @@
 const urls = {
   base: 'https://gall.dcinside.com/',
   gall: {
-    major: 'https://gall.dcinside.com/gallery/',
+    major: 'https://gall.dcinside.com/',
     minor: 'https://gall.dcinside.com/mgallery/'
   },
   view: 'board/view/?id=',
