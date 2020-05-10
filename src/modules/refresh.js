@@ -34,8 +34,12 @@
 
       let run = () => {
         this.memory.delay = this.status.delay < 2000 ? 2000 : this.status.delay
-        this.memory.refresh = setTimeout(load, this.memory.delay)
+        this.memory.refresh = setTimeout(
+          load,
+          Math.max(2000, this.memory.delay)
+        )
       }
+
 
       let load = visible => {
         if (!document.hidden) {
