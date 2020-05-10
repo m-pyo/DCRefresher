@@ -1,4 +1,6 @@
-;(() => {
+const queryString = require('../utils/query')
+
+; (() => {
   const findNeighbor = (el, find, max, current) => {
     if (!find) {
       return el
@@ -76,7 +78,7 @@
           .make(
             `${http.urls.gall[http.checkMinor() ? 'minor' : 'major'] +
               http.urls.view +
-              'sunshine'}&no=${preId}`
+              queryString('id')}&no=${preId}`
           )
           .then(v => {
             console.log(v)

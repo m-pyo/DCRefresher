@@ -14,27 +14,27 @@ let ACCESSIBLE_UTILS = {
 
   const modules = {
     lists: module_store,
-    register: mod => {
+    register: async mod => {
       if (typeof module_store[mod.name] !== 'undefined') {
         throw new Error(`${mod.name} is already registered.`)
       }
 
       if (
-        typeof store.get(`${mod.name}.status`) === 'undefined' ||
-        store.get(`${mod.name}.status`) === null
+        typeof await store.get(`${mod.name}.status`) === 'undefined' ||
+        await store.get(`${mod.name}.status`) === null
       ) {
         store.set(`${mod.name}.status`, JSON.stringify(mod.status))
       }
 
       if (
-        typeof store.get(`${mod.name}.enable`) === 'undefined' ||
-        store.get(`${mod.name}.enable`) === null
+        typeof await store.get(`${mod.name}.enable`) === 'undefined' ||
+        await store.get(`${mod.name}.enable`) === null
       ) {
         store.set(`${mod.name}.enable`, mod.default_enable)
       }
 
-      mod.enable = JSON.parse(store.get(`${mod.name}.enable`))
-      mod.status = JSON.parse(store.get(`${mod.name}.status`))
+      mod.enable = await store.get(`${mod.name}.enable`)
+      mod.status = await store.get(`${mod.name}.status`)
       module_store[mod.name] = mod
 
       if (!mod.enable) {

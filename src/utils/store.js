@@ -1,31 +1,27 @@
-const storage = window['localStorage']
+const str = (window.chrome && window.chrome.storage) || storage
 
 const set = (key, value) => {
-  if (!storage) {
+  if (!str) {
     throw new Error("This browser doesn't support storage API.")
   }
 
-  return storage.setItem(key, value)
+  let obj = {}
+  obj[key] = value
+
+  return str.sync.set(obj, () => {
+    
+  })
 }
 
 const get = key => {
-  if (!storage) {
+  if (!str) {
     throw new Error("This browser doesn't support storage API.")
   }
 
-  return storage.getItem(key)
-}
-
-const reset = () => {
-  if (!storage) {
-    throw new Error("This browser doesn't support storage API.")
-  }
-
-  storage.clear()
+  return new Promise((resolve, reject) => str.sync.get(key, v => resolve(v)))
 }
 
 module.exports = {
   set,
-  get,
-  reset
+  get
 }
