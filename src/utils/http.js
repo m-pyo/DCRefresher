@@ -29,7 +29,6 @@ const query = (str, query) => {
 
 const viewRegex = /\/board\/view\//g
 const mgall = /dcinside\.com\/mgallery/g
-const exception = /exception_mode\=/g
 
 const queryDraw = (lis, url) => {
   let str = ''

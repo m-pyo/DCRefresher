@@ -92,6 +92,10 @@
       document.querySelector('body').appendChild(this.outer)
     }
 
+    setData(key, value) {
+      this.frame.dataset[key] = value
+    }
+
     get innerHTML() {
       return this.outer.innerHTML
     }

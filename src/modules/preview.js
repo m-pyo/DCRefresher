@@ -102,7 +102,7 @@ const PostInfo = require('../structs/post')
           return
         }
 
-        let fr = new Frame(
+        let frame = new Frame(
           {
             center: true,
             background: true
@@ -110,15 +110,17 @@ const PostInfo = require('../structs/post')
           'center preview'
         )
 
+        frame.setData('load', 'true')
+
         setTimeout(() => {
-          fr.fadeIn()
+          frame.fadeIn()
         }, 0)
 
         let preId = findNeighbor(ev.target, '.gall_num', 5).innerText
         let preTitle = findNeighbor(ev.target, 'a:not(.reply_numbox)', 2)
           .innerText
 
-        fr.innerHTML = `
+        frame.innerHTML = `
           <refresher-preview-info>
             <refresher-preview-title>
               ${preTitle}
@@ -127,9 +129,17 @@ const PostInfo = require('../structs/post')
 
             <refresher-preview-meta>
           </refresher-preview-info>
-          <refresher-preview-contents data-load="true">
+          <refresher-preview-contents>
 
           </refresher-preview-contents>
+          <refresher-preview-votes>
+            <refresher-preview-button class="refresher-upvote">
+              <img src="${chrome.extension.getURL('/assets/icons/upvote.png')}"></img>
+            </refresher-preview-button>
+            <refresher-preview-button class="refresher-downvote">
+              <img src="${chrome.extension.getURL('/assets/icons/downvote.png')}"></img>
+            </refresher-preview-button>
+          </refresher-preview-votes>
         `
 
         http
@@ -140,10 +150,10 @@ const PostInfo = require('../structs/post')
           )
           .then(v => parse(preId, v))
           .then(obj => {
-            let contents = fr.querySelector('refresher-preview-contents')
+            let contents = frame.querySelector('refresher-preview-contents')
 
             contents.innerHTML = obj.contents
-            contents.dataset.load = 'false'
+            frame.setData('load', 'false')
           })
 
         ev.preventDefault()

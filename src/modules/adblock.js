@@ -9,10 +9,6 @@
     default_enable: true,
     require: ['filter'],
     func (filter) {
-      this.memory.uuid = filter.add('body', elem => {
-        elem.classList[this.enable ? 'add' : 'remove']('refresherAdblock')
-      })
-
       this.memory.uuidf2 = filter.add('script', elem => {
         if (
           (elem.src &&

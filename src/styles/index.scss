@@ -54,6 +54,7 @@ refresher-frame-outer {
 
 refresher-frame {
   position: absolute;
+  display: block;
   min-width: 100px;
   min-height: 100px;
   max-width: 70%;
@@ -116,7 +117,7 @@ $dark-text-color-bright: #fff;
 $dark-text-subcolor: #777;
 $dark-text-divcolor: #444;
 $dark-dc-color: #4987f7;
-$dark-highlight: #045de2;
+$dark-highlight: #176ef1d5;
 
 .refresherDark {
   refresher-frame {
@@ -168,8 +169,20 @@ $dark-highlight: #045de2;
   }
 
   .mintro_imgbox.in_img,
-  .pop_tipbox.minor_tip .inner {
+  .pop_tipbox.minor_tip .inner,
+  .hot_gall_box,
+  .dccon_storage_table td,
+  .dccon_storage_table th,
+  .hotcate_list .cate_wrap {
     border: 1px solid $dark-tint2;
+  }
+
+  .tab_btnlist li {
+    border: 0;
+  }
+
+  .uadmin_cont_box {
+    border-top: 1px solid $dark-text-divcolor;
   }
 
   .gallview_head,
@@ -183,8 +196,17 @@ $dark-highlight: #045de2;
     border-bottom: 2px solid $dark-text-divcolor;
   }
 
+  .info_viewbox {
+    border-bottom: 1px solid $dark-tint2;
+  }
+
+  .dccon_popinfo .dccon_infobox {
+    border-top: 1px solid $dark-tint2;
+  }
+
   .all_list dl,
-  .relation_wrap .inner:last-of-type {
+  .relation_wrap .inner:last-of-type,
+  .minor_uadmin_wrap .right_content {
     border-left: 1px solid $dark-text-divcolor;
   }
 
@@ -209,6 +231,23 @@ $dark-highlight: #045de2;
     border-bottom: 1px solid $dark-tint2;
   }
 
+  .minor_uadmin_wrap {
+    border-top: 2px solid $dark-dc-color;
+    border-bottom: 2px solid $dark-dc-color;
+  }
+
+  .minor_block_list,
+  .mini_member_list,
+  .table_head {
+    border-bottom: 1px solid $dark-dc-color;
+  }
+
+  .minor_block_list th,
+  .mini_member_list th {
+    border: 1px solid $dark-dc-color;
+    border-width: 1px 0 1px;
+  }
+
   .minor_intro_box,
   .view_content_wrap,
   .view_content_wrap a,
@@ -220,11 +259,19 @@ $dark-highlight: #045de2;
   .bottom_paging_box a,
   .pop_tipbox.minor_tip .inner,
   .tabcontent,
+  .minor_uadmin_setting,
   .cont_tit,
   .pop_info,
   .favorite_list .list_box li a,
-  .tab_menubox button, .block_tab button,
+  .tab_menubox button,
+  .block_tab button,
   .info_policy a,
+  .content,
+  .inner_txt,
+  .box_infotxt,
+  .form_group,
+  th,
+  td,
   a,
   .usertxt {
     color: $dark-text-color;
@@ -246,8 +293,13 @@ $dark-highlight: #045de2;
   .page_num,
   .comment_box .nickname,
   .concept_txtbox .writer,
+  .btn_cmt_close,
+  .btn_cmt_close span,
+  .btn_cmt_refresh,
+  .btn_cmt_open,
   .concept_txtbox .writer_info,
   .dccon_guide,
+  .word_tit,
   .right_content .page_num {
     color: $dark-text-color-dark;
   }
@@ -258,6 +310,13 @@ $dark-highlight: #045de2;
   .btn_noti_setting::before,
   .r_hit .tit:last-of-type:before {
     color: $dark-text-divcolor;
+  }
+
+  .uadmin_top_tit,
+  .btn_upmgall_info,
+  .font_lightblue,
+  .pop_dccon_tit {
+    color: $dark-dc-color;
   }
 
   .reply_num {
@@ -271,7 +330,8 @@ $dark-highlight: #045de2;
     padding: 2px 5px;
   }
 
-  .pop_info {
+  .pop_info,
+  .word_tit {
     background-color: $dark-tint2;
   }
 
@@ -298,6 +358,10 @@ $dark-highlight: #045de2;
     }
   }
 
+  .checkmark {
+    filter: invert(1);
+  }
+
   .top_search,
   .bottom_search {
     input {
@@ -309,7 +373,8 @@ $dark-highlight: #045de2;
   .visit_history .tit,
   .font_blue,
   .pop_wrap .pop_head.dashed,
-  .pop_wrap.type3 .pop_head {
+  .pop_wrap.type3 .pop_head,
+  .viewtxt_top .useday {
     color: $dark-dc-color;
   }
 
@@ -320,19 +385,25 @@ $dark-highlight: #045de2;
   .btn_hitgall,
   .btn_snsmore,
   .btn_report,
+  .btn_user_control,
   .btn_blue,
+  .btn_lightgrey,
   .array_tab button.on {
     text-shadow: unset;
   }
 
   .bottom_array .select_area,
   .bottom_array .select_area .inner,
+  .user_info_input.id input,
+  .cmt_write_box .user_info_input.id > label,
+  .btn_user_control,
   .btn_white {
     background-color: $dark-tint-light;
     color: $dark-text-color;
   }
 
-  .btn_blue {
+  .btn_blue,
+  .word_close {
     background-color: $dark-dc-color;
     color: $dark-text-color;
     border-color: $dark-dc-color;
@@ -364,8 +435,19 @@ $dark-highlight: #045de2;
   .pop_wrap,
   .pop_tipbox .inner,
   .rcont_wiki,
-  .tab_menubox button.on, .tab_menubox button:first-child.on, .block_tab button.on, .block_tab button:first-child.on,
+  .tab_menubox button.on,
+  .tab_menubox button:first-child.on,
+  .block_tab button.on,
+  .option_box.white,
+  .bg_greybox,
+  .box_head,
+  .cate_tit,
+  .bottom_array .option_box,
+  .block_tab button:first-child.on,
+  button,
+  .minor_tip_txt.bg,
   .output_array .option_box,
+  .box_bottom,
   .reply_box {
     background-color: $dark-tint-light;
     color: $dark-text-color;
@@ -391,10 +473,21 @@ $dark-highlight: #045de2;
   .btn_report,
   .select_box.array_latest,
   .btn_lightblue,
-  .set_cont input[type="text"],
+  .set_cont input[type='text'],
   .select_arraybox,
   .gall_guide,
+  .btn_lightgrey,
   .option_box,
+  .auto_wordwrap,
+  .checkbox input[type='checkbox'],
+  .mng_subject_sel,
+  .all_ranklist,
+  .t_area,
+  .under_paging,
+  .int,
+  .dccon_infobox,
+  .select_box.dccon_use,
+  .dccon_use .option_box,
   .bottom_array {
     background-color: $dark-tint-light;
     color: $dark-text-color;
@@ -417,8 +510,17 @@ $dark-highlight: #045de2;
   }
 
   .gnb_bar,
-  .login_box {
+  .login_box,
+  .info_viewtxt {
     background-color: $dark-tint-light;
+  }
+
+  .word_list .search_key {
+    background-color: $dark-tint-light !important;
+  }
+
+  .word_list .search_key.on {
+    background-color: $dark-tint2 !important;
   }
 
   .gnb_bar {
@@ -470,28 +572,26 @@ $dark-highlight: #045de2;
 
 // AdBlocks
 
-.refresherAdblock {
-  .stickyunit,
-  ins.kakao_ad_area,
-  #wif_adx_banner_wrap,
-  .rightbanner,
-  .trc_rbox,
-  .trc_related_container,
-  .trc_rbox_container,
-  #zzbang_ad,
-  .trc_rbox_container,
-  #ad_floating,
-  #admaru,
-  .ad-layer,
-  .kakao_ad_area,
-  .ad_bottom_list,
-  .adop-rb,
-  #adop-video-total,
-  .ad_left_wing_list_top,
-  a[href*='addc.dcinside.com/'],
-  .con_banner {
-    display: none !important;
-  }
+.stickyunit,
+ins.kakao_ad_area,
+#wif_adx_banner_wrap,
+.rightbanner,
+.trc_rbox,
+.trc_related_container,
+.trc_rbox_container,
+#zzbang_ad,
+.trc_rbox_container,
+#ad_floating,
+#admaru,
+.ad-layer,
+.kakao_ad_area,
+.ad_bottom_list,
+.adop-rb,
+#adop-video-total,
+.ad_left_wing_list_top,
+a[href*='addc.dcinside.com/'],
+.con_banner {
+  display: none !important;
 }
 
 // Fonts Module
@@ -502,10 +602,14 @@ $dark-highlight: #045de2;
 .refresherFont input,
 .refresherFont .view_comment div,
 .refresherFont .view_content_wrap,
-.refresherFont .view_content_wrap a {
+.refresherFont .view_content_wrap a,
+.btn_cmt_close,
+.btn_cmt_close span,
+.btn_cmt_refresh,
+.btn_cmt_open {
   font-family: 'Noto Sans CJK KR', 'NanumGothic', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-    'Open Sans', 'Helvetica Neue', sans-serif;
+    'Open Sans', 'Helvetica Neue', sans-serif !important;
   font-display: 'swap';
 }
 
@@ -573,6 +677,13 @@ $dark-highlight: #045de2;
 
 // Refresher Preview
 
+refresher-frame.preview[data-load='true'] {
+  refresher-preview-contents {
+    height: 30px;
+    background-color: #fff;
+  }
+}
+
 refresher-preview-title {
   font-size: 24px;
   font-weight: bold;
@@ -583,12 +694,30 @@ refresher-preview-meta {
   display: flex;
 }
 
+refresher-preview-contents, refresher-preview-votes {
+  position: relative;
+}
+
 refresher-preview-contents {
- 
-  &[data-load="true"] {
-    position: absolute;
-    width: 90%;
-    height: 30px;
-    background-color: #fff;
+  font-size: 15px;
+  display: block;
+  padding-bottom: 2.5vh;
+  border-bottom: 1px solid rgb(97, 97, 97);
+}
+
+refresher-preview-button {
+  width: 50px;
+  height: 50px;
+}
+
+refresher-preview-votes {
+  display: flex;
+  margin-top: 2.5vh;
+}
+
+
+.refresherDark {
+  refresher-preview-button img {
+    filter: invert(1);
   }
 }
