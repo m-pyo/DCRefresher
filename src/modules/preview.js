@@ -130,15 +130,19 @@ const PostInfo = require('../structs/post')
             <refresher-preview-meta>
           </refresher-preview-info>
           <refresher-preview-contents>
-
+            <refresher-loader></refresher-loader>
           </refresher-preview-contents>
           <refresher-preview-votes>
-            <refresher-preview-button class="refresher-upvote">
-              <img src="${chrome.extension.getURL('/assets/icons/upvote.png')}"></img>
-            </refresher-preview-button>
-            <refresher-preview-button class="refresher-downvote">
-              <img src="${chrome.extension.getURL('/assets/icons/downvote.png')}"></img>
-            </refresher-preview-button>
+            <div>
+              <refresher-preview-button class="refresher-upvote">
+                <img src="${chrome.extension.getURL('/assets/icons/upvote.png')}"></img>
+                <p class="refresher-vote-text">0</p>
+              </refresher-preview-button>
+              <refresher-preview-button class="refresher-downvote">
+                <img src="${chrome.extension.getURL('/assets/icons/downvote.png')}"></img>
+                <p class="refresher-vote-text">0</p>
+              </refresher-preview-button>
+            </div>
           </refresher-preview-votes>
         `
 

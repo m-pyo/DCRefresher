@@ -677,10 +677,50 @@ a[href*='addc.dcinside.com/'],
 
 // Refresher Preview
 
+@keyframes spin {
+  0%,
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: rotateY(360deg);
+  }
+}
+
+refresher-loader {
+  position: relative;
+
+  width: 50px;
+  height: 50px;
+  margin: auto;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    200deg,
+    rgba(73, 135, 247, 0.8),
+    rgba(73, 135, 247, 1)
+  );
+
+  animation: spin 3s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+}
+
 refresher-frame.preview[data-load='true'] {
   refresher-preview-contents {
-    height: 30px;
-    background-color: #fff;
+    margin-top: 30px;
+    height: 60px;
+    display: flex;
+
+    padding-bottom: 1vh;
+  }
+}
+
+refresher-frame.preview[data-load='false'] {
+  refresher-loader {
+    display: none;
   }
 }
 
@@ -694,7 +734,8 @@ refresher-preview-meta {
   display: flex;
 }
 
-refresher-preview-contents, refresher-preview-votes {
+refresher-preview-contents,
+refresher-preview-votes {
   position: relative;
 }
 
@@ -702,22 +743,61 @@ refresher-preview-contents {
   font-size: 15px;
   display: block;
   padding-bottom: 2.5vh;
-  border-bottom: 1px solid rgb(97, 97, 97);
 }
 
 refresher-preview-button {
-  width: 50px;
-  height: 50px;
+  width: 120px;
+  height: 38px;
+  display: flex;
+  margin-right: 15px;
+
+  box-shadow: $shadow-2dp;
+  background-color: #fff;
+  border-radius: 15px;
+
+  img {
+    width: 35px;
+    height: 35px;
+    margin: auto;
+    margin-right: 10px;
+  }
+
+  p {
+    margin: auto;
+    margin-left: 0px;
+    color: #000;
+
+    font-size: 20px;
+    font-weight: bold;
+  }
 }
 
 refresher-preview-votes {
   display: flex;
   margin-top: 2.5vh;
-}
 
+  & > div {
+    display: flex;
+    margin: auto;
+  }
+}
 
 .refresherDark {
   refresher-preview-button img {
-    filter: invert(1);
+    // filter: invert(1);
+  }
+
+  refresher-preview-button {
+    box-shadow: none;
+    border: 1px solid $dark-tint2;
+    background-color: $dark-tint-light;
+
+    p {
+      color: $dark-text-color;
+    }
+
+    img {
+      filter: invert(1);
+    }
   }
 }
