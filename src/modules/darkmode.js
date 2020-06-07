@@ -10,9 +10,7 @@
     default_enable: false,
     require: ['filter'],
     func(filter) {
-      if (document) {
-        console.log(document.head)
-
+      if (document && document.head) {
         let d = document.createElement('style')
         d.innerHTML = `body,.dcwrap,.left_content,.dcfoot,.issuebox,.inner_search {background-color: #222;}`
         document.head.appendChild(d)

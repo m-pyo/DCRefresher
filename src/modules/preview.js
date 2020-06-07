@@ -75,6 +75,10 @@ const PostInfo = require('../structs/post')
           )
           .innerHTML.replace(/추천\s/, '')
 
+        let downvotes = dom.querySelector(
+          'div.btn_recommend_box.clear .down_num'
+        ).innerHTML
+
         let contents = dom.querySelector(
           '.view_content_wrap > div > div.inner.clear > div.writing_view_box'
         ).innerHTML
@@ -91,9 +95,64 @@ const PostInfo = require('../structs/post')
           ),
           views,
           upvotes,
+          downvotes,
           contents,
           comments
         })
+      }
+
+      let makeFirstFrame = (ev, frame, id, title) => {
+        frame.setData('load', 'true')
+        frame.title = title
+        frame.buttons = true
+
+        http
+          .make(
+            `${http.urls.gall[http.checkMinor() ? 'minor' : 'major'] +
+              http.urls.view +
+              queryString('id')}&no=${id}`
+          )
+          .then(v => parse(id, v))
+          .then(obj => {
+            frame.contents = obj.contents
+            frame.upvotes = obj.upvotes
+            frame.downvotes = obj.downvotes
+
+            frame.setData('load', 'false')
+          })
+      }
+
+      let makeSecondFrame = (ev, frame, id, title) => {
+        frame.setData('load', 'true')
+        frame.title = `댓글 0개`
+
+        let gall_id = queryString('id')
+
+        http
+          .make(http.urls.comments, {
+            method: 'POST',
+            dataType: 'json',
+            headers: {
+              Accept: 'application/json, text/javascript, */*; q=0.01',
+              'Content-Type':
+                'application/x-www-form-urlencoded; charset=UTF-8',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            cache: 'no-store',
+            referrer: `https://gall.dcinside.com/${
+              http.checkMinor() ? 'mgallery/' : ''
+            }board/view/?id=${gall_id}&no=${id}`,
+            body: `?id=${gall_id}&no=${Number(
+              id
+            )}&cmt_id=${gall_id}&cmt_no=${Number(id)}&e_s_n_o=${
+              document.getElementById('e_s_n_o').value
+            }&comment_page=1&sort=`
+          })
+          .then(comments => {
+            console.log(comments)
+
+            frame.setData('load', 'false')
+          })
       }
 
       let previewFrame = ev => {
@@ -103,62 +162,36 @@ const PostInfo = require('../structs/post')
         }
 
         let frame = new Frame(
+          [
+            {
+              relative: true,
+              center: true,
+              preview: true
+            },
+
+            {
+              relative: true,
+              center: true,
+              preview: true
+            }
+          ],
           {
-            center: true,
-            background: true
-          },
-          'center preview'
+            background: true,
+            stack: true,
+            groupOnce: true
+          }
         )
-
-        frame.setData('load', 'true')
-
-        setTimeout(() => {
-          frame.fadeIn()
-        }, 0)
 
         let preId = findNeighbor(ev.target, '.gall_num', 5).innerText
         let preTitle = findNeighbor(ev.target, 'a:not(.reply_numbox)', 2)
           .innerText
 
-        frame.innerHTML = `
-          <refresher-preview-info>
-            <refresher-preview-title>
-              ${preTitle}
-            </refresher-preview-title>
-            <refresher-preview-meta>
+        makeFirstFrame(ev, frame.app.first(), preId, preTitle)
+        makeSecondFrame(ev, frame.app.second(), preId, preTitle)
 
-            <refresher-preview-meta>
-          </refresher-preview-info>
-          <refresher-preview-contents>
-            <refresher-loader></refresher-loader>
-          </refresher-preview-contents>
-          <refresher-preview-votes>
-            <div>
-              <refresher-preview-button class="refresher-upvote">
-                <img src="${chrome.extension.getURL('/assets/icons/upvote.png')}"></img>
-                <p class="refresher-vote-text">0</p>
-              </refresher-preview-button>
-              <refresher-preview-button class="refresher-downvote">
-                <img src="${chrome.extension.getURL('/assets/icons/downvote.png')}"></img>
-                <p class="refresher-vote-text">0</p>
-              </refresher-preview-button>
-            </div>
-          </refresher-preview-votes>
-        `
-
-        http
-          .make(
-            `${http.urls.gall[http.checkMinor() ? 'minor' : 'major'] +
-              http.urls.view +
-              queryString('id')}&no=${preId}`
-          )
-          .then(v => parse(preId, v))
-          .then(obj => {
-            let contents = frame.querySelector('refresher-preview-contents')
-
-            contents.innerHTML = obj.contents
-            frame.setData('load', 'false')
-          })
+        setTimeout(() => {
+          frame.app.fadeIn()
+        }, 0)
 
         ev.preventDefault()
       }

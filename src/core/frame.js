@@ -1,111 +1,97 @@
+const Vue = require('vue')
+
+const components = require('../components/frame')
+
 ;(() => {
+  class InternalFrame {
+    constructor (cls, options, app) {
+      this.class = cls
+      this.options = options
+
+      this.app = app
+      this.data = {}
+    }
+
+    setData (key, value) {
+      this.data[key] = value
+    }
+
+    querySelector (...a) {
+      return this.app.$el.querySelector(...a)
+    }
+
+    get center() {
+      return this.options.center
+    }
+  }
   /**
    *
    * @param {Object} option
    * @param {*} className 적용할 className (default)
    */
-
   class frame {
-    constructor (option, className) {
+    constructor (childs, option) {
       if (!document || !document.createElement) {
         throw new Error(
-          "Frame can't be made before DOMContentLoaded event. (DOM isn't accessible)"
+          "Frame is not available before DOMContentLoaded event. (DOM isn't accessible)"
         )
+      }
+
+      if (!childs) {
+        childs = []
       }
 
       if (typeof option === 'undefined') {
         option = {}
       }
 
-      this.x = option.x
-      this.y = option.y
-      this.center = option.center
-      this.background = option.background
-
-      this.class = className || 'default'
-
-      this.make()
-      this.appendToBody()
-    }
-
-    make () {
       this.outer = document.createElement('refresher-frame-outer')
-      this.frame = document.createElement('refresher-frame')
-      this.frame.className = this.class
+      document.querySelector('body').appendChild(this.outer)
 
-      if (this.x !== null) {
-        this.frame.style.left = this.x
-      }
+      this.frame = []
+      this.app = new Vue({
+        el: this.outer,
+        data: () => {
+          return {
+            frames: [],
+            ...option,
+            activeGroup: option.groupOnce,
+            fade: false
+          }
+        },
+        methods: {
+          first () {
+            return this.frames[0]
+          },
 
-      if (this.y !== null) {
-        this.frame.style.top = this.y
-      }
+          second () {
+            return this.frames[1]
+          },
 
-      if (this.center) {
-        this.outer.classList.add('center')
-        this.frame.classList.add('center')
-      }
+          outerClick () {
+            this.fadeOut()
+            document.querySelector('body').style.overflow = 'scroll'
 
-      if (this.background) {
-        this.outer.classList.add('background')
-      }
+            setTimeout(() => {
+              document.querySelector('body').removeChild(this.$el)
+            }, 300)
+          },
 
-      this.outer.addEventListener('click', ev => {
-        if (ev.target !== this.outer) return ev
-        this.outerClick(ev)
+          fadeIn () {
+            this.fade = true
+          },
+
+          fadeOut () {
+            this.fade = false
+          }
+        }
       })
 
-      this.outer.appendChild(this.frame)
-    }
-
-    fadeIn () {
-      if (this.outer.className.indexOf(/fadeOut/g) !== -1) {
-        this.outer.classList.remove('fadeOut')
+      for (let i = 0; i < childs.length; i++) {
+        this.app.frames.push(new InternalFrame(this.class, childs[i], this.app))
       }
 
-      this.outer.classList.add('fadeIn')
-    }
-
-    fadeOut () {
-      if (this.outer.className.indexOf(/fadeIn/g) !== -1) {
-        this.outer.classList.remove('fadeIn')
-      }
-
-      this.outer.classList.add('fadeOut')
-    }
-
-    outerClick (ev) {
-      console.log(ev)
-
-      this.close()
-    }
-
-    close () {
-      this.fadeOut()
-
-      setTimeout(() => {
-        this.outer.parentNode.removeChild(this.outer)
-      }, 300)
-    }
-
-    appendToBody () {
-      document.querySelector('body').appendChild(this.outer)
-    }
-
-    setData(key, value) {
-      this.frame.dataset[key] = value
-    }
-
-    get innerHTML() {
-      return this.outer.innerHTML
-    }
-
-    set innerHTML (html) {
-      this.frame.innerHTML = html
-    }
-
-    querySelector(...a) {
-      return this.frame.querySelector(...a)
+      document.querySelector('body').style.overflow = 'hidden'
     }
   }
 

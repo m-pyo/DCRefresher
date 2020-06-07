@@ -7,9 +7,9 @@
     memory: {},
     enable: true,
     default_enable: true,
-    require: ['filter'],
-    func (filter) {
-      this.memory.uuidf2 = filter.add('script', elem => {
+    require: ['filter', 'eventBus'],
+    func (filter, eventBus) {
+      this.memory.uuid = filter.add('script', elem => {
         if (
           (elem.src &&
             [
@@ -26,13 +26,23 @@
         }
       })
 
-      this.memory.uuidf3 = filter.add('link', elem => {
+      this.memory.uuidf2 = filter.add('link', elem => {
         if (
           elem.href &&
           ['ads', 'adservice'].filter(v => elem.href.indexOf(v) > -1).length
         ) {
           elem.parentElement.removeChild(elem)
         }
+      })
+
+      this.memory.uuidf3 = filter.addGlobal('listAd', '.gall_list .gall_subject b', elem => {
+        if (elem.innerHTML === 'AD') {
+          elem.parentElement.parentElement.parentElement.removeChild(elem.parentElement.parentElement)
+        }
+      })
+
+      eventBus.on('refresh', () => {
+        filter.runSpecific('listAd')
       })
     }
   }

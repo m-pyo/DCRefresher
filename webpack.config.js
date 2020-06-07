@@ -92,6 +92,9 @@ module.exports = {
   ],
   resolve: {
     extensions: ['.js', '.css'],
-    modules: ['node_modules']
+    modules: ['node_modules'],
+    alias: {
+      vue: 'vue/dist/vue.js'
+    }
   }
 }

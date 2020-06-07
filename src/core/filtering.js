@@ -35,6 +35,19 @@ const log = require('../utils/logger.js')
       }
     },
 
+    runSpecific: id => {
+      let item = lists[id]
+
+      observe.find(item.scope, document.documentElement).then(async elem => {
+        let elemIter = elem.length
+
+        if (!elemIter) return false
+        while (elemIter--) {
+          await item.func(elem[elemIter])
+        }
+      })
+    },
+
     /**
      * 필터 lists 에 필터 함수를 등록합니다.
      */
@@ -51,6 +64,17 @@ const log = require('../utils/logger.js')
       }
 
       return uuid
+    },
+
+    addGlobal: (id, scope, cb) => {
+      lists[id] = {
+        func: cb,
+        scope,
+        status: {},
+        events: {}
+      }
+
+      return
     },
 
     /**
