@@ -883,6 +883,28 @@ a[href*='addc.dcinside.com/'],
     border-radius: 50%;
     background-color: #777;
     display: block;
+
+    box-shadow: $shadow-1dp;
+
+    &[data-type="0"] {
+      background-color: rgb(241, 241, 241);
+    }
+
+    &[data-type="1"] {
+      background-color: #777;
+    }
+
+    &[data-type="2"] {
+      background-color: rgb(241, 206, 50);
+    }
+
+    &[data-type="3"] {
+      background-color: rgb(50, 139, 241);
+    }
+
+    &[data-type="4"] {
+      background-color: rgb(241, 126, 50);
+    }
   }
 
   .refresher-user-nick {

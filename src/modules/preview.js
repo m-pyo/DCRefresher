@@ -149,6 +149,10 @@ const PostInfo = require('../structs/post')
             }&comment_page=1&sort=`
           })
           .then(comments => {
+            if (!comments) {
+              frame.error = true
+            }
+
             comments.comments.map(v => {
               v.user = new User(
                 v.name,
@@ -162,6 +166,7 @@ const PostInfo = require('../structs/post')
               )
             })
 
+            frame.title = `댓글 <span class="refresher-preview-title-mute">${comments.comment_cnt}개</span>`
             frame.isComment = true
             frame.comments = comments
 
