@@ -29,14 +29,22 @@ const PreviewButton = Vue.component('refresher-preview-button', {
 const Frame = Vue.component('refresher-frame', {
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, preview: frame.options.preview, center: frame.options.center}">
       <div class="refresher-preview-info">
-        <div class="refresher-preview-title">
-          {{frame.title}}
-        </div>
+        <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+          <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
+        </transition>
         <div class="refresher-preview-meta"></div>
       </div>
       <div class="refresher-preview-contents">
         <refresher-loader v-if="frame.load"></refresher-loader>
-        {{frame.contents}}
+        <transition name="refresher-opacity">
+          <div v-html="frame.contents" :key="frame.contents"></div>
+        </transition>
+
+        <div class="refresher-preview-comments" v-if="frame.isComment">
+          <transition-group name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+            <refresher-comment v-for="(comment, i) in frame.comments.comments" :data-index="i + 1" :comment="comment" :key="'cmt_' + comment.no"></refresher-comment>
+          </transition-group>
+        </div>
       </div>
       <div class="refresher-preview-votes" v-if="frame.buttons">
         <div>
@@ -49,10 +57,14 @@ const Frame = Vue.component('refresher-frame', {
         </div>
       </div>
     </div>`,
-  props: {
-    frame: {
-      type: Object,
-      required: true
+  props: ['frame', 'index'],
+  methods: {
+    beforeEnter (el) {
+      el.style.transitionDelay = 45 * Number(el.dataset.index) + 'ms'
+    },
+
+    afterEnter (el) {
+      el.style.transitionDelay = ''
     }
   }
 })
@@ -65,11 +77,11 @@ const Outer = Vue.component('refresher-frame-outer', {
 
 const Group = Vue.component('refresher-group', {
   template: `<div class="refresher-group" v-on:click="clickHandle">
-      <refresher-frame v-if="frames" v-for="(frame, i) in frames" :key="'frame' + i" :frame="frame"></refresher-frame>
+      <refresher-frame v-for="(frame, i) in frames" :frame="frame" :index="i"></refresher-frame>
     </div>`,
-  computed: {
-    frames () {
-      return this.$root.frames
+  data () {
+    return {
+      frames: this.$root.frames
     }
   },
   methods: {

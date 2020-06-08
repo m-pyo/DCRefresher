@@ -124,7 +124,7 @@ const PostInfo = require('../structs/post')
 
       let makeSecondFrame = (ev, frame, id, title) => {
         frame.setData('load', 'true')
-        frame.title = `댓글 0개`
+        frame.title = `댓글 <span class="refresher-preview-title-mute">0개</span>`
 
         let gall_id = queryString('id')
 
@@ -142,14 +142,28 @@ const PostInfo = require('../structs/post')
             referrer: `https://gall.dcinside.com/${
               http.checkMinor() ? 'mgallery/' : ''
             }board/view/?id=${gall_id}&no=${id}`,
-            body: `?id=${gall_id}&no=${Number(
+            body: `id=${gall_id}&no=${Number(
               id
             )}&cmt_id=${gall_id}&cmt_no=${Number(id)}&e_s_n_o=${
               document.getElementById('e_s_n_o').value
             }&comment_page=1&sort=`
           })
           .then(comments => {
-            console.log(comments)
+            comments.comments.map(v => {
+              v.user = new User(
+                v.name,
+                v.user_id,
+                v.ip,
+                (
+                  new DOMParser()
+                    .parseFromString(v.gallog_icon, 'text/html')
+                    .querySelector('a.writer_nikcon img') || {}
+                ).src
+              )
+            })
+
+            frame.isComment = true
+            frame.comments = comments
 
             frame.setData('load', 'false')
           })

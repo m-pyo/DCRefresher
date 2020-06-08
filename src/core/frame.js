@@ -1,6 +1,7 @@
 const Vue = require('vue')
 
-const components = require('../components/frame')
+require('../components/frame')
+require('../components/comment')
 
 ;(() => {
   class InternalFrame {
@@ -10,6 +11,10 @@ const components = require('../components/frame')
 
       this.app = app
       this.data = {}
+
+      this.contents = ''
+      this.isComment = false
+      this.comments = null
     }
 
     setData (key, value) {
