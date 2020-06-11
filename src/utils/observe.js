@@ -27,11 +27,13 @@ const observe = {
         childList: true
       })
 
-      document.addEventListener('load', () => {
+      setTimeout(() => {
         if (!observer) return
         observer.disconnect()
+
+        observer = undefined
         reject('Too long execution.')
-      })
+      }, 4000)
     })
 }
 

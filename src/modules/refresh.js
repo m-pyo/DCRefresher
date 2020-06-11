@@ -22,10 +22,9 @@
 
           try {
             let bodyParse = new DOMParser().parseFromString(body, 'text/html')
+            body = undefined
 
-            let listDOM = bodyParse.querySelector('.gall_list')
-
-            resolve(listDOM)
+            resolve(bodyParse.querySelector('.gall_list'))
           } catch (e) {
             reject(e)
           }
@@ -53,9 +52,9 @@
                 .map(v => v.innerHTML)
                 .join('|')
 
-              var newListNums = newList.querySelectorAll('td.gall_num')
+              oldList = undefined
 
-              newListNums.forEach(v => {
+              newList.querySelectorAll('td.gall_num').forEach(v => {
                 if (cached.indexOf(v.innerHTML) == -1) {
                   v.parentElement.className += ' refresherNewPost'
                   v.parentElement.style.animationDelay =

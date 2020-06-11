@@ -2,7 +2,6 @@ const Vue = require('vue')
 
 require('../components/frame')
 require('../components/comment')
-
 ;(() => {
   class InternalFrame {
     constructor (cls, options, app) {
@@ -15,6 +14,9 @@ require('../components/comment')
       this.contents = ''
       this.isComment = false
       this.comments = null
+      this.upvotes = null
+      this.downvotes = null
+      this.buttonError = null
     }
 
     setData (key, value) {
@@ -25,15 +27,15 @@ require('../components/comment')
       return this.app.$el.querySelector(...a)
     }
 
-    get center() {
+    querySelectorAll (...a) {
+      return this.app.$el.querySelectorAll(...a)
+    }
+
+    get center () {
       return this.options.center
     }
   }
-  /**
-   *
-   * @param {Object} option
-   * @param {*} className 적용할 className (default)
-   */
+
   class frame {
     constructor (childs, option) {
       if (!document || !document.createElement) {
@@ -95,6 +97,15 @@ require('../components/comment')
       for (let i = 0; i < childs.length; i++) {
         this.app.frames.push(new InternalFrame(this.class, childs[i], this.app))
       }
+
+      let keyupFunction = ev => {
+        if (ev.keyCode === 27) {
+          this.app.outerClick()
+        }
+
+        document.removeEventListener('keyup', keyupFunction)
+      }
+      document.addEventListener('keyup', keyupFunction)
 
       document.querySelector('body').style.overflow = 'hidden'
     }

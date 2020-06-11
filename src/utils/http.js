@@ -5,6 +5,7 @@ const urls = {
     minor: 'https://gall.dcinside.com/mgallery/'
   },
   view: 'board/view/?id=',
+  vote: 'https://gall.dcinside.com/board/recommend/vote',
   manage: {
     delete:
       'https://gall.dcinside.com/ajax/minor_manager_board_ajax/delete_list'

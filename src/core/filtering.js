@@ -6,6 +6,14 @@ const log = require('../utils/logger.js')
   let lists = {}
 
   const filter = {
+    __run: async (a, e) => {
+      let iter = e.length
+
+      if (!iter) return false
+      while (iter--) {
+        await a.func(e[iter])
+      }
+    },
     /**
      * lists에 등록된 필터 함수를 호출합니다.
      *
@@ -18,34 +26,19 @@ const log = require('../utils/logger.js')
       while (len--) {
         let filterObj = lists[listsKeys[len]]
 
-        let find = observe
-          .find(filterObj.scope, document.documentElement)
-          .then(async elem => {
-            let elemIter = elem.length
-
-            if (!elemIter) return false
-            while (elemIter--) {
-              await filterObj.func(elem[elemIter])
-            }
-          })
-
-        if (!non_blocking) {
-          await find
-        }
+        ;(!non_blocking
+          ? await observe.find(filterObj.scope, document.documentElement)
+          : observe.find(filterObj.scope, document.documentElement)
+        ).then(e => filter.__run(filterObj, e))
       }
     },
 
     runSpecific: id => {
       let item = lists[id]
 
-      observe.find(item.scope, document.documentElement).then(async elem => {
-        let elemIter = elem.length
-
-        if (!elemIter) return false
-        while (elemIter--) {
-          await item.func(elem[elemIter])
-        }
-      })
+      observe
+        .find(item.scope, document.documentElement)
+        .then(async e => filter.__run(item, e))
     },
 
     /**

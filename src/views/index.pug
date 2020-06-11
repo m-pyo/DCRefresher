@@ -1,7 +1,23 @@
-html.refPopup
+html.refresher-popup
   head
     title DC Refresher
-    meta(http-equiv="Content-Type", content="text/html;charset=UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="Content-Type" content="text/html;charset=UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet" href="../refresher.bundle.css")
-    div.refPopup
+    script(src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js")
+    script(src="../option.bundle.js")
+  body
+    div#refresher-app
+      div.refresher-title-zone
+        h1 설정 {{tab}}
+        .float-right
+          p 일반
+          p 고급
+          p 모듈
+          
+      div.tab1
+        h3 DCRefresher <span>2.0.0</span>
+
+      div.refresher-preview-button.primary
+        img(src="chrome.extension.getURL('/assets/icons/upvote.png')")
+        p.refresher-vote-text 

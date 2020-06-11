@@ -1,7 +1,7 @@
 const Vue = require('vue')
 
 Vue.component('refresher-user', {
-  template: `<div class="refresher-user">
+  template: `<div class="refresher-user" :data-me="me">
     <span class="refresher-user-icon" :data-icon="user.icon" :data-type="user.type"></span>
     <span class="refresher-user-nick">{{user.nick}}</span>
     <span class="refresher-user-info">{{user.id ? '(' + user.id + ')' : user.ip ? '(' + user.ip + ')' : ''}}</span>
@@ -10,9 +10,11 @@ Vue.component('refresher-user', {
     user: {
       type: Object,
       required: true
+    },
+
+    me: {
+      type: Boolean,
+      required: false
     }
-  },
-  mounted() {
-    console.log(this.user)
   }
 })
