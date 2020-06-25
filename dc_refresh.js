@@ -121,6 +121,10 @@ get_opt('refresh_rate')
 
 get_opt('blocked_dccon')
   .then(v => {
+    if (!v) {
+      return false
+    }
+
     DCCon.block.lists = JSON.parse(v)
   })
   .catch(e => {

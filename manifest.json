@@ -2,7 +2,7 @@
   "name": "DC Refresher",
   "short_name": "디씨 Refresher",
   "description": "DC 페이지를 자동으로 고치고, 미리 보기를 생성합니다.",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "manifest_version": 2,
   "permissions": [
     "https://dccon.dcinside.com/*",
