@@ -1,15 +1,23 @@
-const Vue = require('vue')
+import Vue from 'vue'
 
-require('./button')
-require('./timestamp')
+import TimeStamp from './timestamp'
+import PreviewButton from './button'
+import User from './user'
+import Comment from './comment'
 
-const Loader = Vue.component('refresher-loader', {
+export const Loader = Vue.component('refresher-loader', {
   template: `<transition name="refresher-opacity">
   <div class="refresher-loader"></div>
   </transition>`
-}) 
+})
 
-const Frame = Vue.component('refresher-frame', {
+export const Frame = Vue.component('refresher-frame', {
+  components: {
+    PreviewButton,
+    TimeStamp,
+    User,
+    Comment
+  },
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
       <div class="refresher-preview-info">
         <div class="refresher-preview-title-zone">
@@ -21,9 +29,9 @@ const Frame = Vue.component('refresher-frame', {
           </transition>
         </div>
         <div class="refresher-preview-meta">
-          <refresher-user v-if="frame.user" :user="frame.user"></refresher-user>
+          <User v-if="frame.user" :user="frame.user"></User>
           <div class="float-right">
-            <refresher-timestamp v-if="frame.date" :date="frame.date"></refresher-timestamp>
+            <TimeStamp v-if="frame.date" :date="frame.date"></TimeStamp>
           </div>
         </div>
       </div>
@@ -35,28 +43,28 @@ const Frame = Vue.component('refresher-frame', {
 
         <div class="refresher-preview-comments" v-if="frame.isComment">
           <transition-group name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-            <refresher-comment v-for="(comment, i) in frame.comments.comments" :data-index="i + 1" :parentUser="frame.user" :comment="comment" :key="'cmt_' + comment.no"></refresher-comment>
+            <Comment v-for="(comment, i) in frame.comments.comments" :data-index="i + 1" :parentUser="frame.user" :comment="comment" :key="'cmt_' + comment.no"></Comment>
           </transition-group>
         </div>
       </div>
       <div class="refresher-preview-votes" v-if="frame.buttons">
         <div>
-          <refresher-preview-button class="refresher-upvote" :icon="'upvote'" :id="'upvote'" :text="frame.upvotes || '0'" :click="upvote">
-          </refresher-preview-button>
-          <refresher-preview-button class="refresher-downvote" :icon="'downvote'" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
-          </refresher-preview-button>
-          <refresher-preview-button class="refresher-share primary" :icon="'share'" :id="'share'" :text="'공유'" :click="share">
-          </refresher-preview-button>
+          <PreviewButton class="refresher-upvote" :icon="'upvote'" :id="'upvote'" :text="frame.upvotes || '0'" :click="upvote">
+          </PreviewButton>
+          <PreviewButton class="refresher-downvote" :icon="'downvote'" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
+          </PreviewButton>
+          <PreviewButton class="refresher-share primary" :icon="'share'" :id="'share'" :text="'공유'" :click="share">
+          </PreviewButton>
         </div>
       </div>
     </div>`,
   props: ['frame', 'index'],
   methods: {
-    beforeEnter (el) {
+    beforeEnter (el: HTMLElement) {
       el.style.transitionDelay = 45 * Number(el.dataset.index) + 'ms'
     },
 
-    afterEnter (el) {
+    afterEnter (el: HTMLElement) {
       el.style.transitionDelay = ''
     },
 
@@ -68,7 +76,7 @@ const Frame = Vue.component('refresher-frame', {
       return this.frame.voteFunction(0)
     },
 
-    share() {
+    share () {
       return this.frame.shareFunction()
     },
 
@@ -82,7 +90,7 @@ const Outer = Vue.component('refresher-frame-outer', {
   </div>`
 })
 
-const Group = Vue.component('refresher-group', {
+export const Group = Vue.component('refresher-group', {
   template: `<div class="refresher-group" v-on:click="clickHandle">
       <refresher-frame v-for="(frame, i) in frames" :key="'frame' + Math.random()" :frame="frame" :index="i"></refresher-frame>
     </div>`,
@@ -98,9 +106,3 @@ const Group = Vue.component('refresher-group', {
     }
   }
 })
-
-module.exports = {
-  Loader,
-  Frame,
-  Group
-}

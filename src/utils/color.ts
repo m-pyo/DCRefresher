@@ -1,4 +1,4 @@
-const luminanace = (r, g, b) => {
+export const luminanace = (r, g, b) => {
   var a = [r, g, b].map(v => {
     v /= 255
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
@@ -6,7 +6,7 @@ const luminanace = (r, g, b) => {
   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722
 }
 
-const contrast = (rgb1, rgb2) => {
+export const contrast = (rgb1, rgb2) => {
   var lum1 = luminanace(rgb1[0], rgb1[1], rgb1[2])
   var lum2 = luminanace(rgb2[0], rgb2[1], rgb2[2])
   var brightest = Math.max(lum1, lum2)
@@ -14,7 +14,7 @@ const contrast = (rgb1, rgb2) => {
   return (brightest + 0.05) / (darkest + 0.05)
 }
 
-const parse = str => {
+export const parse = str => {
   if (str[0] === '#') {
     return str
       .substring(1, str.length)
@@ -30,7 +30,7 @@ const parse = str => {
 }
 
 // https://gist.github.com/mjackson/5311256
-const RGBtoHSL = (r, g, b) => {
+export const RGBtoHSL = (r, g, b) => {
   ;(r /= 255), (g /= 255), (b /= 255)
 
   var max = Math.max(r, g, b),
@@ -63,7 +63,7 @@ const RGBtoHSL = (r, g, b) => {
   return [h, s, l]
 }
 
-const HSLtoRGB = (h, s, l) => {
+export const HSLtoRGB = (h, s, l) => {
   var r, g, b
 
   if (s == 0) {
@@ -89,16 +89,7 @@ const HSLtoRGB = (h, s, l) => {
   return [r * 255, g * 255, b * 255]
 }
 
-const RGBtoHEX = (...args) => '#' + args.map(v => (~~v).toString(16)).join('')
+export const RGBtoHEX = (...args) =>
+  '#' + args.map(v => (~~v).toString(16)).join('')
 
-const inverseColor = c => 1 - c ** 2
-
-module.exports = {
-  luminanace,
-  contrast,
-  parse,
-  RGBtoHSL,
-  HSLtoRGB,
-  RGBtoHEX,
-  inverseColor
-}
+export const inverseColor = c => 1 - c ** 2

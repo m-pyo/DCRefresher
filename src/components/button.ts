@@ -1,6 +1,4 @@
-const Vue = require('vue')
-
-Vue.component('refresher-preview-button', {
+export default {
   template: `
   <transition name="refresher-shake">
     <div class="refresher-preview-button" :key="error" v-on:click="safeClick">
@@ -22,7 +20,7 @@ Vue.component('refresher-preview-button', {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       error: null
     }
@@ -33,7 +31,7 @@ Vue.component('refresher-preview-button', {
     },
 
     async safeClick () {
-      let result = this.click && await this.click()
+      let result = this.click && (await this.click())
 
       if (!result) {
         this.error = Math.random()
@@ -42,4 +40,4 @@ Vue.component('refresher-preview-button', {
       return result
     }
   }
-})
+}

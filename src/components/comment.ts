@@ -1,13 +1,16 @@
-const Vue = require('vue')
+import User from './user'
+import TimeStamp from './timestamp'
 
-require('./user')
-
-Vue.component('refresher-comment', {
+export default {
+  components: {
+    TimeStamp,
+    User
+  },
   template: `<div class="refresher-comment" :data-depth="comment.depth" :data-deleted="comment.del_yn === 'Y'">
     <div class="meta">
-      <refresher-user :user="comment.user" :me="checkParticipant(comment.user.id)"></refresher-user>
+      <User :user="comment.user" :me="checkParticipant(comment.user.id)"></User>
       <div class="float-right">
-        <refresher-timestamp :date="new Date(date(comment.reg_date))"></refresher-timestamp>
+        <TimeStamp :date="new Date(date(comment.reg_date))"></TimeStamp>
       </div>
     </div>
     <p class="refresher-comment-content" v-html="comment.memo"></p>
@@ -24,18 +27,18 @@ Vue.component('refresher-comment', {
     }
   },
   methods: {
-    date (str) {
+    date (str: string) {
       return str.substring(0, 4).match(/\./)
         ? `${new Date().getFullYear()}.${str}`
         : str
     },
 
-    extractID (str) {
+    extractID (str: string) {
       let match = str.match(/gallog\.dcinside.com\/.+\'/g)
       return match ? match[0].replace(/gallog\.dcinside.com\/|\'/g, '') : null
     },
 
-    checkParticipant (id) {
+    checkParticipant (id: string): boolean {
       let same = false
 
       if (!id) {
@@ -47,7 +50,7 @@ Vue.component('refresher-comment', {
         same = this.extractID(loginid.getAttribute('onclick') || '') === id
       }
 
-      let post = document.querySelector('.gallview_head .gall_writer')
+      let post = document.querySelector('.gallview_head .gall_writer') as HTMLElement
       if (!same && post && post.dataset) {
         same =
           post.dataset.uid &&
@@ -65,4 +68,4 @@ Vue.component('refresher-comment', {
       return same
     }
   }
-})
+}

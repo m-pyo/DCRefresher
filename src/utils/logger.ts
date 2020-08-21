@@ -1,5 +1,5 @@
-module.exports = (...inputs) => {
-  inputs.forEach(str => {
+export default (...inputs: any) => {
+  inputs.forEach((str: any) => {
     str = typeof str === 'object' ? JSON.stringify(str) : str
   })
 
@@ -7,6 +7,6 @@ module.exports = (...inputs) => {
     `🔧 %c${new Date().toLocaleTimeString('en-US')} %c:`,
     `color: #888;`,
     `color: unset;`,
-    ...inputs,
+    ...inputs
   )
 }

@@ -506,16 +506,12 @@ const DCREF_COMMON_IP = {
   '212.103': DCREF_ISP.ZENMATE
 }
 
-const ISPString = (ip, replace) => {
+export const ISPString = (ip: number | string, replace: string) => {
   return typeof DCREF_COMMON_IP[ip] !== 'undefined'
     ? typeof DCREF_ISP_STR[DCREF_COMMON_IP[ip]] !== 'undefined'
       ? DCREF_ISP_STR[DCREF_COMMON_IP[ip]]
       : '공용 IP'
     : replace
     ? replace
-    : null
-}
-
-module.exports = {
-  ISPString
+    : ''
 }

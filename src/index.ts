@@ -2,31 +2,36 @@ import './styles/index.scss'
 
 const settings = require('./utils/store.js')
 const http = require('./utils/http.js')
-const ip = require('./utils/ip.js')
-const log = require('./utils/logger.js')
+import log from './utils/logger'
 
 log('🍊⚓ Initializing DCRefresher.')
 
-const modules = require('./core/modules')
-const filter = require('./core/filtering')
+import modules from './core/modules'
+import { filter } from './core/filtering'
 const frame = require('./core/frame')
 
 settings.load()
 
-modules.register(require('./modules/darkmode.js'))
-modules.register(require('./modules/fonts.js'))
-modules.register(require('./modules/adblock.js'))
-modules.register(require('./modules/comment_ads.js'))
-modules.register(require('./modules/refresh.js'))
-modules.register(require('./modules/preview.js'))
-modules.register(require('./modules/ip.js'))
+import { Preview } from './modules/preview'
+import { DarkMode } from './modules/darkmode'
+import { AdBlock } from './modules/adblock'
+import { Fonts } from './modules/fonts'
+import { Ip } from './modules/ip'
+import { AutoRefresh } from './modules/refresh'
+
+modules.register(DarkMode)
+modules.register(Fonts)
+modules.register(AdBlock)
+modules.register(require('./modules/comment_ads'))
+modules.register(AutoRefresh)
+modules.register(Preview)
+modules.register(Ip)
 
 const refresherMain = async () => {
   await filter.run(true)
 
   log('🍊✔️ DCRefresher Loaded.')
 }
-  
 ;(async () => {
   filter.run()
 

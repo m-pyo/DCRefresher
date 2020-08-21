@@ -1,6 +1,4 @@
-const Vue = require('vue')
-
-Vue.component('refresher-user', {
+export default {
   template: `<div class="refresher-user" :data-me="me">
     <span class="refresher-user-icon" :data-icon="user.icon" :data-type="user.type"></span>
     <span class="refresher-user-nick">{{user.nick}}</span>
@@ -17,4 +15,4 @@ Vue.component('refresher-user', {
       required: false
     }
   }
-})
+}
