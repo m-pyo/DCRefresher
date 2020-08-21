@@ -11,13 +11,13 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'))
 module.exports = {
   mode: dev ? 'development' : 'production',
   entry: {
-    refresher: ['babel-polyfill', path.resolve('src', 'index.js')]
+    refresher: ['babel-polyfill', path.resolve('src', 'index.ts')]
   },
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  devtool: '',
+  // devtool: '',
   module: {
     rules: [
       {
@@ -51,7 +51,12 @@ module.exports = {
       },
       {
         test: /\.pug$/,
-        use: ['pug-loader']
+        loader: 'pug-loader',
+        options: {
+          globals: {
+            version: pkg.version
+          }
+        }
       }
     ]
   },
@@ -92,7 +97,7 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['.js', '.css'],
+    extensions: ['.js', '.ts', '.css'],
     modules: ['node_modules'],
     alias: {
       vue: 'vue/dist/vue.js'

@@ -35,11 +35,17 @@
         }
       })
 
-      this.memory.uuidf3 = filter.addGlobal('listAd', '.gall_list .gall_subject b', elem => {
-        if (elem.innerHTML === 'AD') {
-          elem.parentElement.parentElement.parentElement.removeChild(elem.parentElement.parentElement)
+      this.memory.uuidf3 = filter.addGlobal(
+        'listAd',
+        '.gall_list .gall_subject b',
+        elem => {
+          if (elem.innerHTML === 'AD') {
+            elem.parentElement.parentElement.parentElement.removeChild(
+              elem.parentElement.parentElement
+            )
+          }
         }
-      })
+      )
 
       eventBus.on('refresh', () => {
         filter.runSpecific('listAd')

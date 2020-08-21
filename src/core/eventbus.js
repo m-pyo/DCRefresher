@@ -32,6 +32,10 @@ const strings = require('../utils/string.js')
       })
     },
 
+    emitNextTick: (event, ...params) => {
+      return requestAnimationFrame(() => eventBus.emit(event, ...params))
+    },
+
     /**
      * lists에 등록된 이벤트 콜백을 호출하면서 생긴 값을 반환합니다.
      *

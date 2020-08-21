@@ -11,6 +11,8 @@ const modules = require('./core/modules')
 const filter = require('./core/filtering')
 const frame = require('./core/frame')
 
+settings.load()
+
 modules.register(require('./modules/darkmode.js'))
 modules.register(require('./modules/fonts.js'))
 modules.register(require('./modules/adblock.js'))

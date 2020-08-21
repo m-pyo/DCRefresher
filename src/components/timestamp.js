@@ -7,12 +7,10 @@ var d = h * 24
 var w = d * 7
 var y = d * 365.25
 
-let stampMode = 0
-
 Vue.component('refresher-timestamp', {
-  template: `<div class="refresher-timestamp" v-on:click="changeStamp" :title="locale">
+  template: `<div class="refresher-timestamp" v-on:click="this.$root.changeStamp" :title="locale">
     <transition name="refresher-opacity">
-      <span :key="'stamp' + stampMode">{{stampMode ? locale : stamp}}</span>
+      <span :key="'stamp' + this.$root.stampMode">{{this.$root.stampMode ? locale : stamp}}</span>
     </transition>
   </div>`,
   props: {
@@ -24,8 +22,7 @@ Vue.component('refresher-timestamp', {
   data: () => {
     return {
       mode: 0,
-      stamp: '',
-      stampMode
+      stamp: ''
     }
   },
   computed: {
@@ -51,11 +48,6 @@ Vue.component('refresher-timestamp', {
         }
       }
     },
-
-    changeStamp() {
-      this.stampMode = !stampMode
-      stampMode = !stampMode
-    }
   },
   mounted() {
     this.stamp = this.convertTime(this.date)

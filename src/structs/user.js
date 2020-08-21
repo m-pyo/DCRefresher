@@ -1,3 +1,5 @@
+const ip = require('../utils/ip')
+
 const USERTYPE = {
   UNFIXED: 0,
   HALFFIXED: 1,
@@ -65,5 +67,14 @@ module.exports = class User {
 
   isMember () {
     return this.id !== null
+  }
+
+  set ip (v) {
+    this.ip_data = ip.ISPString(v)
+    this.__ip = v
+  }
+
+  get ip () {
+    return this.__ip
   }
 }

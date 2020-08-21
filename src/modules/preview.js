@@ -264,9 +264,13 @@ let getCookie = name => {
             frame.user = obj.user
             frame.date = new Date(obj.date)
 
-            eventBus.emit('contentPreview', frame.app)
             frame.setData('load', false)
 
+            eventBus.emitNextTick(
+              'contentPreview',
+              frame.app.$el
+            )
+            
             obj = undefined
           })
       }
@@ -300,9 +304,8 @@ let getCookie = name => {
             referrer: `https://gall.dcinside.com/${
               http.checkMinor(link) ? 'mgallery/' : ''
             }board/view/?id=${gall_id}&no=${id}`,
-            body: `id=${gall_id}&no=${Number(
-              id
-            )}&cmt_id=${cmt_id || gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
+            body: `id=${gall_id}&no=${Number(id)}&cmt_id=${cmt_id ||
+              gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
               document.getElementById('e_s_n_o').value
             }&comment_page=1&sort=`
           })

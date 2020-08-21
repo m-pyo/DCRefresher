@@ -15,6 +15,13 @@ const contrast = (rgb1, rgb2) => {
 }
 
 const parse = str => {
+  if (str[0] === '#') {
+    return str
+      .substring(1, str.length)
+      .match(/.{1,2}/g)
+      .map(v => parseInt(v, 16))
+  }
+
   return str
     .replace(')', '')
     .split('(')[1]
@@ -82,10 +89,16 @@ const HSLtoRGB = (h, s, l) => {
   return [r * 255, g * 255, b * 255]
 }
 
+const RGBtoHEX = (...args) => '#' + args.map(v => (~~v).toString(16)).join('')
+
+const inverseColor = c => 1 - c ** 2
+
 module.exports = {
   luminanace,
   contrast,
   parse,
   RGBtoHSL,
-  HSLtoRGB
+  HSLtoRGB,
+  RGBtoHEX,
+  inverseColor
 }

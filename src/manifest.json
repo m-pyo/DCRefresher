@@ -5,11 +5,16 @@
   "permissions": [
     "https://dccon.dcinside.com/*",
     "https://gall.dcinside.com/*",
+    "https://addc.dcinside.com/*",
     "*://*/*",
     "webRequest",
     "webRequestBlocking",
     "storage"
   ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
   "content_scripts": [
     {
       "js": ["refresher.bundle.js"],

@@ -5,9 +5,7 @@ Vue.component('refresher-preview-button', {
   <transition name="refresher-shake">
     <div class="refresher-preview-button" :key="error" v-on:click="safeClick">
       <img :src="getURL('/assets/icons/' + id + '.png')"></img>
-      <transition name="refresher-slide-left">
-        <p class="refresher-vote-text" :key="text" :id="'refresher-' + id + '-counts'">{{text}}</p>
-      </transition>
+      <p class="refresher-vote-text" :id="'refresher-' + id + '-counts'">{{text}}</p>
     </div>
   </transition>`,
   props: {

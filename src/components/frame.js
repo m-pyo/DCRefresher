@@ -84,7 +84,7 @@ const Outer = Vue.component('refresher-frame-outer', {
 
 const Group = Vue.component('refresher-group', {
   template: `<div class="refresher-group" v-on:click="clickHandle">
-      <refresher-frame v-for="(frame, i) in frames" :frame="frame" :index="i"></refresher-frame>
+      <refresher-frame v-for="(frame, i) in frames" :key="'frame' + Math.random()" :frame="frame" :index="i"></refresher-frame>
     </div>`,
   data () {
     return {

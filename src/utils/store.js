@@ -21,7 +21,12 @@ const get = key => {
   return new Promise((resolve, reject) => str.sync.get(key, v => resolve(v)))
 }
 
+const load = () => {
+  
+}
+
 module.exports = {
   set,
-  get
+  get,
+  load
 }

@@ -4,20 +4,27 @@ html.refresher-popup
     meta(http-equiv="Content-Type" content="text/html;charset=UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet" href="../refresher.bundle.css")
-    script(src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js")
+    script(src="../vue.min.js")
+    script(src="../vue.js")
     script(src="../option.bundle.js")
   body
     div#refresher-app
       div.refresher-title-zone
-        h1 설정 {{tab}}
+        h1 설정
         .float-right
-          p 일반
-          p 고급
-          p 모듈
-          
-      div.tab1
-        h3 DCRefresher <span>2.0.0</span>
-
-      div.refresher-preview-button.primary
-        img(src="chrome.extension.getURL('/assets/icons/upvote.png')")
-        p.refresher-vote-text 
+          p(v-on:click="() => tab = 0") 일반
+          p(v-on:click="() => tab = 1") 고급
+          p(v-on:click="() => tab = 2") 모듈
+      
+      transition-group(name="refresher-slide-left")
+        div.tab1(v-show="tab == 0" key="tab1")
+          .info
+            img(class="icon" data-image="icon")
+            .text
+              h3 DCRefresher
+              p <span class="version">v#{version}</span>  <a v-for="(link, i) in links" v-on:click="open(link.url)">{{link.text}}</a>
+        div.tab2(v-show="tab == 1" key="tab2")
+          h3 고급
+        div.tab3(v-show="tab == 2" key="tab3")
+          h3 모듈
+          refresher-module(v-for="(module, i) in modules" :key="module.name" :name="module.name" :desc="module.desc")

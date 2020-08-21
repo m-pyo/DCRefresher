@@ -63,10 +63,15 @@ require('../components/comment')
             frames: [],
             ...option,
             activeGroup: option.groupOnce,
-            fade: false
+            fade: false,
+            stampMode: false,
           }
         },
         methods: {
+          changeStamp() {
+            this.stampMode = !this.stampMode
+          },
+
           first () {
             return this.frames[0]
           },
