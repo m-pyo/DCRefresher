@@ -13,7 +13,11 @@ export default {
         <TimeStamp :date="new Date(date(comment.reg_date))"></TimeStamp>
       </div>
     </div>
-    <p class="refresher-comment-content" v-html="comment.memo"></p>
+    <div v-if="comment.vr_player">
+      <audio :src="getVoiceData.src" controls></audio>
+      <p v-if="getVoiceData.memo">{{getVoiceData.memo}}</p>
+    </div>
+    <p v-else class="refresher-comment-content" v-html="comment.memo"></p>
   </div>`,
   props: {
     comment: {
@@ -24,6 +28,16 @@ export default {
     parentUser: {
       type: Object,
       required: false
+    }
+  },
+  computed: {
+    getVoiceData () {
+      if (!this.comment.vr_player) {
+        return
+      }
+
+      let memo = this.comment.memo.split('@^dc^@')
+      return { src: 'https://vr.dcinside.com/' + memo[0], memo: memo[1] }
     }
   },
   methods: {
@@ -50,7 +64,9 @@ export default {
         same = this.extractID(loginid.getAttribute('onclick') || '') === id
       }
 
-      let post = document.querySelector('.gallview_head .gall_writer') as HTMLElement
+      let post = document.querySelector(
+        '.gallview_head .gall_writer'
+      ) as HTMLElement
       if (!same && post && post.dataset) {
         same =
           post.dataset.uid &&

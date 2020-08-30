@@ -43,6 +43,7 @@ export default {
     uuid: null,
     uuidf2: null,
     uuidf3: null,
+    uuidf4: null,
     eventRefresh: null
   },
   enable: true,
@@ -60,6 +61,13 @@ export default {
       '.gall_list .gall_subject b',
       blockListAds
     )
+
+    this.memory.uuidf4 = filter.add('body', (elem: HTMLElement) => {
+      if (elem.className.indexOf('refresherAdBlock') == -1) {
+        elem.className += ' refresherAdBlock'
+      }
+    })
+
     this.memory.eventRefresh = eventBus.on('refresh', () => {
       filter.runSpecific('listAd').catch((_: Error) => {})
     })
@@ -80,6 +88,10 @@ export default {
 
     if (this.memory.uuidf3) {
       filter.remove(this.memory.uuidf3, true)
+    }
+
+    if (this.memory.uuidf4) {
+      filter.remove(this.memory.uuidf4, true)
     }
 
     if (this.memory.eventRefresh) {
