@@ -1,6 +1,6 @@
 const str = (window.chrome && window.chrome.storage) || storage
 
-const set = (key, value) => {
+export const set = (key: string, value: any) => {
   if (!str) {
     throw new Error("This browser doesn't support storage API.")
   }
@@ -8,25 +8,19 @@ const set = (key, value) => {
   let obj = {}
   obj[key] = value
 
-  return str.sync.set(obj, () => {
-    
-  })
+  return str.sync.set(obj)
 }
 
-const get = key => {
+export const get = (key: any) => {
   if (!str) {
     throw new Error("This browser doesn't support storage API.")
   }
 
-  return new Promise((resolve, reject) => str.sync.get(key, v => resolve(v)))
+  return new Promise((resolve, reject) =>
+    str.sync.get(key, (v: any) => {
+      resolve(v[key])
+    })
+  )
 }
 
-const load = () => {
-  
-}
-
-module.exports = {
-  set,
-  get,
-  load
-}
+export const load = () => {}

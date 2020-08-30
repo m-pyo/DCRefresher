@@ -4,10 +4,24 @@ import TimeStamp from './timestamp'
 import PreviewButton from './button'
 import User from './user'
 import Comment from './comment'
+import Icon from './icon'
 
 export const Loader = Vue.component('refresher-loader', {
   template: `<transition name="refresher-opacity">
-  <div class="refresher-loader"></div>
+    <div class="refresher-loader spinner gray animating">
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+    </div>
   </transition>`
 })
 
@@ -16,15 +30,16 @@ export const Frame = Vue.component('refresher-frame', {
     PreviewButton,
     TimeStamp,
     User,
-    Comment
+    Comment,
+    Icon
   },
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
       <div class="refresher-preview-info">
         <div class="refresher-preview-title-zone">
-          <transition name="refresher-slide-left" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+          <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
             <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
           </transition>
-          <transition name="refresher-slide-left" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+          <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
             <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
           </transition>
         </div>
@@ -41,10 +56,14 @@ export const Frame = Vue.component('refresher-frame', {
           <div v-html="frame.contents" :key="frame.contents"></div>
         </transition>
 
-        <div class="refresher-preview-comments" v-if="frame.isComment">
+        <div class="refresher-preview-comments" v-if="frame.isComment && frame.comments.comments">
           <transition-group name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
             <Comment v-for="(comment, i) in frame.comments.comments" :data-index="i + 1" :parentUser="frame.user" :comment="comment" :key="'cmt_' + comment.no"></Comment>
           </transition-group>
+        </div>
+        <div v-if="frame.isComment && !frame.comments.comments">
+          <h3 class="refresher-nocomment">작성된 댓글이 없습니다.</h3>
+          <PreviewButton class="refresher-writecomment primary" :icon="'write'" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
         </div>
       </div>
       <div class="refresher-preview-votes" v-if="frame.buttons">
@@ -80,11 +99,13 @@ export const Frame = Vue.component('refresher-frame', {
       return this.frame.shareFunction()
     },
 
+    writeComment () {},
+
     makeVoteRequest () {}
   }
 })
 
-const Outer = Vue.component('refresher-frame-outer', {
+export const Outer = Vue.component('refresher-frame-outer', {
   template: `<div class="refresher-frame-outer" :class="{background: this.$root.background, fadeIn: this.$root.fade, fadeOut: !this.$root.fade, stack: this.$root.fade}" >
     <refresher-group></refresher-group>
   </div>`

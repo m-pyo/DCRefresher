@@ -2,18 +2,16 @@ const ImageLists = {
   icon: '/assets/icons/logo/Icon.png'
 }
 
+const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
+const stor = (window.chrome && window.chrome.storage) || storage
+
 document.addEventListener('DOMContentLoaded', () => {
   let app = new Vue({
     el: '#refresher-app',
     data: () => {
       return {
         tab: 0,
-        modules: [
-          {
-            name: '다크 모드',
-            desc: 'DC 페이지를 검게 만듭니다.'
-          }
-        ],
+        modules: [],
         links: [
           {
             text: 'GitHub',
@@ -43,16 +41,27 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('img[data-image]').forEach(v => {
     v.src = chrome.extension.getURL(ImageLists[v.dataset.image])
   })
+
+  let send = runtime.sendMessage(
+    {
+      requestRefresherModules: true
+    },
+    null,
+    res => {
+      app.$data.modules = res
+    }
+  )
 })
 
 Vue.component('refresher-module', {
   template: `<div class="refresher-module">
-    <div class="">
-      <p>{{name}}</p>
-      <p>{{desc}}</p>
+    <div class="left">
+      <p class="title">{{name}}</p>
+      <p class="desc">{{desc}}</p>
+      <p class="mute">개발자 : <span class="link" v-if="typeof author === 'object'" v-on:click="() => openLink(author && author.url)">{{author.name}}</span><span v-else>{{author || '알 수 없음'}}</span>, 요구 유틸 : {{require.join(', ') || '없음'}}</p>
     </div>
-    <div class="">
-      <refresher-checkbox></refresher-checkbox>
+    <div class="right">
+      <refresher-checkbox :checked="enabled" :onChange="update"></refresher-checkbox>
     </div>
   </div>`,
 
@@ -65,6 +74,52 @@ Vue.component('refresher-module', {
     desc: {
       type: String,
       required: true
+    },
+
+    author: {
+      type: [String, Object],
+      required: false
+    },
+
+    require: {
+      type: Array,
+      required: false
+    },
+
+    enabled: {
+      type: Boolean,
+      required: true
+    }
+  },
+
+  methods: {
+    update (v) {
+      let obj = {}
+      obj[`${this.name}.enable`] = v.target.checked
+      stor.sync.set(obj)
+
+      if (this.name === '광고 차단') {
+        runtime.sendMessage({
+          toggleAdBlock: true,
+          data: v.target.checked
+        })
+      }
+
+      chrome.tabs.query({ active: true }, tabs => {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          updateSettings: true,
+          name: this.name,
+          value: v.target.checked
+        })
+      })
+    },
+
+    openLink (url) {
+      if (!url) {
+        return
+      }
+
+      window.open(url, '_blank')
     }
   }
 })
@@ -167,4 +222,3 @@ Vue.component('refresher-checkbox', {
     }
   }
 })
-

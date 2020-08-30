@@ -15,9 +15,9 @@ export const filter = {
   /**
    * lists에 등록된 필터 함수를 호출합니다.
    *
-   * @param {Boolean} non_blocking 비차단 방식으로 렌더링 합니다. (페이지 로드 후)
+   * @param non_blocking 비차단 방식으로 렌더링 합니다. (페이지 로드 후)
    */
-  run: async non_blocking => {
+  run: async (non_blocking: boolean) => {
     let listsKeys = Object.keys(lists)
 
     let len = listsKeys.length
@@ -30,10 +30,10 @@ export const filter = {
     }
   },
 
-  runSpecific: id => {
+  runSpecific: (id: string) => {
     let item = lists[id]
 
-    observe
+    return observe
       .find(item.scope, document.documentElement)
       .then(async e => filter.__run(item, e))
   },
@@ -70,7 +70,11 @@ export const filter = {
   /**
    * 필터 lists 에 있는 필터 함수를 제거합니다.
    */
-  remove: uuid => {
+  remove: (uuid, skip) => {
+    if (skip && typeof lists[uuid] === 'undefined') {
+      return
+    }
+
     if (typeof lists[uuid] === 'undefined') {
       throw new Error('Given UUID is not exists in the list.')
     }
@@ -112,7 +116,7 @@ export const filter = {
     }
 
     if (typeof lists[uuid].events[event] === 'undefined') {
-      throw new Error('Given Event is not exists in the list.')
+      return
     }
 
     let eventObj = lists[uuid].events[event]

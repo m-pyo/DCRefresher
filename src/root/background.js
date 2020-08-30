@@ -1,3 +1,16 @@
+let blockAds = true
+let modules = {}
+
+const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
+
+;((window.chrome && window.chrome.storage) || storage).sync.get(
+  '광고 차단.enable',
+  v => {
+    console.log('toggle ' + v['광고 차단.enable'])
+    blockAds = v['광고 차단.enable']
+  }
+)
+
 const checkBlockTarget = str =>
   !![
     '://addc.dcinside.com',
@@ -11,8 +24,26 @@ const checkBlockTarget = str =>
 
 chrome.webRequest.onBeforeRequest.addListener(
   details => {
-    return { cancel: checkBlockTarget(details.url) }
+    return { cancel: blockAds && checkBlockTarget(details.url) }
   },
   { urls: ['<all_urls>'] },
   ['blocking']
 )
+
+runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (typeof msg !== 'object') {
+    return
+  }
+
+  if (msg.registerModules) {
+    modules = msg.data
+  }
+
+  if (msg.toggleAdBlock) {
+    blockAds = msg.data
+  }
+
+  if (msg.requestRefresherModules) {
+    sendResponse(modules)
+  }
+})

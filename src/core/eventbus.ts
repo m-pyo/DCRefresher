@@ -102,7 +102,11 @@ export const eventBus = {
   /**
    * lists 에 있는 이벤트 콜백을 제거합니다.
    */
-  remove: (event: string, uuid: string) => {
+  remove: (event: string, uuid: string, skip) => {
+    if (skip && typeof lists[event] === 'undefined') {
+      return
+    }
+
     if (typeof lists[event] === 'undefined') {
       throw new Error('Given Event is not exists in the list.')
     }

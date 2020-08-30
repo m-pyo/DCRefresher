@@ -1,4 +1,4 @@
-const urls = {
+export const urls = {
   base: 'https://gall.dcinside.com/',
   gall: {
     major: 'https://gall.dcinside.com/',
@@ -18,20 +18,20 @@ const urls = {
   }
 }
 
-const heads = {
+export const heads = {
   'X-Requested-With': 'XMLHttpRequest'
 }
 
 // from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-const query = (str, query) => {
+export const query = (str: string, query: string) => {
   var match = RegExp('[?&]' + query + '=([^&]*)').exec(str)
   return match && decodeURIComponent(match[1].replace(/\+/g, ' '))
 }
 
-const viewRegex = /\/board\/view\//g
-const mgall = /dcinside\.com\/mgallery/g
+export const viewRegex = /\/board\/view\//g
+export const mgall = /dcinside\.com\/mgallery/g
 
-const queryDraw = (lis, url) => {
+const queryDraw = (lis: string[], url: string) => {
   let str = ''
   let len = lis.length
   for (var i = 0; i < len; i++) {
@@ -42,7 +42,7 @@ const queryDraw = (lis, url) => {
   return str
 }
 
-const view = url => {
+export const view = (url: string) => {
   if (!viewRegex.test(url)) return url
 
   url =
@@ -53,7 +53,7 @@ const view = url => {
   return url
 }
 
-const make = (url, options) =>
+export const make = (url: string, options: object) =>
   new Promise((resolve, reject) =>
     fetch(url, options).then(async response => {
       if (response.status && response.status > 400) {
@@ -70,12 +70,5 @@ const make = (url, options) =>
     })
   )
 
-const checkMinor = url => /\.com\/mgallery/g.test(url || location.href)
-
-module.exports = {
-  make,
-  urls,
-  view,
-  heads,
-  checkMinor
-}
+export const checkMinor = (url: string) =>
+  /\.com\/mgallery/g.test(url || location.href)

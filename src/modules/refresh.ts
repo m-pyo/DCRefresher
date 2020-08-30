@@ -1,14 +1,20 @@
-export const AutoRefresh = {
+const AVERAGE_COUNTS_SIZE = 7
+
+export default {
   name: '글 목록 새로고침',
   description: '글 목록을 자동으로 새로고침합니다.',
-  author: 'Sochiru',
+  author: { name: 'Sochiru', url: 'https://sochiru.pw' },
   status: {
     delay: 2500,
     auto_delay: true,
     fadeIn: true
   },
   memory: {
-    cache: {}
+    cache: {},
+    new_counts: 0,
+    average_counts: new Array(AVERAGE_COUNTS_SIZE).fill(1),
+    delay: 0,
+    refresh: 0
   },
   enable: true,
   default_enable: true,
@@ -31,13 +37,16 @@ export const AutoRefresh = {
     }
 
     let run = () => {
-      this.memory.delay = Math.max(2000, this.status.delay || 2500)
+      if (!this.status.auto_delay) {
+        this.memory.delay = Math.max(1000, this.memory.delay || 2500)
+      }
+
       this.memory.refresh = setTimeout(load, this.memory.delay)
     }
 
     let load = _ => {
       if (!document.hidden) {
-        this.memory.newCounts = 0
+        this.memory.new_counts = 0
 
         body().then(newList => {
           let oldList = document.querySelector('.gall_list')
@@ -46,22 +55,34 @@ export const AutoRefresh = {
           oldList.parentElement.appendChild(newList)
           oldList.parentElement.removeChild(oldList)
 
-          if (this.status.fadeIn) {
-            var cached = Array.from(oldList.querySelectorAll('td.gall_num'))
-              .map(v => v.innerHTML)
-              .join('|')
+          var cached = Array.from(oldList.querySelectorAll('td.gall_num'))
+            .map(v => v.innerHTML)
+            .join('|')
 
-            oldList = undefined
+          oldList = undefined
 
-            newList.querySelectorAll('td.gall_num').forEach(v => {
-              if (cached.indexOf(v.innerHTML) == -1) {
+          newList.querySelectorAll('td.gall_num').forEach(v => {
+            if (cached.indexOf(v.innerHTML) == -1) {
+              if (this.status.fadeIn) {
                 v.parentElement.className += ' refresherNewPost'
                 v.parentElement.style.animationDelay =
-                  this.memory.newCounts * 23 + 'ms'
-                this.memory.newCounts++
+                  this.memory.new_counts * 23 + 'ms'
               }
-            })
+              this.memory.new_counts++
+            }
+          })
+
+          this.memory.average_counts.push(this.memory.new_counts)
+
+          if (this.memory.average_counts.length > AVERAGE_COUNTS_SIZE) {
+            this.memory.average_counts.shift()
           }
+
+          let average =
+            this.memory.average_counts.reduce((a, b) => a + b) /
+            this.memory.average_counts.length
+
+          this.memory.delay = 8 * Math.pow(2 / 3, 3 * average) * 1000
 
           eventBus.emit('refresh', newList)
         })

@@ -1,6 +1,7 @@
-const queryString = require('../utils/query')
+import queryString from '../utils/query'
 import { User } from '../structs/user'
 import { PostInfo } from '../structs/post'
+import { findNeighbor } from '../utils/dom'
 
 /**
  * dcinside.com set cookie function
@@ -40,7 +41,7 @@ function get_cookie (e) {
 }
 
 /**
- * DC인사이드 쿠키 저장 스크립트
+ * 디시인사이드 쿠키 저장 스크립트
  * @param {String} cname
  * @param {String} cvalue
  * @param {Number} exdays
@@ -54,63 +55,23 @@ var setCookie = function (cname, cvalue, exdays, domain) {
     cname + '=' + cvalue + ';' + expires + ';path=/;domain=' + domain
 }
 
-/**
- * 쿠키를 가져옵니다.
- * @param {String} name 쿠키 key 이름
- */
-let getCookie = name => {
-  var value = '; ' + document.cookie
-  var parts = value.split('; ' + name + '=')
-  if (parts.length == 2) {
-    return parts
-      .pop()
-      .split(';')
-      .shift()
-  }
-}
-const findNeighbor = (el, find, max, current) => {
-  if (!find) {
-    return el
-  }
-
-  if (current && current > max) {
-    return null
-  }
-
-  if (!current) {
-    current = 0
-  }
-
-  if (el.parentElement) {
-    let query = el.parentElement.querySelector(find)
-
-    if (!query) {
-      current++
-
-      return findNeighbor(el.parentElement, find, max, current)
-    }
-
-    return query
-  }
-
-  return null
-}
-
-export const Preview = {
+export default {
   name: '미리보기',
   description: '글을 오른쪽 클릭 했을때 미리보기 창을 만들어줍니다.',
-  author: 'Sochiru',
+  author: { name: 'Sochiru', url: 'https://sochiru.pw' },
   status: false,
   memory: {
-    preventOpen: false
+    preventOpen: false,
+    lastPress: 0,
+    uuid: null
   },
   enable: true,
   default_enable: true,
   require: ['filter', 'eventBus', 'Frame', 'http'],
-  func (filter, eventBus, Frame, http) {
+  func (filter: RefresherFilter, eventBus: RefresherEventBus, Frame, http) {
     setCookie('_gat_mgall_web', 1, 3, 'dcinside.com')
 
-    let parse = (id, body) => {
+    let parse = (id: string, body: string) => {
       let dom = new DOMParser().parseFromString(body, 'text/html')
 
       let header = (
@@ -171,7 +132,7 @@ export const Preview = {
       gall_id: string,
       post_id: string,
       type: string,
-      code: string,
+      code: string | null,
       link: string
     ) => {
       set_cookie_tmp(
@@ -195,7 +156,7 @@ export const Preview = {
             type ? 'U' : 'D'
           }&code_recommend=${code}`
         })
-        .then(v => {
+        .then((v: string) => {
           let res = v.split('||')
 
           return {
@@ -206,13 +167,27 @@ export const Preview = {
         })
     }
 
-    let makeFirstFrame = (frame, gall, id, title, link) => {
+    let waitPost: Function | null
+
+    let makeFirstFrame = (
+      frame,
+      gall: string,
+      id: string,
+      title: string,
+      link: string
+    ) => {
       frame.setData('load', true)
       frame.title = title
       frame.buttons = true
 
-      frame.voteFunction = async type => {
-        let res = await makeVoteRequest(queryString('id'), id, type, null, link)
+      frame.voteFunction = async (type: string) => {
+        let res = await makeVoteRequest(
+          queryString('id')!,
+          id,
+          type,
+          null,
+          link
+        )
 
         if (res.result != 'true') {
           alert(res.counts)
@@ -250,8 +225,14 @@ export const Preview = {
             http.urls.view +
             (gall || queryString('id'))}&no=${id}`
         )
-        .then(v => parse(id, v))
-        .then(obj => {
+        .then((v: string) => {
+          if (typeof waitPost === 'function') {
+            waitPost(v)
+          }
+
+          return parse(id, v)
+        })
+        .then((obj: any) => {
           frame.contents = obj.contents
           frame.upvotes = obj.upvotes
           frame.downvotes = obj.downvotes
@@ -267,27 +248,15 @@ export const Preview = {
         })
     }
 
-    let makeSecondFrame = (
-      frame,
-      gall: string,
+    // TODO : 페이지네이션 구현
+    let requestComment = (
+      frame: any,
+      link: string,
+      gall_id: string,
       id: string,
-      title: string,
-      link: string
+      cmt_id: string,
+      cmt_no: string
     ) => {
-      frame.setData('load', true)
-      frame.title = `댓글`
-      frame.subtitle = `로딩 중`
-
-      let gall_id = gall || queryString('id')
-
-      let cmt_id
-      let cmt_no
-
-      if (window.$) {
-        cmt_id = window.$(document).data('comment_id')
-        cmt_no = window.$(document).data('comment_no')
-      }
-
       http
         .make(http.urls.comments, {
           method: 'POST',
@@ -306,10 +275,12 @@ export const Preview = {
             (document.getElementById('e_s_n_o')! as HTMLInputElement).value
           }&comment_page=1&sort=`
         })
-        .then((comments: any[]) => {
+        .then((comments: any) => {
           if (!comments) {
             frame.error = true
           }
+
+          let threadCounts = 0
 
           if (comments.comments) {
             comments.comments = comments.comments.filter(v => {
@@ -327,6 +298,10 @@ export const Preview = {
                   {})! as HTMLImageElement).src
               )
             })
+
+            threadCounts = comments.comments
+              .map(v => v.depth)
+              .reduce((a, b) => a + b)
           }
 
           frame.subtitle = `${
@@ -339,6 +314,41 @@ export const Preview = {
 
           frame.setData('load', false)
         })
+    }
+
+    let makeSecondFrame = (
+      frame,
+      gall: string,
+      id: string,
+      title: string,
+      link: string
+    ) => {
+      frame.setData('load', true)
+      frame.title = `댓글`
+      frame.subtitle = `로딩 중`
+
+      let gall_id = gall || queryString('id')
+
+      if (gall_id === 'issuezoom') {
+        waitPost = (v: string) => {
+          let datmatch = /(["'])(?:(?=(\\?))\2.)*?\1/g
+          let id_match = v
+            .match(/\$\(document\)\.data\('comment_id'\,\s\'.+'\);/g)![0]
+            .match(datmatch)![1]
+            .replace(/\'/g, '')
+
+          let comment_no = v
+            .match(/\$\(document\)\.data\('comment_no'\,\s\'.+'\);/g)![0]
+            .match(datmatch)![1]
+            .replace(/\'/g, '')
+
+          requestComment(frame, link, gall_id!, id, id_match, comment_no)
+        }
+
+        return
+      }
+
+      requestComment(frame, link, gall_id!, id, gall_id!, id)
     }
 
     let previewFrame = (ev: MouseEvent) => {
@@ -370,24 +380,44 @@ export const Preview = {
         }
       )
 
-      let listId = findNeighbor(ev.target, '.gall_num', 5, null)
-      let preId
-      let preGall
-      let preLink
-      let preTitle
+      let listId = findNeighbor(ev.target as HTMLElement, '.gall_num', 5, null)
+      let preId = ''
+      let preGall = ''
+      let preLink: HTMLLinkElement
+      let preTitle = ''
 
       if (!listId) {
-        preLink = findNeighbor(ev.target, 'a', 2, null)
-        preId = (preLink.href || '').match(/\&no=.+/)[0].replace('&no=', '')
-        preGall = ((preLink.href || '').match(/\id=.+\&/) || '')[0].replace(
-          /id=|&/g,
-          ''
-        )
-        preTitle = findNeighbor(ev.target, '.txt_box', 2, null).innerHTML
+        preLink = findNeighbor(
+          ev.target as HTMLElement,
+          'a',
+          2,
+          null
+        ) as HTMLLinkElement
+
+        if (typeof preLink !== null) {
+          preId = (preLink.href || '').match(/\&no=.+/)![0].replace('&no=', '')
+          preGall = ((preLink.href || '').match(/\id=.+\&/) || '')[0].replace(
+            /id=|&/g,
+            ''
+          )
+        }
+
+        let pt = findNeighbor(ev.target as HTMLElement, '.txt_box', 2, null)
+        if (pt !== null) {
+          preTitle = pt.innerHTML
+        }
       } else {
         preId = listId.innerText
-        preLink = findNeighbor(ev.target, 'a:not(.reply_numbox)', 3, null)
-        preTitle = preLink.innerText
+        preLink = findNeighbor(
+          ev.target as HTMLElement,
+          'a:not(.reply_numbox)',
+          3,
+          null
+        ) as HTMLLinkElement
+
+        if (typeof preLink !== null) {
+          preTitle = preLink.innerText
+        }
       }
 
       makeFirstFrame(frame.app.first(), preGall, preId, preTitle, preLink.href)

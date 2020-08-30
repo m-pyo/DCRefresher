@@ -508,10 +508,6 @@ const DCREF_COMMON_IP = {
 
 export const ISPString = (ip: number | string, replace: string) => {
   return typeof DCREF_COMMON_IP[ip] !== 'undefined'
-    ? typeof DCREF_ISP_STR[DCREF_COMMON_IP[ip]] !== 'undefined'
-      ? DCREF_ISP_STR[DCREF_COMMON_IP[ip]]
-      : '공용 IP'
-    : replace
-    ? replace
-    : ''
+    ? DCREF_ISP_STR[DCREF_COMMON_IP[ip]] || '공용 IP'
+    : replace || ''
 }

@@ -26,3 +26,43 @@ export const traversal = (element: HTMLElement): HTMLElement[] => {
 
   return result
 }
+
+/**
+ * 인근 Element 들을 탐색합니다.
+ * @param el 검색을 시작할 Element
+ * @param find 찾을 Element의 HTML Selector
+ * @param max 최대 깊이
+ * @param current 현재 깊이 (내부용)
+ */
+export const findNeighbor = (
+  el: HTMLElement,
+  find: string,
+  max: number,
+  current: number | null
+): HTMLElement | null => {
+  if (!find) {
+    return el
+  }
+
+  if (current && current > max) {
+    return null
+  }
+
+  if (!current) {
+    current = 0
+  }
+
+  if (el.parentElement) {
+    let query = el.parentElement.querySelector(find) as HTMLElement
+
+    if (!query) {
+      current++
+
+      return findNeighbor(el.parentElement, find, max, current)
+    }
+
+    return query
+  }
+
+  return null
+}

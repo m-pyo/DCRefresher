@@ -12,19 +12,26 @@ html.refresher-popup
       div.refresher-title-zone
         h1 설정
         .float-right
-          p(v-on:click="() => tab = 0") 일반
-          p(v-on:click="() => tab = 1") 고급
-          p(v-on:click="() => tab = 2") 모듈
-      
-      transition-group(name="refresher-slide-left")
-        div.tab1(v-show="tab == 0" key="tab1")
+          p(:class="{active: tab == 0}" v-on:click="() => tab = 0") 일반
+          p(:class="{active: tab == 1}" v-on:click="() => tab = 1") 고급
+          p(:class="{active: tab == 2}" v-on:click="() => tab = 2") 모듈
+      transition-group(name="refresher-pop-in" mode="in-out")
+        div.tab.tab1(v-show="tab == 0" key="tab1")
           .info
             img(class="icon" data-image="icon")
             .text
               h3 DCRefresher
               p <span class="version">v#{version}</span>  <a v-for="(link, i) in links" v-on:click="open(link.url)">{{link.text}}</a>
-        div.tab2(v-show="tab == 1" key="tab2")
-          h3 고급
-        div.tab3(v-show="tab == 2" key="tab3")
-          h3 모듈
-          refresher-module(v-for="(module, i) in modules" :key="module.name" :name="module.name" :desc="module.desc")
+        div.tab.tab2(v-show="tab == 1" key="tab2")
+          h3 고급 설정
+          p refresher
+        div.tab.tab3(v-show="tab == 2" key="tab3")
+          div.refresher-no-modules(v-if="!Object.keys(modules).length")
+            h3 로드된 모듈 없음
+            p 우선 디시 페이지를 열어주세요.
+          div(v-else)
+            refresher-module(v-for="(module, i) in modules" :key="module.name" :name="module.name" :desc="module.description" :enabled="module.enable" :author="module.author" :require="module.require")
+            br
+            hr
+            br
+            button 제 3자 스크립트 가져오기

@@ -47,28 +47,31 @@ export class User {
   __ip: string
 
   constructor (nick: string, id: string, ip: string, icon: string) {
-    this.nick = nick
-    this.id = id
-    this.ip = ip
     this.__ip = ''
     this.ip_data = ''
 
+    this.nick = nick
+    this.id = id
+    this.ip = ip
     this.icon = icon
     this.type = getType(icon)
   }
 
-  import(dom: HTMLElement | null) {
+  import (dom: HTMLElement | null) {
     if (dom === null) {
       return
     }
-    
+
     let nick = dom.dataset.nick || ''
     let uid = dom.dataset.uid || ''
     let ip = dom.dataset.ip || ''
 
     let icon =
       uid !== null
-        ? (dom.querySelector('a.writer_nikcon img')! as HTMLImageElement || {}).src
+        ? (
+            (dom.querySelector('a.writer_nikcon img')! as HTMLImageElement) ||
+            {}
+          ).src
         : ''
 
     this.nick = nick
@@ -89,7 +92,7 @@ export class User {
   }
 
   set ip (v: string) {
-    this.ip_data = ip.ISPString(v)
+    this.ip_data = ip.ISPString(v, '')
     this.__ip = v
   }
 

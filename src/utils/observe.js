@@ -6,6 +6,8 @@ const observe = {
         resolve(parentFind)
       }
 
+      let tout = null
+
       var observer = new MutationObserver(muts => {
         let executed = false
         let iter = muts.length
@@ -21,19 +23,23 @@ const observe = {
 
         resolve(lists)
         observer.disconnect()
+
+        if (tout) {
+          clearTimeout(tout)
+        }
       })
 
       observer.observe(parent || document.documentElement, {
         childList: true
       })
 
-      setTimeout(() => {
+      tout = setTimeout(() => {
         if (!observer) return
         observer.disconnect()
 
         observer = undefined
         reject('Too long execution.')
-      }, 4000)
+      }, 3000)
     })
 }
 
