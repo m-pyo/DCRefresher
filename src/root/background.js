@@ -6,8 +6,7 @@ const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
 ;((window.chrome && window.chrome.storage) || storage).sync.get(
   '광고 차단.enable',
   v => {
-    console.log('toggle ' + v['광고 차단.enable'])
-    blockAds = v['광고 차단.enable']
+    blockAds = v && v['광고 차단.enable']
   }
 )
 
@@ -45,5 +44,13 @@ runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.requestRefresherModules) {
     sendResponse(modules)
+  }
+})
+
+runtime.onInstalled.addListener(details => {
+  if (details.reason === 'install') {
+    // TODO : After Install
+  } else if (details.reason === 'update') {
+    // TODO : Update
   }
 })

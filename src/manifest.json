@@ -42,5 +42,10 @@
     "chrome_style": false,
     "page": "views/index.html"
   },
-  "web_accessible_resources": ["assets/*", "popup/*"]
+  "web_accessible_resources": ["assets/*", "popup/*"],
+  "applications": {
+    "gecko": {
+      "id": "dcrefresher@sochiru.pw"
+    }
+  }
 }

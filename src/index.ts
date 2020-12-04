@@ -19,6 +19,7 @@ import Fonts from './modules/fonts'
 import Ip from './modules/ip'
 import AutoRefresh from './modules/refresh'
 import BlockCommentAds from './modules/comment_ads'
+import Layout from './modules/layout'
 
 modules.load(
   DarkMode,
@@ -27,19 +28,19 @@ modules.load(
   BlockCommentAds,
   AutoRefresh,
   Preview,
-  Ip
+  Ip,
+  Layout
 )
 
 const refresherMain = async () => {
   await filter.run(true)
 
   log(
-    `🍊✔️ DCRefresher + Page Loaded. took ${(performance.now() - loadStart).toFixed(
-      2
-    )}ms.`
+    `🍊✔️ DCRefresher + Page Loaded. took ${(
+      performance.now() - loadStart
+    ).toFixed(2)}ms.`
   )
 }
-  
 ;(() => {
   log(
     `🍊👟 DCRefresher Module Loaded. took ${(

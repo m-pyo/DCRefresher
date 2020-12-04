@@ -37,7 +37,7 @@ const blockFeatureMsg = () => {
   )
 }
 
-const runModule = mod => {
+const runModule = (mod: RefresherModule) => {
   let plugins = []
 
   if (mod.require && mod.require.length) {
@@ -47,10 +47,12 @@ const runModule = mod => {
     }
   }
 
-  mod.func(...plugins)
+  if (mod.func) {
+    mod.func(...plugins)
+  }
 }
 
-const revokeModule = mod => {
+const revokeModule = (mod: RefresherModule) => {
   if (mod.revoke) {
     let plugins = []
 
@@ -106,6 +108,12 @@ export const modules = {
 
     mod.enable = await store.get(`${mod.name}.enable`)
     mod.status = await store.get(`${mod.name}.status`)
+
+    if (mod.settings) {
+      console.log(mod.settings)
+
+      // TODO : 모듈 object에 settings field가 존재할 경우 탭에 넣는 등의 처리하기
+    }
 
     module_store[mod.name] = mod
 

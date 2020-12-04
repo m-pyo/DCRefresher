@@ -92,7 +92,8 @@ export class User {
   }
 
   set ip (v: string) {
-    this.ip_data = ip.ISPString(v, '')
+    this.ip_data = ip.format(ip.ISPData(v, ''))
+    // TODO : ISP 정보 가져오기
     this.__ip = v
   }
 

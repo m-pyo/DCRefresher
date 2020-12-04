@@ -376,11 +376,17 @@ export default {
         {
           background: true,
           stack: true,
-          groupOnce: true
+          groupOnce: true,
+          onScroll: (ev, app, group: HTMLElement) => {
+            if (group.scrollTop === 0 || group.scrollTop + window.innerHeight >= group?.scrollHeight) {
+              group.style.top = (ev.deltaY * -1) + 'px'
+            }
+          }
         }
       )
 
       let listId = findNeighbor(ev.target as HTMLElement, '.gall_num', 5, null)
+
       let preId = ''
       let preGall = ''
       let preLink: HTMLLinkElement
@@ -407,7 +413,17 @@ export default {
           preTitle = pt.innerHTML
         }
       } else {
-        preId = listId.innerText
+        preId =
+          listId.innerText === '공지'
+            ? new URLSearchParams(
+                findNeighbor(
+                  ev.target as HTMLElement,
+                  'a',
+                  5,
+                  null
+                )?.getAttribute('href')!
+              ).get('no')
+            : listId.innerText
         preLink = findNeighbor(
           ev.target as HTMLElement,
           'a:not(.reply_numbox)',

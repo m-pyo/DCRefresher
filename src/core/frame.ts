@@ -11,6 +11,7 @@ interface FrameStackOption {
   background?: boolean
   stack?: boolean
   groupOnce?: boolean
+  onScroll?: Function
 }
 
 import { Outer } from '../components/frame'
@@ -144,5 +145,12 @@ export default class {
     document.addEventListener('keyup', keyupFunction)
 
     document.querySelector('body')!.style.overflow = 'hidden'
+
+    if (typeof option.onScroll === 'function') {
+      let refresherGroup = this.app.$el.querySelector('.refresher-group')
+      refresherGroup.addEventListener('wheel', ev => {
+        option.onScroll(ev, this.app, refresherGroup)
+      })
+    }
   }
 }

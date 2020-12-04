@@ -12,11 +12,13 @@ export default {
   func (filter, ip, eventBus) {
     let ipInfoAdd = elem => {
       if (!elem || !elem.dataset.ip || elem.dataset.refresherIp) return false
-      let ip_str = ip.ISPString(elem.dataset.ip, '')
+      let ip_data = ip.ISPData(elem.dataset.ip, '')
+
+      // TODO : VPN 가르기
 
       let text = document.createElement('span')
       text.className = 'ip refresherIP'
-      text.innerHTML = ip_str
+      text.innerHTML = ip.format(ip_data)
 
       let fl = elem.querySelector('.fl')
       if (fl) {
@@ -25,7 +27,7 @@ export default {
         elem.appendChild(text)
       }
 
-      elem.dataset.refresherIp = ip_str
+      elem.dataset.refresherIp = ip_data && ip_data.name && ip.format(ip_data)
     }
 
     this.memory.uuid = filter.add('.ub-writer', (elem: HTMLElement) => {

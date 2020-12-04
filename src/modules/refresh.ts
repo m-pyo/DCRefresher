@@ -19,6 +19,14 @@ export default {
   enable: true,
   default_enable: true,
   require: ['http', 'eventBus'],
+  settings: {
+    refreshRate: {
+      name: '새로고침 주기',
+      desc: '페이지를 새로 고쳐 현재 페이지에 반영하는 주기입니다.',
+      type: 'range',
+      default: 2500,
+    }
+  },
   func (http, eventBus) {
     let url = http.view(location.href)
     const body = () => {
@@ -72,17 +80,19 @@ export default {
             }
           })
 
-          this.memory.average_counts.push(this.memory.new_counts)
+          if (this.memory.average_counts) {
+            this.memory.average_counts.push(this.memory.new_counts)
 
-          if (this.memory.average_counts.length > AVERAGE_COUNTS_SIZE) {
-            this.memory.average_counts.shift()
+            if (this.memory.average_counts.length > AVERAGE_COUNTS_SIZE) {
+              this.memory.average_counts.shift()
+            }
+
+            let average =
+              this.memory.average_counts.reduce((a, b) => a + b) /
+              this.memory.average_counts.length
+
+            this.memory.delay = 8 * Math.pow(2 / 3, 3 * average) * 1000
           }
-
-          let average =
-            this.memory.average_counts.reduce((a, b) => a + b) /
-            this.memory.average_counts.length
-
-          this.memory.delay = 8 * Math.pow(2 / 3, 3 * average) * 1000
 
           eventBus.emit('refresh', newList)
         })

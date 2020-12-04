@@ -429,6 +429,10 @@ $dark-highlight: #176ef1d5;
     filter: invert(1);
   }
 
+  .dc_logo img[alt='갤러리'] {
+    filter: brightness(2);
+  }
+
   .btn_hitgall,
   .btn_snsmore,
   .btn_report,
@@ -651,6 +655,142 @@ $dark-highlight: #176ef1d5;
 .nickname + .refresherIP {
 }
 
+// DC Layout Module
+
+.refresherResponsive {
+  @media screen and (max-width: 1100px) {
+    min-width: unset;
+
+    .wrap_inner {
+      width: unset;
+    }
+
+    .list_wrap,
+    .view_wrap {
+      min-width: unset;
+      width: 100%;
+    }
+
+    .width1160 .dchead,
+    .width1160 .gnb,
+    .width1160 #container,
+    .width1160 .info_policy,
+    .width1160 .copyright {
+      width: unset;
+    }
+
+    .dchead {
+      height: 95px;
+    }
+
+    .dc_logo {
+      left: 7vw;
+      top: 30px;
+
+      a {
+        float: unset;
+      }
+    }
+
+    .dc_logo img[alt='디시인사이드'] {
+      width: calc(7vw + 13vh);
+    }
+
+    .dc_logo img[alt='갤러리'] {
+      margin-top: -3.3vh;
+      position: absolute; 
+      width: calc((7vw + 13vh) / 2);
+    }
+
+    .width1160 .top_search {
+      width: calc(100vw - (7vw + 13vh + (7vw + 13vh / 2)));
+    }
+
+    .width1160 .wrap_search {
+      left: unset;
+      right: 13px;
+    }
+
+    .auto_wordwrap {
+      right: 0px;
+      left: unset !important;
+    }
+
+    .width1160 .inner_search {
+      width: calc((100vw - (7vw + 13vh + (7vw + 13vh / 2))) - 50px);
+    }
+
+    .area_links {
+      right: 13px;
+    }
+
+    .width1160 .gnb_bar {
+      min-width: auto;
+    }
+
+    .width1160 .gnb_list {
+      width: 100%;
+      display: flex;
+    }
+
+    .gnb_list li {
+      a {
+        font-size: 12px;
+      }
+
+      &:first-child {
+        margin-left: auto;
+      }
+
+      margin: auto;
+    }
+
+    .gall_exposure,
+    .right_content,
+    .minor_ranking_box,
+    .listwrap .issue_contentbox {
+      display: none;
+    }
+
+    .list_array_option, .listwrap .visit_list, .listwrap .issuebox {
+      width: 100%;
+    }
+
+    .listwrap .visit_history {
+      width: 95%;
+    }
+
+    .listwrap .visit_list {
+      display: contents;
+    }
+
+    .array_tab button {
+      width: 72px;
+    }
+
+    .page_head h2 {
+      font-size: calc(1vw + 1.7vh);
+    }
+
+    .left_content .visit_list li a {
+      width: 60px;
+    }
+
+    .gall_issuebox {
+      padding-top: unset;
+    }
+
+    .listwrap .minor_intro_box {
+      padding: 0px 0px 0px 2px;
+    }
+
+    .width1160 .left_content {
+      width: 95%;
+      margin-left: 2.5%;
+    }
+  }
+}
+
 // Comment Dory Block Module
 
 .refresherNoDory .dcwrap .wrap_inner .dory {
@@ -723,6 +863,10 @@ $dark-highlight: #176ef1d5;
 
     padding-bottom: 1vh;
   }
+}
+
+.refresher-preview-contents {
+  content-visibility: auto;
 }
 
 .refresher-loader {
