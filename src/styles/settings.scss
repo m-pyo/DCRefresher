@@ -1,5 +1,5 @@
 .refresher-popup {
-  height: 355px;
+  height: 395px;
   width: 600px;
 }
 
@@ -45,8 +45,10 @@
   }
 
   .tab {
-    max-height: 300px;
     overflow: auto;
+    position: absolute;
+    width: 90%;
+    height: 280px;
   }
 
   .refresher-title-zone {

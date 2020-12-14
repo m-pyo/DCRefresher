@@ -1,7 +1,10 @@
+import { type } from 'os'
+
 export const urls = {
   base: 'https://gall.dcinside.com/',
   gall: {
     major: 'https://gall.dcinside.com/',
+    mini: 'https://gall.dcinside.com/mini/',
     minor: 'https://gall.dcinside.com/mgallery/'
   },
   view: 'board/view/?id=',
@@ -16,6 +19,18 @@ export const urls = {
     info: 'https://dccon.dcinside.com/index/get_info',
     buy: 'https://dccon.dcinside.com/index/buy'
   }
+}
+
+export const types = {
+  MAJOR: '',
+  MINOR: 'mgallery',
+  MINI: 'mini'
+}
+
+export const commentGallTypes = {
+  '': 'G',
+  minor: 'M',
+  mini: 'MI'
 }
 
 export const heads = {
@@ -45,12 +60,17 @@ const queryDraw = (lis: string[], url: string) => {
 export const view = (url: string) => {
   if (!viewRegex.test(url)) return url
 
-  url =
-    (mgall.test(url) ? urls.gall.minor : urls.gall.major) +
-    'board/lists' +
-    queryDraw(['id', 'exception_mode', 'page'], url)
+  let type = galleryType(url)
 
-  return url
+  if (type === types.MINI) {
+    type = urls.gall.mini
+  } else if (type === types.MINOR) {
+    type = urls.gall.minor
+  } else {
+    type = urls.gall.major
+  }
+
+  return type + 'board/lists' + queryDraw(['id', 'exception_mode', 'page'], url)
 }
 
 export const make = (url: string, options: object) =>
@@ -72,3 +92,22 @@ export const make = (url: string, options: object) =>
 
 export const checkMinor = (url: string) =>
   /\.com\/mgallery/g.test(url || location.href)
+
+export const checkMini = (url: string) =>
+  /\.com\/mini/g.test(url || location.href)
+
+/**
+ * URL에서 갤러리 종류를 확인하여 반환합니다.
+ *
+ * @param url 갤러리 종류를 확인할 URL.
+ * @param extra 마이너 갤러리와 미니 갤러리에 붙일 URL suffix.
+ */
+export const galleryType = (url: string, extra?: string) => {
+  if (checkMinor(url)) {
+    return types.MINOR + (extra && extra.length ? extra : '')
+  } else if (checkMini(url)) {
+    return types.MINI + (extra && extra.length ? extra : '')
+  }
+
+  return types.MAJOR
+}

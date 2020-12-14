@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return {
         tab: 0,
         modules: [],
+        settings: [],
         links: [
           {
             text: 'GitHub',
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     null,
     res => {
+      console.log(res)
       app.$data.modules = res
     }
   )
@@ -93,7 +95,9 @@ Vue.component('refresher-module', {
   },
 
   methods: {
-    update (v) {
+    update(v) {
+      console.log(v)
+
       let obj = {}
       obj[`${this.name}.enable`] = v.target.checked
       stor.sync.set(obj)

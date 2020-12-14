@@ -211,9 +211,9 @@ export default {
         }
 
         window.navigator.clipboard.writeText(
-          `https://gall.dcinside.com/${
-            http.checkMinor(link) ? 'mgallery' : 'board'
-          }/board/view/?id=${gall || queryString('id')}&no=${id}`
+          `https://gall.dcinside.com/${http.galleryType(
+            link
+          )}/board/view/?id=${gall || queryString('id')}&no=${id}`
         )
 
         return true
@@ -221,7 +221,7 @@ export default {
 
       http
         .make(
-          `${http.urls.gall[http.checkMinor(link) ? 'minor' : 'major'] +
+          `${http.urls.gall[http.galleryType(link)] +
             http.urls.view +
             (gall || queryString('id'))}&no=${id}`
         )
@@ -257,6 +257,8 @@ export default {
       cmt_id: string,
       cmt_no: string
     ) => {
+      let galleryType = http.galleryType(link, '/')
+
       http
         .make(http.urls.comments, {
           method: 'POST',
@@ -267,13 +269,13 @@ export default {
             'X-Requested-With': 'XMLHttpRequest'
           },
           cache: 'no-store',
-          referrer: `https://gall.dcinside.com/${
-            http.checkMinor(link) ? 'mgallery/' : ''
-          }board/view/?id=${gall_id}&no=${id}`,
-          body: `id=${gall_id}&no=${Number(id)}&cmt_id=${cmt_id ||
-            gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
-            (document.getElementById('e_s_n_o')! as HTMLInputElement).value
-          }&comment_page=1&sort=`
+          referrer: `https://gall.dcinside.com/${galleryType}board/view/?id=${gall_id}&no=${id}`,
+          body:
+            `id=${gall_id}&no=${Number(id)}&cmt_id=${cmt_id ||
+              gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
+              (document.getElementById('e_s_n_o')! as HTMLInputElement).value
+            }&comment_page=1&sort=&_GALLTYPE_=` +
+            http.commentGallTypes[galleryType.replace(/\//g, '')]
         })
         .then((comments: any) => {
           if (!comments) {
@@ -378,9 +380,10 @@ export default {
           stack: true,
           groupOnce: true,
           onScroll: (ev, app, group: HTMLElement) => {
-            if (group.scrollTop === 0 || group.scrollTop + window.innerHeight >= group?.scrollHeight) {
-              group.style.top = (ev.deltaY * -1) + 'px'
-            }
+            // TODO : Implement macOS, Windows scroll bending
+            // if (group.scrollTop === 0 || group.scrollTop + window.innerHeight >= group?.scrollHeight) {
+            //   group.style.top = (ev.deltaY * -1) + 'px'
+            // }
           }
         }
       )

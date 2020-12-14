@@ -17,7 +17,7 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  devtool: dev ? 'sourcemap' : false,
+  devtool: dev ? 'eval-source-map' : '',
   module: {
     rules: [
       {
@@ -54,7 +54,7 @@ module.exports = {
         loader: 'pug-loader',
         options: {
           globals: {
-            version: pkg.version
+            RefresherVersion: pkg.version || '1.0.0'
           }
         }
       }
@@ -64,36 +64,45 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'refresher.bundle.css'
     }),
-    new CopyWebpackPlugin([
-      {
-        from: 'src/manifest.json',
-        transform: (content, _p) => {
-          return Buffer.from(
-            JSON.stringify({
-              description: pkg.description,
-              version: pkg.version,
-              ...JSON.parse(content.toString())
-            })
-          )
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/manifest.json',
+          transform: (content, _p) => {
+            return Buffer.from(
+              JSON.stringify({
+                description: pkg.description,
+                version: pkg.version,
+                ...JSON.parse(content.toString())
+              })
+            )
+          }
         }
-      }
-    ]),
-    new CopyWebpackPlugin([
-      {
-        from: 'src/assets',
-        to: 'assets/'
-      }
-    ]),
-    new CopyWebpackPlugin([
-      {
-        from: 'src/root',
-        to: './'
-      }
-    ]),
+      ]
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/assets',
+          to: 'assets/'
+        }
+      ]
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/root',
+          to: './'
+        }
+      ]
+    }),
     new HtmlWebpackPlugin({
       template: './src/views/index.pug',
       filename: 'views/index.html',
-      inject: false
+      inject: false,
+      templateParameters: {
+        RefresherVersion: pkg.version || '1.0.0'
+      }
     })
   ],
   resolve: {
