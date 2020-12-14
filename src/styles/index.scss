@@ -411,6 +411,10 @@ $dark-highlight: #176ef1d5;
     filter: invert(1);
   }
 
+  .noaccess_wrap .dc_logo a img {
+    filter: invert(0);
+  }
+
   .top_search,
   .bottom_search {
     input {
@@ -685,7 +689,7 @@ $dark-highlight: #176ef1d5;
       height: 20px;
     }
 
-    .dc_logo, .gnb_bar {
+    .list_wrap .dc_logo, .gnb_bar {
       display: none;
     }
     .width1160 .top_search {
