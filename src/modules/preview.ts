@@ -92,6 +92,12 @@ export default {
         '.view_content_wrap > header > div > div > div.fl > span.gall_date'
       )?.innerHTML
 
+      let expire = (
+        dom.querySelector(
+          '.view_content_wrap > header > div > div > div.fl > span.mini_autodeltime > div.pop_tipbox > div'
+        ) || {}
+      ).innerHTML
+
       let views = dom
         .querySelector(
           '.view_content_wrap > header > div > div > div.fr > span.gall_count'
@@ -115,6 +121,7 @@ export default {
         header,
         title,
         date,
+        expire,
         user: new User('', '', '', '').import(
           dom.querySelector(
             'div.view_content_wrap > header > div > div.gall_writer'
@@ -239,6 +246,11 @@ export default {
 
           frame.user = obj.user
           frame.date = new Date(obj.date)
+
+          if (obj.expire) {
+            let expireParse = obj.expire.replace(/\s자동\s삭제/, '')
+            frame.expire = new Date(expireParse)
+          }
 
           frame.setData('load', false)
 

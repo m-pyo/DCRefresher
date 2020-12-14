@@ -1,6 +1,7 @@
 import Vue from 'vue'
 
 import TimeStamp from './timestamp'
+import CountDown from './countdown'
 import PreviewButton from './button'
 import User from './user'
 import Comment from './comment'
@@ -29,6 +30,7 @@ export const Frame = Vue.component('refresher-frame', {
   components: {
     PreviewButton,
     TimeStamp,
+    CountDown,
     User,
     Comment,
     Icon
@@ -47,6 +49,7 @@ export const Frame = Vue.component('refresher-frame', {
           <User v-if="frame.user" :user="frame.user"></User>
           <div class="float-right">
             <TimeStamp v-if="frame.date" :date="frame.date"></TimeStamp>
+            <CountDown v-if="frame.expire" :date="frame.expire"></CountDown>
           </div>
         </div>
       </div>

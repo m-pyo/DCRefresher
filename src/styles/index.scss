@@ -213,8 +213,13 @@ $dark-highlight: #176ef1d5;
 
   .top_search,
   .bottom_search,
+  .miniwrap .bottom_search,
   .login_box {
     border: 1px solid $dark-tint-light;
+  }
+
+  .miniwrap .bottom_search {
+    background: $dark-tint-light;
   }
 
   .mintro_imgbox.in_img,
@@ -418,6 +423,7 @@ $dark-highlight: #176ef1d5;
     }
   }
 
+  .miniwrap .page_head a,
   .page_head a,
   .visit_history .tit,
   .font_blue,
@@ -446,7 +452,9 @@ $dark-highlight: #176ef1d5;
   }
 
   .bottom_array .select_area,
+  .miniwrap .bottom_array .select_area,
   .bottom_array .select_area .inner,
+  .miniwrap .bottom_array .select_area .inner,
   .user_info_input.id input,
   .cmt_write_box .user_info_input.id > label,
   .btn_user_control,
@@ -465,6 +473,13 @@ $dark-highlight: #176ef1d5;
   .pop_wrap.type2,
   .issuebox.open {
     border: 1px solid $dark-dc-color;
+  }
+
+  .miniwrap .issue_wrap,
+  .miniwrap .issuebox.open,
+  .miniwrap table th,
+  .miniwrap table {
+    border-color: $dark-dc-color;
   }
 
   .pop_wrap.type3 {
@@ -496,6 +511,7 @@ $dark-highlight: #176ef1d5;
   .box_head,
   .cate_tit,
   .bottom_array .option_box,
+  .miniwrap .bottom_array .option_box,
   .block_tab button:first-child.on,
   button,
   .minor_tip_txt.bg,
@@ -541,6 +557,7 @@ $dark-highlight: #176ef1d5;
   .dccon_infobox,
   .select_box.dccon_use,
   .dccon_use .option_box,
+  .miniwrap .bottom_array,
   .bottom_array {
     background-color: $dark-tint-light;
     color: $dark-text-color;
@@ -551,6 +568,7 @@ $dark-highlight: #176ef1d5;
     }
   }
 
+  .miniwrap .array_tab button.on,
   .array_tab button.on,
   .pop_wrap.file .pop_head,
   .pop_wrap .pop_head.bg {
@@ -685,7 +703,8 @@ $dark-highlight: #176ef1d5;
       height: 20px;
     }
 
-    .dc_logo, .gnb_bar {
+    .dc_logo,
+    .gnb_bar {
       display: none;
     }
     .width1160 .top_search {
@@ -703,7 +722,9 @@ $dark-highlight: #176ef1d5;
       display: none;
     }
 
-    .list_array_option, .listwrap .visit_list, .listwrap .issuebox {
+    .list_array_option,
+    .listwrap .visit_list,
+    .listwrap .issuebox {
       width: 100%;
     }
 
@@ -742,7 +763,7 @@ $dark-highlight: #176ef1d5;
     .width1160 .left_content {
       width: 95%;
       max-width: 1000px;
-      margin-left:  auto;
+      margin-left: auto;
       margin-right: auto;
     }
 
@@ -895,10 +916,14 @@ $dark-highlight: #176ef1d5;
   }
 }
 
-.refresher-timestamp {
+.refresher-timestamp, .refresher-countdown {
   font-size: 12px;
   font-weight: thin;
   opacity: 0.6;
+}
+
+.refresher-countdown {
+  color: #fb4c4c;
 }
 
 .refresher-preview-contents,
