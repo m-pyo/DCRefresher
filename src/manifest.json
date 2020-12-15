@@ -4,7 +4,8 @@
   "manifest_version": 2,
   "permissions": [
     "https://dccon.dcinside.com/*",
-    "https://gall*.dcinside.com/*",
+    "https://gall.dcinside.com/*",
+    "https://gallog.dcinside.com/*",
     "https://addc.dcinside.com/*",
     "*://*/*",
     "webRequest",

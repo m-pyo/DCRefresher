@@ -14,7 +14,8 @@ export default {
     new_counts: 0,
     average_counts: new Array(AVERAGE_COUNTS_SIZE).fill(1),
     delay: 0,
-    refresh: 0
+    refresh: 0,
+    lastAccess: 0
   },
   enable: true,
   default_enable: true,
@@ -24,20 +25,20 @@ export default {
       name: '새로고침 주기',
       desc: '페이지를 새로 고쳐 현재 페이지에 반영하는 주기입니다.',
       type: 'range',
-      default: 2500,
+      default: 2500
     }
   },
-  func (http, eventBus) {
+  func (http: RefresherHTTP, eventBus: RefresherEventBus) {
     let url = http.view(location.href)
     const body = () => {
-      return new Promise(async (resolve, reject) => {
+      return new Promise<Element | null>(async (resolve, reject) => {
         let body = await http.make(url)
 
         try {
           let bodyParse = new DOMParser().parseFromString(body, 'text/html')
           body = undefined
 
-          resolve(bodyParse.querySelector('.gall_list'))
+          resolve(bodyParse.querySelector('.gall_list tbody'))
         } catch (e) {
           reject(e)
         }
@@ -49,31 +50,44 @@ export default {
         this.memory.delay = Math.max(1000, this.memory.delay || 2500)
       }
 
-      this.memory.refresh = setTimeout(load, this.memory.delay)
+      this.memory.refresh = window.setTimeout(load, this.memory.delay)
     }
 
-    let load = _ => {
+    let load = () => {
       if (!document.hidden) {
+        let isAdmin =
+          document.querySelector('.useradmin_btnbox button') !== null
+
+        // 글 선택 체크박스에 체크된 경우 새로 고침 건너 뜀
+        if (
+          isAdmin &&
+          Array.from(document.querySelectorAll('.article_chkbox')).filter(
+            v => (v as HTMLInputElement).checked
+          ).length > 0
+        ) {
+          return
+        }
+
         this.memory.new_counts = 0
 
         body().then(newList => {
-          let oldList = document.querySelector('.gall_list')
-          if (!oldList) return
+          let oldList = document.querySelector('.gall_list tbody')
+          if (!oldList || !newList) return
 
-          oldList.parentElement.appendChild(newList)
-          oldList.parentElement.removeChild(oldList)
+          oldList.parentElement!.appendChild(newList)
+          oldList.parentElement!.removeChild(oldList)
 
           var cached = Array.from(oldList.querySelectorAll('td.gall_num'))
             .map(v => v.innerHTML)
             .join('|')
 
-          oldList = undefined
+          oldList = null
 
           newList.querySelectorAll('td.gall_num').forEach(v => {
             if (cached.indexOf(v.innerHTML) == -1) {
               if (this.status.fadeIn) {
-                v.parentElement.className += ' refresherNewPost'
-                v.parentElement.style.animationDelay =
+                v.parentElement!.className += ' refresherNewPost'
+                v.parentElement!.style.animationDelay =
                   this.memory.new_counts * 23 + 'ms'
               }
               this.memory.new_counts++
@@ -92,6 +106,38 @@ export default {
               this.memory.average_counts.length
 
             this.memory.delay = 8 * Math.pow(2 / 3, 3 * average) * 1000
+          }
+
+          // 미니 갤, 마이너 갤 관리자일 경우 체크박스를 생성합니다.
+          if (isAdmin) {
+            document.querySelectorAll('.us-post').forEach(elem => {
+              elem!.innerHTML =
+                document.querySelector('#minor_td-tmpl')!.innerHTML +
+                elem!.innerHTML
+            })
+
+            document.querySelectorAll('.ub-content').forEach(elem => {
+              if (elem.className.indexOf('us-post') == -1) {
+                elem.insertBefore(document.createElement('td'), elem.firstChild)
+              }
+            })
+
+            if (document.querySelector('#comment_chk_all')) {
+              var tbody_colspan = document.querySelector(
+                'table.gall_list tbody td'
+              )
+
+              if (tbody_colspan) {
+                let colspan = tbody_colspan.getAttribute('colspan') || ''
+
+                if (parseInt(colspan) == 6) {
+                  tbody_colspan?.setAttribute(
+                    'colspan',
+                    (parseInt(colspan) + 1).toString()
+                  )
+                }
+              }
+            }
           }
 
           eventBus.emit('refresh', newList)

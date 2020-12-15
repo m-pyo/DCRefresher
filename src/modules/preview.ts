@@ -5,12 +5,8 @@ import { findNeighbor } from '../utils/dom'
 
 /**
  * dcinside.com set cookie function
- * @param {*} e
- * @param {*} t
- * @param {*} o
- * @param {*} i
  */
-function set_cookie_tmp (e, t, o, i) {
+function set_cookie_tmp (e: string, t: string, o: number, i: string) {
   var n = new Date()
   n.setTime(n.getTime() + 36e5 * o),
     (document.cookie =
@@ -20,15 +16,14 @@ function set_cookie_tmp (e, t, o, i) {
       '; path=/; domain=' +
       i +
       '; expires=' +
-      n.toGMTString() +
+      n.toUTCString() +
       ';')
 }
 
 /**
  * dcinside.com get cookie
- * @param {*} e
  */
-function get_cookie (e) {
+function get_cookie (e: string) {
   for (
     var t = e + '=', o = document.cookie.split(';'), i = 0;
     i < o.length;
@@ -38,21 +33,6 @@ function get_cookie (e) {
     if (0 == n.indexOf(t)) return n.substring(t.length, n.length)
   }
   return ''
-}
-
-/**
- * 디시인사이드 쿠키 저장 스크립트
- * @param {String} cname
- * @param {String} cvalue
- * @param {Number} exdays
- * @param {String} domain
- */
-var setCookie = function (cname, cvalue, exdays, domain) {
-  var d = new Date()
-  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000)
-  var expires = 'expires=' + d.toUTCString()
-  document.cookie =
-    cname + '=' + cvalue + ';' + expires + ';path=/;domain=' + domain
 }
 
 export default {
@@ -69,8 +49,6 @@ export default {
   default_enable: true,
   require: ['filter', 'eventBus', 'Frame', 'http'],
   func (filter: RefresherFilter, eventBus: RefresherEventBus, Frame, http) {
-    setCookie('_gat_mgall_web', 1, 3, 'dcinside.com')
-
     let parse = (id: string, body: string) => {
       let dom = new DOMParser().parseFromString(body, 'text/html')
 
