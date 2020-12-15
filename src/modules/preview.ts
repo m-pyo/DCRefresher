@@ -226,38 +226,52 @@ export default {
         return true
       }
 
-      http
-        .make(
-          `${http.urls.gall[http.galleryType(link)] +
-            http.urls.view +
-            (gall || queryString('id'))}&no=${id}`
-        )
-        .then((v: string) => {
-          if (typeof waitPost === 'function') {
-            waitPost(v)
-          }
+      frame.load = () => {
+        frame.error = false
 
-          return parse(id, v)
-        })
-        .then((obj: any) => {
-          frame.contents = obj.contents
-          frame.upvotes = obj.upvotes
-          frame.downvotes = obj.downvotes
+        http
+          .make(
+            `${http.urls.base +
+              http.galleryType(link, '/') +
+              http.urls.view +
+              (gall || queryString('id'))}&no=${id}`
+          )
+          .then((v: string) => {
+            if (typeof waitPost === 'function') {
+              waitPost(v)
+            }
 
-          frame.user = obj.user
-          frame.date = new Date(obj.date)
+            return parse(id, v)
+          })
+          .then((obj: any) => {
+            frame.contents = obj.contents
+            frame.upvotes = obj.upvotes
+            frame.downvotes = obj.downvotes
 
-          if (obj.expire) {
-            let expireParse = obj.expire.replace(/\s자동\s삭제/, '')
-            frame.expire = new Date(expireParse)
-          }
+            frame.user = obj.user
+            frame.date = new Date(obj.date)
 
-          frame.setData('load', false)
+            if (obj.expire) {
+              let expireParse = obj.expire.replace(/\s자동\s삭제/, '')
+              frame.expire = new Date(expireParse)
+            }
 
-          eventBus.emitNextTick('contentPreview', frame.app.$el)
+            frame.setData('load', false)
 
-          obj = undefined
-        })
+            eventBus.emitNextTick('contentPreview', frame.app.$el)
+
+            obj = undefined
+          })
+          .catch(e => {
+            frame.error = {
+              title: '게시글',
+              detail: e
+            }
+          })
+      }
+
+      frame.load()
+      frame.retryFunction = frame.load
     }
 
     // TODO : 페이지네이션 구현
@@ -271,63 +285,81 @@ export default {
     ) => {
       let galleryType = http.galleryType(link, '/')
 
-      http
-        .make(http.urls.comments, {
-          method: 'POST',
-          dataType: 'json',
-          headers: {
-            Accept: 'application/json, text/javascript, */*; q=0.01',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          cache: 'no-store',
-          referrer: `https://gall.dcinside.com/${galleryType}board/view/?id=${gall_id}&no=${id}`,
-          body:
-            `id=${gall_id}&no=${Number(id)}&cmt_id=${cmt_id ||
-              gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
-              (document.getElementById('e_s_n_o')! as HTMLInputElement).value
-            }&comment_page=1&sort=&_GALLTYPE_=` +
-            http.commentGallTypes[galleryType.replace(/\//g, '')]
-        })
-        .then((comments: any) => {
-          if (!comments) {
-            frame.error = true
-          }
+      frame.load = () => {
+        frame.error = false
 
-          let threadCounts = 0
+        http
+          .make(http.urls.comments, {
+            method: 'POST',
+            dataType: 'json',
+            headers: {
+              Accept: 'application/json, text/javascript, */*; q=0.01',
+              'Content-Type':
+                'application/x-www-form-urlencoded; charset=UTF-8',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            cache: 'no-store',
+            referrer: `https://gall.dcinside.com/${galleryType}board/view/?id=${gall_id}&no=${id}`,
+            body:
+              `id=${gall_id}&no=${Number(id)}&cmt_id=${cmt_id ||
+                gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
+                (document.getElementById('e_s_n_o')! as HTMLInputElement).value
+              }&comment_page=1&sort=&_GALLTYPE_=` +
+              http.commentGallTypes[galleryType.replace(/\//g, '')]
+          })
+          .then((comments: any) => {
+            if (!comments) {
+              frame.error = {
+                detail: 'No comments'
+              }
+            }
 
-          if (comments.comments) {
-            comments.comments = comments.comments.filter(v => {
-              return v.nicktype !== 'COMMENT_BOY'
-            })
+            let threadCounts = 0
 
-            comments.comments.map(v => {
-              v.user = new User(
-                v.name,
-                v.user_id,
-                v.ip || '',
-                ((new DOMParser()
-                  .parseFromString(v.gallog_icon, 'text/html')
-                  .querySelector('a.writer_nikcon img') ||
-                  {})! as HTMLImageElement).src
-              )
-            })
+            if (comments.comments) {
+              comments.comments = comments.comments.filter(v => {
+                return v.nicktype !== 'COMMENT_BOY'
+              })
 
-            threadCounts = comments.comments
-              .map(v => v.depth)
-              .reduce((a, b) => a + b)
-          }
+              comments.comments.map(v => {
+                v.user = new User(
+                  v.name,
+                  v.user_id,
+                  v.ip || '',
+                  ((new DOMParser()
+                    .parseFromString(v.gallog_icon, 'text/html')
+                    .querySelector('a.writer_nikcon img') ||
+                    {})! as HTMLImageElement).src
+                )
+              })
 
-          frame.subtitle = `${
-            comments.total_cnt !== comments.comment_cnt
-              ? `쓰레드 ${comments.comment_cnt}개, 총 댓글 ${comments.total_cnt}`
-              : comments.total_cnt
-          }개`
-          frame.isComment = true
-          frame.comments = comments
+              threadCounts = comments.comments
+                .map(v => v.depth)
+                .reduce((a, b) => a + b)
+            }
 
-          frame.setData('load', false)
-        })
+            frame.subtitle = `${
+              comments.total_cnt !== comments.comment_cnt
+                ? `쓰레드 ${comments.comment_cnt}개, 총 댓글 ${comments.total_cnt}`
+                : comments.total_cnt
+            }개`
+            frame.isComment = true
+            frame.comments = comments
+
+            frame.setData('load', false)
+          })
+          .catch(e => {
+            frame.subtitle = ``
+
+            frame.error = {
+              title: '댓글',
+              detail: e
+            }
+          })
+      }
+
+      frame.load()
+      frame.retryFunction = frame.load
     }
 
     let makeSecondFrame = (

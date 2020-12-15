@@ -7,10 +7,6 @@ export default {
     </div>
   </transition>`,
   props: {
-    icon: {
-      type: String,
-      required: true
-    },
     id: { type: [String, Number] },
     text: {
       type: String
@@ -27,7 +23,7 @@ export default {
   },
   methods: {
     getURL (u) {
-      return chrome.extension.getURL(u)
+      return !chrome || !chrome.extension ? u : chrome.extension.getURL(u)
     },
 
     async safeClick () {

@@ -36,7 +36,7 @@ export const Frame = Vue.component('refresher-frame', {
     Icon
   },
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
-      <div class="refresher-preview-info">
+      <div class="refresher-preview-info" v-if="!frame.error">
         <div class="refresher-preview-title-zone">
           <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
             <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
@@ -53,7 +53,7 @@ export const Frame = Vue.component('refresher-frame', {
           </div>
         </div>
       </div>
-      <div class="refresher-preview-contents">
+      <div class="refresher-preview-contents" v-if="!frame.error">
         <refresher-loader v-show="frame.data.load"></refresher-loader>
         <transition name="refresher-opacity">
           <div v-html="frame.contents" :key="frame.contents"></div>
@@ -66,16 +66,34 @@ export const Frame = Vue.component('refresher-frame', {
         </div>
         <div v-if="frame.isComment && !frame.comments.comments">
           <h3 class="refresher-nocomment">작성된 댓글이 없습니다.</h3>
-          <PreviewButton class="refresher-writecomment primary" :icon="'write'" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
+          <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
         </div>
+      </div>
+      <div class="refresher-preview-contents refresher-error" v-if="frame.error">
+        <h3>{{frame.error.title}}을 불러올 수 없습니다.</h3>
+        <br>
+        <p>가능한 경우</p>
+        <ul v-if="frame.error.detail.indexOf('50') > -1">
+          <li>서버가 불안정합니다. 페이지를 다시 고쳐보세요.</li>
+          <li>서버 구조 변경으로 인한 내용 해석 실패. 이 경우엔 업데이트가 필요합니다.</li>
+          <li>네트워크 방화벽에 의해 차단되지는 않았는지 확인해보세요.</li>
+        </ul>
+        <ul v-if="frame.error.detail.indexOf('40') > -1">
+          <li>게시글이 이미 삭제됨</li>
+          <li>서버 구조 변경으로 인한 잘못된 값으로 요청. 이 경우엔 업데이트가 필요합니다.</li>
+        </ul>
+        <br>
+        <PreviewButton class="refresher-writecomment primary" id="refresh" text="다시 시도" :click="retry "></PreviewButton>
+        <br>
+        <span class="refresher-mute">{{frame.error.detail}}</span>
       </div>
       <div class="refresher-preview-votes" v-if="frame.buttons">
         <div>
-          <PreviewButton class="refresher-upvote" :icon="'upvote'" :id="'upvote'" :text="frame.upvotes || '0'" :click="upvote">
+          <PreviewButton class="refresher-upvote" :id="'upvote'" :text="frame.upvotes || '0'" :click="upvote">
           </PreviewButton>
-          <PreviewButton class="refresher-downvote" :icon="'downvote'" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
+          <PreviewButton class="refresher-downvote" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
           </PreviewButton>
-          <PreviewButton class="refresher-share primary" :icon="'share'" :id="'share'" :text="'공유'" :click="share">
+          <PreviewButton class="refresher-share primary" :id="'share'" :text="'공유'" :click="share">
           </PreviewButton>
         </div>
       </div>
@@ -100,6 +118,10 @@ export const Frame = Vue.component('refresher-frame', {
 
     share () {
       return this.frame.shareFunction()
+    },
+
+    retry () {
+      return this.frame.retryFunction()
     },
 
     writeComment () {},

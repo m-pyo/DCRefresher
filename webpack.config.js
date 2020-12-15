@@ -11,11 +11,17 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'))
 module.exports = {
   mode: dev ? 'development' : 'production',
   entry: {
-    refresher: ['babel-polyfill', path.resolve('src', 'index.ts')]
+    refresher: ['babel-polyfill', path.resolve('src', 'index.ts')],
+    refresherTest: [path.resolve('src', 'test.ts')]
   },
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist')
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 9000
   },
   devtool: dev ? 'eval-source-map' : '',
   module: {
@@ -100,6 +106,14 @@ module.exports = {
       template: './src/views/index.pug',
       filename: 'views/index.html',
       inject: false,
+      templateParameters: {
+        RefresherVersion: pkg.version || '1.0.0'
+      }
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/views/test.pug',
+      filename: 'refresherTest.html',
+      inject: true,
       templateParameters: {
         RefresherVersion: pkg.version || '1.0.0'
       }

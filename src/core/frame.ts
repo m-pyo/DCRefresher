@@ -23,6 +23,7 @@ class InternalFrame {
   data: object
 
   contents: string
+  error: object | boolean
   isComment: boolean
   comments: any
   upvotes: any
@@ -36,6 +37,7 @@ class InternalFrame {
     this.app = app
     this.data = {}
 
+    this.error = false
     this.contents = ''
     this.isComment = false
     this.comments = null

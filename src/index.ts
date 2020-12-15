@@ -10,7 +10,9 @@ let loadStart = performance.now()
 import { modules } from './core/modules'
 import { filter } from './core/filtering'
 
-settings.load()
+if (location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') {
+  settings.load()
+}
 
 import Preview from './modules/preview'
 import DarkMode from './modules/darkmode'
@@ -21,16 +23,18 @@ import AutoRefresh from './modules/refresh'
 import BlockCommentAds from './modules/comment_ads'
 import Layout from './modules/layout'
 
-modules.load(
-  DarkMode,
-  Fonts,
-  AdBlock,
-  BlockCommentAds,
-  AutoRefresh,
-  Preview,
-  Ip,
-  Layout
-)
+if (location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') {
+  modules.load(
+    DarkMode,
+    Fonts,
+    AdBlock,
+    BlockCommentAds,
+    AutoRefresh,
+    Preview,
+    Ip,
+    Layout
+  )
+}
 
 const refresherMain = async () => {
   await filter.run(true)

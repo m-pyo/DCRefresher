@@ -1,5 +1,3 @@
-import { type } from 'os'
-
 export const urls = {
   base: 'https://gall.dcinside.com/',
   gall: {
@@ -75,19 +73,23 @@ export const view = (url: string) => {
 
 export const make = (url: string, options: object) =>
   new Promise((resolve, reject) =>
-    fetch(url, options).then(async response => {
-      if (response.status && response.status > 400) {
-        reject(response.statusText)
-      }
+    fetch(url, options)
+      .then(async response => {
+        if (response.status && response.status > 400) {
+          reject(`${response.status} ${response.statusText}`)
+        }
 
-      let body = await response.text()
+        let body = await response.text()
 
-      if (body.substring(0, 1) === '{') {
-        body = JSON.parse(body)
-      }
+        if (body.substring(0, 1) === '{') {
+          body = JSON.parse(body)
+        }
 
-      resolve(body)
-    })
+        resolve(body)
+      })
+      .catch(e => {
+        reject(e)
+      })
   )
 
 export const checkMinor = (url: string) =>

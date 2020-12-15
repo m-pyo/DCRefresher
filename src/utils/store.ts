@@ -1,4 +1,4 @@
-const str = (window.chrome && window.chrome.storage) || storage
+const str = (window.chrome && window.chrome.storage) || window.storage
 
 export const set = (key: string, value: any) => {
   if (!str) {

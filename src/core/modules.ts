@@ -141,15 +141,17 @@ export const modules = {
   }
 }
 
-runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (typeof msg === 'object' && msg.updateSettings) {
-    module_store[msg.name].enable = msg.value
+if (runtime.onMessage) {
+  runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (typeof msg === 'object' && msg.updateSettings) {
+      module_store[msg.name].enable = msg.value
 
-    if (!msg.value) {
-      revokeModule(module_store[msg.name])
-      return
+      if (!msg.value) {
+        revokeModule(module_store[msg.name])
+        return
+      }
+
+      runModule(module_store[msg.name])
     }
-
-    runModule(module_store[msg.name])
-  }
-})
+  })
+}

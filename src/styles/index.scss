@@ -191,6 +191,113 @@ $dark-highlight: #176ef1d5;
     background-color: $dark-background;
   }
 
+  .font_jinlightpurple,
+  .font_lightpurple,
+  .btn_white_round.font_jinlightpurple {
+    color: $dark-dc-color;
+  }
+
+  .mini_catebox {
+    border-top: 1px $dark-dc-color solid;
+
+    &:first-child {
+      border-top: 3px $dark-dc-color solid;
+    }
+  }
+
+  .mini_infotxt {
+    .tit {
+      color: $dark-text-color-bright;
+    }
+    .txt {
+      color: $dark-text-color;
+    }
+  }
+
+  .minicate_wrap .mini_new {
+    .tit {
+      background: #4d3075;
+    }
+
+    .lists li a {
+      color: $dark-text-color;
+    }
+  }
+
+  .minicate_wrap .catehead {
+    border-bottom: 1px solid $dark-text-divcolor;
+
+    h3 {
+      color: $dark-text-subcolor;
+
+      ::after {
+        background: $dark-text-divcolor;
+      }
+    }
+  }
+
+  .miniinfo_pop .inner {
+    color: $dark-text-color;
+
+    .box:first-child img {
+      filter: invert(43%) sepia(64%) saturate(1865%) hue-rotate(203deg)
+        brightness(101%) contrast(94%);
+    }
+
+    .box:last-child img {
+      filter: brightness(10);
+    }
+  }
+
+  .minor_wrap.gallmain .visit_history {
+    border-top: 1px $dark-text-divcolor solid;
+  }
+
+  .minor_wrap.gallmain .visit_list li a,
+  .under_catelist .under_listbox li a {
+    color: $dark-text-color;
+  }
+
+  .miniinfo_pop .function {
+    p {
+      color: $dark-text-color-dark;
+    }
+
+    .bg {
+      background-color: $dark-tint2;
+      color: $dark-text-color-bright;
+
+      .tit {
+        color: $dark-text-color-bright;
+      }
+
+      &:first-of-type {
+        color: $dark-text-color-dark;
+      }
+    }
+  }
+
+  .mini_set {
+    color: $dark-text-color-dark;
+  }
+
+  .mini_list_wrap {
+    border: 1px solid $dark-tint-light;
+    border-top-color: $dark-dc-color;
+  }
+
+  .mgall_list_wrap a,
+  .mini_list_wrap a,
+  .option_box li {
+    color: $dark-text-color;
+  }
+
+  .hot_minigall .rank_num,
+  .miniwrap .mgall .rank_num {
+    background: $dark-dc-color;
+    border: 1px $dark-highlight solid;
+  }
+
   .notice_list,
   .info_contbox,
   .gall_guide .caption_box {
@@ -303,6 +410,7 @@ $dark-highlight: #176ef1d5;
   }
 
   .minor_intro_box,
+  .minor_wrap.gallmain .left_content .mgall_info .txt,
   .view_content_wrap,
   .view_content_wrap a,
   .comment_wrap,
@@ -319,6 +427,8 @@ $dark-highlight: #176ef1d5;
   .favorite_list .list_box li a,
   .tab_menubox button,
   .block_tab button,
+  .pop_hot_mgall .inner_txt,
+  .pop_hot_gall .inner_txt,
   .info_policy a,
   .content,
   .inner_txt,
@@ -369,6 +479,7 @@ $dark-highlight: #176ef1d5;
   .uadmin_top_tit,
   .btn_upmgall_info,
   .font_lightblue,
+  .miniwrap .visit_history .tit,
   .pop_dccon_tit {
     color: $dark-dc-color;
   }
@@ -450,6 +561,7 @@ $dark-highlight: #176ef1d5;
   .btn_report,
   .btn_user_control,
   .btn_blue,
+  .btn_lightpurple,
   .btn_lightgrey,
   .array_tab button.on {
     text-shadow: unset;
@@ -468,9 +580,10 @@ $dark-highlight: #176ef1d5;
   }
 
   .btn_blue,
+  .btn_lightpurple,
   .word_close {
     background-color: $dark-dc-color;
-    color: $dark-text-color;
+    color: $dark-text-color-bright;
     border-color: $dark-dc-color;
   }
 
@@ -707,12 +820,8 @@ $dark-highlight: #176ef1d5;
       height: 20px;
     }
 
-<<<<<<< HEAD
-    .dc_logo,
+    .list_wrap .dc_logo,
     .gnb_bar {
-=======
-    .list_wrap .dc_logo, .gnb_bar {
->>>>>>> e02a88ac844a078059027a4671bb0d88b82e6165
       display: none;
     }
     .width1160 .top_search {
@@ -924,7 +1033,8 @@ $dark-highlight: #176ef1d5;
   }
 }
 
-.refresher-timestamp, .refresher-countdown {
+.refresher-timestamp,
+.refresher-countdown {
   font-size: 12px;
   font-weight: thin;
   opacity: 0.6;
@@ -944,6 +1054,34 @@ $dark-highlight: #176ef1d5;
   display: block;
   padding-bottom: 2.5vh;
   margin-top: 2vh;
+
+  &.refresher-error {
+    h3 {
+      font-weight: bold;
+      font-size: 24px;
+      letter-spacing: -1.66px;
+    }
+
+    p {
+      font-weight: 400;
+    }
+
+    .refresher-mute {
+      font-size: 12px;
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
+
+    ul {
+      font-weight: 300;
+      margin-left: 15px;
+
+      li:before {
+        content: '>';
+        margin-right: 5px;
+      }
+    }
+  }
 }
 
 .refresher-nocomment {
