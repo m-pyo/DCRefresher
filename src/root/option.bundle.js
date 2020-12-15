@@ -49,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     null,
     res => {
-      console.log(res)
       app.$data.modules = res
     }
   )

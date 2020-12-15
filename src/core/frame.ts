@@ -115,6 +115,7 @@ export default class {
         },
 
         outerClick () {
+          this.$emit('close')
           this.fadeOut()
           document.querySelector('body')!.style.overflow = 'auto'
 

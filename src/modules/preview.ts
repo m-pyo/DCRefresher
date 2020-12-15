@@ -136,7 +136,6 @@ export default {
           },
           cache: 'no-store',
           referrer: link,
-          referrerPolicy: 'unsafe-url',
           body: `ci_t=${get_cookie('ci_c')}&id=${gall_id}&no=${post_id}&mode=${
             type ? 'U' : 'D'
           }&code_recommend=${code}`
@@ -159,7 +158,8 @@ export default {
       gall: string,
       id: string,
       title: string,
-      link: string
+      link: string,
+      signal: AbortSignal
     ) => {
       frame.setData('load', true)
       frame.title = title
@@ -212,7 +212,8 @@ export default {
             `${http.urls.base +
               http.galleryType(link, '/') +
               http.urls.view +
-              (gall || queryString('id'))}&no=${id}`
+              (gall || queryString('id'))}&no=${id}`,
+            { signal }
           )
           .then((v: string) => {
             if (typeof waitPost === 'function') {
@@ -243,7 +244,7 @@ export default {
           .catch(e => {
             frame.error = {
               title: '게시글',
-              detail: e
+              detail: e.message || e || '알 수 없는 오류'
             }
           })
       }
@@ -259,7 +260,8 @@ export default {
       gall_id: string,
       id: string,
       cmt_id: string,
-      cmt_no: string
+      cmt_no: string,
+      signal: AbortSignal
     ) => {
       let galleryType = http.galleryType(link, '/')
 
@@ -283,7 +285,8 @@ export default {
                 gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
                 (document.getElementById('e_s_n_o')! as HTMLInputElement).value
               }&comment_page=1&sort=&_GALLTYPE_=` +
-              http.commentGallTypes[galleryType.replace(/\//g, '')]
+              http.commentGallTypes[galleryType.replace(/\//g, '')],
+            signal
           })
           .then((comments: any) => {
             if (!comments) {
@@ -331,7 +334,7 @@ export default {
 
             frame.error = {
               title: '댓글',
-              detail: e
+              detail: e.message || e || '알 수 없는 오류'
             }
           })
       }
@@ -345,7 +348,8 @@ export default {
       gall: string,
       id: string,
       title: string,
-      link: string
+      link: string,
+      signal: AbortSignal
     ) => {
       frame.setData('load', true)
       frame.title = `댓글`
@@ -366,13 +370,21 @@ export default {
             .match(datmatch)![1]
             .replace(/\'/g, '')
 
-          requestComment(frame, link, gall_id!, id, id_match, comment_no)
+          requestComment(
+            frame,
+            link,
+            gall_id!,
+            id,
+            id_match,
+            comment_no,
+            signal
+          )
         }
 
         return
       }
 
-      requestComment(frame, link, gall_id!, id, gall_id!, id)
+      requestComment(frame, link, gall_id!, id, gall_id!, id, signal)
     }
 
     let previewFrame = (ev: MouseEvent) => {
@@ -380,6 +392,9 @@ export default {
         this.memory.preventOpen = false
         return
       }
+
+      let controller = new AbortController()
+      let { signal } = controller
 
       let frame = new Frame(
         [
@@ -409,6 +424,10 @@ export default {
           }
         }
       )
+
+      frame.app.$on('close', () => {
+        controller.abort()
+      })
 
       let listId = findNeighbor(ev.target as HTMLElement, '.gall_num', 5, null)
 
@@ -461,13 +480,21 @@ export default {
         }
       }
 
-      makeFirstFrame(frame.app.first(), preGall, preId, preTitle, preLink.href)
+      makeFirstFrame(
+        frame.app.first(),
+        preGall,
+        preId,
+        preTitle,
+        preLink.href,
+        signal
+      )
       makeSecondFrame(
         frame.app.second(),
         preGall,
         preId,
         preTitle,
-        preLink.href
+        preLink.href,
+        signal
       )
 
       setTimeout(() => {
