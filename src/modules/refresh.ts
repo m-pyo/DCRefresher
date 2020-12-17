@@ -25,7 +25,9 @@ export default {
       name: '새로고침 주기',
       desc: '페이지를 새로 고쳐 현재 페이지에 반영하는 주기입니다.',
       type: 'range',
-      default: 2500
+      default: 2500,
+      bind: 'delay',
+      advanced: false
     }
   },
   func (http: RefresherHTTP, eventBus: RefresherEventBus) {

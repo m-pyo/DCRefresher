@@ -16,6 +16,7 @@ let ACCESSIBLE_UTILS = {
 }
 
 let module_store = {}
+let settings_store = {}
 
 let PERMISSION_REVOKE = {
   fetch: fetch
@@ -33,7 +34,7 @@ const enableFeature = () => {
 
 const blockFeatureMsg = () => {
   throw new Error(
-    'This function is not available in module. Use require property to use it.'
+    'This function can\'t be used directly in the module script. To use it, please define "require" property in your module object.'
   )
 }
 
@@ -110,7 +111,17 @@ export const modules = {
     mod.status = await store.get(`${mod.name}.status`)
 
     if (mod.settings) {
-      console.log(mod.settings)
+      for (const key in mod.settings) {
+        const setting = mod.settings[key]
+
+        if (typeof setting.items === 'function') {
+          mod.settings[key].items = setting.items()
+        }
+      }
+
+      if (!settings_store[mod.name]) {
+        settings_store[mod.name] = mod.settings
+      }
 
       // TODO : 모듈 object에 settings field가 존재할 경우 탭에 넣는 등의 처리하기
     }
@@ -118,7 +129,11 @@ export const modules = {
     module_store[mod.name] = mod
 
     if (runtime) {
-      runtime.sendMessage(null, { registerModules: true, data: module_store })
+      runtime.sendMessage(null, {
+        registerModules: true,
+        module_store,
+        settings_store: settings_store
+      })
     }
 
     if (!mod.enable) {
@@ -142,8 +157,8 @@ export const modules = {
 }
 
 if (runtime.onMessage) {
-  runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (typeof msg === 'object' && msg.updateSettings) {
+  runtime.onMessage.addListener((msg: object) => {
+    if (typeof msg === 'object' && msg.updateModuleSettings) {
       module_store[msg.name].enable = msg.value
 
       if (!msg.value) {
@@ -152,6 +167,8 @@ if (runtime.onMessage) {
       }
 
       runModule(module_store[msg.name])
+    } else if (typeof msg === 'object' && msg.updateUserSetting) {
+      module_store[msg.name].settings[msg.name].value = msg.value
     }
   })
 }

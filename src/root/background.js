@@ -1,5 +1,6 @@
 let blockAds = true
 let modules = {}
+let settings = {}
 
 const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
 
@@ -35,7 +36,8 @@ runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.registerModules) {
-    modules = msg.data
+    modules = msg.module_store
+    settings = msg.settings_store
   }
 
   if (msg.toggleAdBlock) {
@@ -44,6 +46,10 @@ runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.requestRefresherModules) {
     sendResponse(modules)
+  }
+
+  if (msg.requestRefresherSettings) {
+    sendResponse(settings)
   }
 })
 

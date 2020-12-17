@@ -35,6 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
     methods: {
       open (url) {
         window.open(url, '_blank')
+      },
+
+      updateUserSetting (module, key, value) {
+        chrome.tabs.query({ active: true }, tabs => {
+          chrome.tabs.sendMessage(tabs[0].id, {
+            updateUserSetting: true,
+            name: module,
+            key,
+            value
+          })
+        })
       }
     }
   })
@@ -43,13 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
     v.src = chrome.extension.getURL(ImageLists[v.dataset.image])
   })
 
-  let send = runtime.sendMessage(
+  runtime.sendMessage(
     {
       requestRefresherModules: true
     },
     null,
     res => {
-      app.$data.modules = res
+      app.$data.modules = res || {}
+    }
+  )
+
+  runtime.sendMessage(
+    {
+      requestRefresherSettings: true
+    },
+    null,
+    res => {
+      app.$data.settings = res || {}
     }
   )
 })
@@ -94,7 +115,7 @@ Vue.component('refresher-module', {
   },
 
   methods: {
-    update(v) {
+    update (v) {
       console.log(v)
 
       let obj = {}
@@ -110,7 +131,7 @@ Vue.component('refresher-module', {
 
       chrome.tabs.query({ active: true }, tabs => {
         chrome.tabs.sendMessage(tabs[0].id, {
-          updateSettings: true,
+          updateModuleSettings: true,
           name: this.name,
           value: v.target.checked
         })
@@ -221,6 +242,73 @@ Vue.component('refresher-checkbox', {
         this.toggle()
 
         this.onceOut = true
+      }
+    }
+  }
+})
+
+Vue.component('refresher-options', {
+  template: `<div class="refresher-options" :data-id="id" :data-on="on" v-on:click="toggle">
+    <select :disabled="disabled">
+      <option v-for="(name, index) in options" value="index">{{name}}</option>
+    </select>
+  </div>`,
+
+  props: {
+    onChange: {
+      type: Function
+    },
+
+    options: {
+      type: Array
+    },
+
+    id: {
+      type: String
+    },
+
+    disabled: {
+      type: Boolean
+    }
+  }
+})
+
+Vue.component('refresher-input', {
+  template: `<div class="refresher-input">
+    <input type="text" :data-id="id" :data-module="modname" :placeholder="placeholder" :disabled="disabled" v-on:change="update"></input>
+  </div>`,
+
+  props: {
+    change: {
+      type: Function
+    },
+
+    placeholder: {
+      type: String,
+      required: false
+    },
+
+    modname: {
+      type: String
+    },
+
+    id: {
+      type: String
+    },
+
+    disabled: {
+      type: Boolean
+    }
+  },
+
+  methods: {
+    update (ev) {
+      if (this.change) {
+        this.change(
+          ev.target.dataset.module,
+          ev.target.dataset.id,
+          ev.target.value
+        )
       }
     }
   }

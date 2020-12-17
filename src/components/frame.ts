@@ -72,7 +72,7 @@ export const Frame = Vue.component('refresher-frame', {
       <div class="refresher-preview-contents refresher-error" v-if="frame.error">
         <h3>{{frame.error.title}}을 불러올 수 없습니다.</h3>
         <br>
-        <p>가능한 경우</p>
+        <p>가능한 경우:</p>
         <ul v-if="frame.error.detail.indexOf('50') > -1">
           <li>서버가 불안정합니다. 페이지를 다시 고쳐보세요.</li>
           <li>서버 구조 변경으로 인한 내용 해석 실패. 지속될 경우 개발자에게 문의하세요.</li>

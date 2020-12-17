@@ -24,8 +24,17 @@ html.refresher-popup
               h3 DCRefresher
               p <span class="version">v#{RefresherVersion}</span>  <a v-for="(link, i) in links" v-on:click="open(link.url)">{{link.text}}</a>
           .settings
-            div(v-for="(category, i) in settings")
-              h3= category
+            div(class="refresher-setting-category" v-for="(module, i) in Object.keys(settings)")
+              h3 {{module}}
+              div.refresher-setting(v-for="(setting, i) in Object.keys(settings[module])")
+                .info
+                  h4 {{settings[module][setting].name}}
+                  p {{settings[module][setting].desc}}
+                .control
+                  refresher-checkbox(v-if="settings[module][setting].type === 'check'" :checked="enabled" :change="updateUserSetting")
+                  refresher-input(v-if="settings[module][setting].type === 'text'" :placeholder="settings[module][setting].default" :value="settings[module][setting].value" :id="setting" :modname="module" :change="updateUserSetting")
+                  refresher-options(v-if="settings[module][setting].type === 'option'" :options="settings[module][setting].items")
+                  span {{settings[module][setting]}}
         div.tab.tab2(v-show="tab == 1" key="tab2")
           h3 고급 설정
           p refresher

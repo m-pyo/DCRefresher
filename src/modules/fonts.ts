@@ -10,11 +10,10 @@ export default {
     customFonts: {
       name: 'font-family 이름',
       desc:
-        '페이지 폰트를 입력된 폰트로 교체합니다. 입력된 값이 없으면 Noto Sans CJK KR 혹은 나눔 고딕으로 교체합니다.',
+        '페이지 폰트를 입력된 폰트로 교체합니다. 교체를 원하지 않으면 빈칸으로 두세요.',
+      default: 'Noto Sans CJK KR, NanumGothic',
       type: 'text',
-      onChange: (value: string) => {
-        
-      }
+      onChange: (value: string) => {}
     }
   },
   enable: true,
