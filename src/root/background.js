@@ -17,6 +17,7 @@ const checkBlockTarget = str =>
     '://ad.about.co.kr',
     '://neon.netinsight.co.kr',
     '://t1.daumcdn.net/kas/static/ba.min.js',
+    '://nstatic.dcinside.com/dgn/gallery/js/panda_tv.js',
     '://wcs.naver.net',
     '://cdn.taboola.com',
     '://securepubads.g.doubleclick.net'
