@@ -24,16 +24,28 @@ import BlockCommentAds from './modules/comment_ads'
 import Layout from './modules/layout'
 
 if (location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') {
-  modules.load(
-    DarkMode,
-    Fonts,
-    AdBlock,
-    BlockCommentAds,
-    AutoRefresh,
-    Preview,
-    Ip,
-    Layout
-  )
+  modules
+    .load(
+      DarkMode,
+      Fonts,
+      AdBlock,
+      BlockCommentAds,
+      AutoRefresh,
+      Preview,
+      Ip,
+      Layout
+    )
+    .then(() => {
+      log(
+        `🍊👟 DCRefresher Module Loaded. took ${(
+          performance.now() - loadStart
+        ).toFixed(2)}ms.`
+      )
+
+      loadStart = performance.now()
+
+      filter.run(true)
+    })
 }
 
 const refresherMain = async () => {
@@ -45,18 +57,4 @@ const refresherMain = async () => {
     ).toFixed(2)}ms.`
   )
 }
-;(() => {
-  log(
-    `🍊👟 DCRefresher Module Loaded. took ${(
-      performance.now() - loadStart
-    ).toFixed(2)}ms.`
-  )
-  loadStart = performance.now()
-
-  if (typeof window !== 'undefined' && window.addEventListener) {
-    window.addEventListener('DOMContentLoaded', refresherMain)
-    window.addEventListener('load', async () => {
-      await filter.run(true)
-    })
-  }
-})()
+window.addEventListener('load', refresherMain)

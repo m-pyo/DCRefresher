@@ -78,6 +78,22 @@
   opacity: 1;
 }
 
+.refresher-next-post-enter-active {
+  transition: all 450ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+.refresher-next-post-leave-active {
+  display: none;
+}
+.refresher-next-post-enter,
+.refresher-next-post-leave-to {
+  transform: translateY(40%);
+  opacity: 0;
+}
+.refresher-next-post-enter-to {
+  transform: translateY(0px);
+  opacity: 1;
+}
+
 .refresher-shake-enter-active {
   transition: all 450ms cubic-bezier(0.19, 1, 0.22, 1);
   animation: shake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;

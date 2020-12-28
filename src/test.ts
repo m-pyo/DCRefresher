@@ -23,7 +23,6 @@ const createFrame = () => {
       background: true,
       groupOnce: true,
       onScroll: (ev, app, group: HTMLElement) => {
-        // TODO : Implement macOS, Windows scroll bending
         // if (group.scrollTop === 0 || group.scrollTop + window.innerHeight >= group?.scrollHeight) {
         //   group.style.top = (ev.deltaY * -1) + 'px'
         // }

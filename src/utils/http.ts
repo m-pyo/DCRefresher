@@ -27,7 +27,7 @@ export const types = {
 
 export const commentGallTypes = {
   '': 'G',
-  minor: 'M',
+  mgallery: 'M',
   mini: 'MI'
 }
 
@@ -72,20 +72,14 @@ export const view = (url: string) => {
 }
 
 export const make = (url: string, options: object) =>
-  new Promise((resolve, reject) =>
+  new Promise<string>((resolve, reject) =>
     fetch(url, options)
       .then(async response => {
         if (response.status && response.status > 400) {
           reject(`${response.status} ${response.statusText}`)
         }
 
-        let body = await response.text()
-
-        if (body.substring(0, 1) === '{') {
-          body = JSON.parse(body)
-        }
-
-        resolve(body)
+        resolve(await response.text())
       })
       .catch(e => {
         reject(e)
@@ -112,4 +106,14 @@ export const galleryType = (url: string, extra?: string) => {
   }
 
   return types.MAJOR
+}
+
+/**
+ * URL에서 갤러리 종류를 확인하여 갤러리 종류 이름을 반환합니다.
+ * (mgallery, mini, '')
+ *
+ * @param url
+ */
+export const galleryTypeName = (url: string) => {
+  return commentGallTypes[galleryType(url)]
 }

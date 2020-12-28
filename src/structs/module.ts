@@ -54,7 +54,7 @@ interface RefresherModule {
   /**
    * 설정 페이지에 등록할 설정 옵션
    */
-  settings?: RefresherSettings | null
+  settings?: RefresherSettings[] | null
 
   /**
    * 모듈에서 사용할 내장 유틸 목록.

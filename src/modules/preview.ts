@@ -2,6 +2,8 @@ import queryString from '../utils/query'
 import { User } from '../structs/user'
 import { PostInfo } from '../structs/post'
 import { findNeighbor } from '../utils/dom'
+import * as http from '../utils/http'
+import comment_ads from './comment_ads'
 
 /**
  * dcinside.com set cookie function
@@ -35,6 +37,251 @@ function get_cookie (e: string) {
   return ''
 }
 
+interface GalleryPredata {
+  gallery: string
+  id: string
+  title?: string
+  link?: string
+}
+
+interface GalleryHTTPRequestArguments {
+  gallery: string
+  id: string
+  commentId?: string
+  commentNo?: string
+  link?: string
+}
+
+const ISSUE_ZOOM_ID = /\$\(document\)\.data\('comment_id'\,\s\'.+'\);/g
+const ISSUE_ZOOM_NO = /\$\(document\)\.data\('comment_no'\,\s\'.+'\);/g
+
+const QUOTES = /(["'])(?:(?=(\\?))\2.)*?\1/g
+
+const getRelevantData = (ev: MouseEvent) => {
+  let listID = findNeighbor(ev.target as HTMLElement, '.gall_num', 5, null)
+
+  let id = ''
+  let gallery = ''
+  let title = ''
+  let link = ''
+
+  let linkElement: HTMLLinkElement
+
+  if (listID) {
+    if (listID.innerText === '공지') {
+      id =
+        new URLSearchParams(
+          findNeighbor(ev.target as HTMLElement, 'a', 5, null)?.getAttribute(
+            'href'
+          )!
+        ).get('no') || ''
+    } else {
+      id = listID.innerText
+    }
+
+    linkElement = findNeighbor(
+      ev.target as HTMLElement,
+      'a:not(.reply_numbox)',
+      3,
+      null
+    ) as HTMLLinkElement
+
+    if (typeof linkElement !== null) {
+      title = linkElement.innerText
+    }
+  } else {
+    linkElement = findNeighbor(
+      ev.target as HTMLElement,
+      'a',
+      2,
+      null
+    ) as HTMLLinkElement
+
+    let pt = findNeighbor(ev.target as HTMLElement, '.txt_box', 2, null)
+    if (pt) {
+      title = pt.innerHTML
+    }
+  }
+
+  if (linkElement) {
+    let href = linkElement.href || ''
+    let linkNumberMatch = href.match(/\&no=.+/)
+    let linkIdMatch = href.match(/\id=.+/)
+
+    if (!linkNumberMatch || !linkIdMatch) {
+      return
+    }
+
+    id = linkNumberMatch[0].replace('&no=', '').replace(/\&.+/g, '')
+    gallery = linkIdMatch[0].replace(/id=/g, '').replace(/\&.+/g, '')
+  }
+
+  if (linkElement) {
+    link = linkElement.href
+  }
+
+  return {
+    id,
+    gallery,
+    title,
+    link
+  }
+}
+
+const request = {
+  async vote (
+    gall_id: string,
+    post_id: string,
+    type: string,
+    code: string | null,
+    link: string
+  ) {
+    set_cookie_tmp(
+      gall_id + post_id + '_Firstcheck' + (!type ? '_down' : ''),
+      'Y',
+      3,
+      'dcinside.com'
+    )
+
+    return http
+      .make(http.urls.vote, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        },
+        cache: 'no-store',
+        referrer: link,
+        body: `ci_t=${get_cookie('ci_c')}&id=${gall_id}&no=${post_id}&mode=${
+          type ? 'U' : 'D'
+        }&code_recommend=${code}&_GALLTYPE_=${http.galleryTypeName(
+          link
+        )}&link_id=${gall_id}`
+      })
+      .then((v: string) => {
+        let res = v.split('||')
+
+        return {
+          result: res[0],
+          counts: res[1],
+          fixedCounts: res[2]
+        }
+      })
+  },
+
+  post (link, gallery, id, signal) {
+    return http
+      .make(
+        `${http.urls.base +
+          http.galleryType(link, '/') +
+          http.urls.view +
+          gallery}&no=${id}`,
+        { signal }
+      )
+      .then(response => parse(id, response))
+  },
+
+  /**
+   * 디시인사이드 서버에 댓글을 요청합니다.
+   * @param args
+   * @param signal
+   */
+  async comments (args: GalleryHTTPRequestArguments, signal: AbortSignal) {
+    if (!args.link) {
+      throw new Error('link 값이 주어지지 않았습니다. (확장 프로그램 오류)')
+    }
+
+    let galleryType = http.galleryType(args.link, '/')
+
+    let response = await http.make(http.urls.comments, {
+      method: 'POST',
+      dataType: 'json',
+      headers: {
+        Accept: 'application/json, text/javascript, */*; q=0.01',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      cache: 'no-store',
+      referrer: `https://gall.dcinside.com/${galleryType}board/view/?id=${args.gallery}&no=${args.id}`,
+      body:
+        `id=${args.gallery}&no=${Number(args.id)}&cmt_id=${args.commentId ||
+          args.gallery}&cmt_no=${Number(args.commentNo || args.id)}&e_s_n_o=${
+          (document.getElementById('e_s_n_o')! as HTMLInputElement).value
+        }&comment_page=1&sort=&_GALLTYPE_=` + http.galleryTypeName(args.link),
+      signal
+    })
+
+    return JSON.parse(response)
+  }
+}
+
+let parse = (id: string, body: string) => {
+  let dom = new DOMParser().parseFromString(body, 'text/html')
+
+  let header = dom.querySelector('.view_content_wrap span.title_headtext')
+    ?.innerHTML
+
+  if (header) {
+    header = header.replace(/(\[|\])/g, '')
+  }
+
+  let title = dom.querySelector('.view_content_wrap span.title_subject')
+    ?.innerHTML
+
+  let date = dom.querySelector('.view_content_wrap div.fl > span.gall_date')
+    ?.innerHTML
+
+  let expire = dom.querySelector(
+    '.view_content_wrap div.fl > span.mini_autodeltime > div.pop_tipbox > div'
+  )?.innerHTML
+
+  if (expire) {
+    expire = expire.replace(/\s자동\s삭제/, '')
+  }
+
+  let views = dom
+    .querySelector('.view_content_wrap div.fr > span.gall_count')
+    ?.innerHTML.replace(/조회\s/, '')
+  let upvotes = dom
+    .querySelector('.view_content_wrap div.fr > span.gall_reply_num')
+    ?.innerHTML.replace(/추천\s/, '')
+
+  let downvotes = dom.querySelector('div.btn_recommend_box.clear .down_num')
+    ?.innerHTML
+
+  let contents = dom.querySelector(
+    '.view_content_wrap > div > div.inner.clear > div.writing_view_box'
+  )?.innerHTML
+
+  let commentId = body
+    .match(ISSUE_ZOOM_ID)![0]
+    .match(QUOTES)![1]
+    .replace(/\'/g, '')
+
+  let commentNo = body
+    .match(ISSUE_ZOOM_NO)![0]
+    .match(QUOTES)![1]
+    .replace(/\'/g, '')
+
+  return new PostInfo(id, {
+    header,
+    title,
+    date,
+    expire,
+    user: new User('', '', '', '').import(
+      dom.querySelector(
+        'div.view_content_wrap > header > div > div.gall_writer'
+      ) || null
+    ),
+    views,
+    upvotes,
+    downvotes,
+    contents,
+    commentId,
+    commentNo
+  })
+}
+
 export default {
   name: '미리보기',
   description: '글을 오른쪽 클릭 했을때 미리보기 창을 만들어줍니다.',
@@ -43,135 +290,34 @@ export default {
   memory: {
     preventOpen: false,
     lastPress: 0,
-    uuid: null
+    uuid: null,
+    uuid2: null
   },
   enable: true,
   default_enable: true,
   require: ['filter', 'eventBus', 'Frame', 'http'],
-  func (filter: RefresherFilter, eventBus: RefresherEventBus, Frame, http) {
-    let parse = (id: string, body: string) => {
-      let dom = new DOMParser().parseFromString(body, 'text/html')
-
-      let header = (
-        dom.querySelector(
-          '.view_content_wrap > header > div > h3 > span.title_headtext'
-        ) || {}
-      ).innerHTML
-
-      if (header) {
-        header = header.replace(/(\[|\])/g, '')
-      }
-
-      let title = dom.querySelector(
-        '.view_content_wrap > header > div > h3 > span.title_subject'
-      )?.innerHTML
-
-      let date = dom.querySelector(
-        '.view_content_wrap > header > div > div > div.fl > span.gall_date'
-      )?.innerHTML
-
-      let expire = (
-        dom.querySelector(
-          '.view_content_wrap > header > div > div > div.fl > span.mini_autodeltime > div.pop_tipbox > div'
-        ) || {}
-      ).innerHTML
-
-      let views = dom
-        .querySelector(
-          '.view_content_wrap > header > div > div > div.fr > span.gall_count'
-        )
-        ?.innerHTML.replace(/조회\s/, '')
-      let upvotes = dom
-        .querySelector(
-          '.view_content_wrap > header > div > div > div.fr > span.gall_reply_num'
-        )
-        ?.innerHTML.replace(/추천\s/, '')
-
-      let downvotes = dom.querySelector('div.btn_recommend_box.clear .down_num')
-        ?.innerHTML
-
-      let contents = dom.querySelector(
-        '.view_content_wrap > div > div.inner.clear > div.writing_view_box'
-      )?.innerHTML
-      let comments: any[] = []
-
-      return new PostInfo(id, {
-        header,
-        title,
-        date,
-        expire,
-        user: new User('', '', '', '').import(
-          dom.querySelector(
-            'div.view_content_wrap > header > div > div.gall_writer'
-          ) || null
-        ),
-        views,
-        upvotes,
-        downvotes,
-        contents,
-        comments
-      })
-    }
-
-    let makeVoteRequest = async (
-      gall_id: string,
-      post_id: string,
-      type: string,
-      code: string | null,
-      link: string
-    ) => {
-      set_cookie_tmp(
-        gall_id + post_id + '_Firstcheck' + (!type ? '_down' : ''),
-        'Y',
-        3,
-        'dcinside.com'
-      )
-
-      return http
-        .make(http.urls.vote, {
-          method: 'POST',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-          },
-          cache: 'no-store',
-          referrer: link,
-          body: `ci_t=${get_cookie('ci_c')}&id=${gall_id}&no=${post_id}&mode=${
-            type ? 'U' : 'D'
-          }&code_recommend=${code}`
-        })
-        .then((v: string) => {
-          let res = v.split('||')
-
-          return {
-            result: res[0],
-            counts: res[1],
-            fixed_counts: res[2]
-          }
-        })
-    }
-
-    let waitPost: Function | null
-
+  func (
+    filter: RefresherFilter,
+    eventBus: RefresherEventBus,
+    Frame: RefresherFrame,
+    http: RefresherHTTP
+  ) {
     let makeFirstFrame = (
-      frame,
-      gall: string,
-      id: string,
-      title: string,
-      link: string,
+      frame: RefresherFrame,
+      preData: GalleryPredata,
       signal: AbortSignal
     ) => {
-      frame.setData('load', true)
-      frame.title = title
-      frame.buttons = true
+      frame.data.load = true
+      frame.title = preData.title || ''
+      frame.data.buttons = true
 
-      frame.voteFunction = async (type: string) => {
-        let res = await makeVoteRequest(
-          queryString('id')!,
-          id,
+      frame.functions.vote = async (type: string) => {
+        let res = await request.vote(
+          preData.gallery,
+          preData.id,
           type,
           null,
-          link
+          preData.link || ''
         )
 
         if (res.result != 'true') {
@@ -182,14 +328,10 @@ export default {
 
         frame[type ? 'upvotes' : 'downvotes'] = res.counts
 
-        if (type) {
-          frame.fixedCounts = res.fixed_counts
-        }
-
         return true
       }
 
-      frame.shareFunction = () => {
+      frame.functions.share = () => {
         if (!window.navigator.clipboard) {
           alert('이 브라우저는 클립보드 복사 기능을 지원하지 않습니다.')
           return false
@@ -197,204 +339,185 @@ export default {
 
         window.navigator.clipboard.writeText(
           `https://gall.dcinside.com/${http.galleryType(
-            link
-          )}/board/view/?id=${gall || queryString('id')}&no=${id}`
+            preData.link
+          )}/board/view/?id=${preData.gallery || queryString('id')}&no=${
+            preData.id
+          }`
         )
 
         return true
       }
 
-      frame.load = () => {
-        frame.error = false
+      frame.functions.load = () => {
+        frame.data = {}
+        frame.data.load = true
 
-        http
-          .make(
-            `${http.urls.base +
-              http.galleryType(link, '/') +
-              http.urls.view +
-              (gall || queryString('id'))}&no=${id}`,
-            { signal }
+        request
+          .post(
+            preData.link,
+            preData.gallery || queryString('id'),
+            preData.id,
+            signal
           )
-          .then((v: string) => {
-            if (typeof waitPost === 'function') {
-              waitPost(v)
+          .then((obj: any) => {
+            if (!obj) {
+              return
             }
 
-            return parse(id, v)
-          })
-          .then((obj: any) => {
             frame.contents = obj.contents
             frame.upvotes = obj.upvotes
             frame.downvotes = obj.downvotes
 
-            frame.user = obj.user
-            frame.date = new Date(obj.date)
-
-            if (obj.expire) {
-              let expireParse = obj.expire.replace(/\s자동\s삭제/, '')
-              frame.expire = new Date(expireParse)
+            if (frame.title !== obj.title) {
+              frame.title = obj.title
             }
 
-            frame.setData('load', false)
+            frame.data.user = obj.user
+            frame.data.date = new Date(obj.date)
+            frame.data.expire = obj.expire
+            frame.data.buttons = true
 
+            eventBus.emit(
+              'RefresherPostCommentIDLoaded',
+              obj.commentId,
+              obj.commentNo
+            )
             eventBus.emitNextTick('contentPreview', frame.app.$el)
 
-            obj = undefined
+            frame.data.load = false
           })
-          .catch(e => {
-            frame.error = {
+          .catch((e: Error) => {
+            frame.data.error = {
               title: '게시글',
               detail: e.message || e || '알 수 없는 오류'
             }
+            frame.data.load = false
           })
       }
 
-      frame.load()
-      frame.retryFunction = frame.load
-    }
-
-    // TODO : 페이지네이션 구현
-    let requestComment = (
-      frame: any,
-      link: string,
-      gall_id: string,
-      id: string,
-      cmt_id: string,
-      cmt_no: string,
-      signal: AbortSignal
-    ) => {
-      let galleryType = http.galleryType(link, '/')
-
-      frame.load = () => {
-        frame.error = false
-
-        http
-          .make(http.urls.comments, {
-            method: 'POST',
-            dataType: 'json',
-            headers: {
-              Accept: 'application/json, text/javascript, */*; q=0.01',
-              'Content-Type':
-                'application/x-www-form-urlencoded; charset=UTF-8',
-              'X-Requested-With': 'XMLHttpRequest'
-            },
-            cache: 'no-store',
-            referrer: `https://gall.dcinside.com/${galleryType}board/view/?id=${gall_id}&no=${id}`,
-            body:
-              `id=${gall_id}&no=${Number(id)}&cmt_id=${cmt_id ||
-                gall_id}&cmt_no=${Number(cmt_no || id)}&e_s_n_o=${
-                (document.getElementById('e_s_n_o')! as HTMLInputElement).value
-              }&comment_page=1&sort=&_GALLTYPE_=` +
-              http.commentGallTypes[galleryType.replace(/\//g, '')],
-            signal
-          })
-          .then((comments: any) => {
-            if (!comments) {
-              frame.error = {
-                detail: 'No comments'
-              }
-            }
-
-            let threadCounts = 0
-
-            if (comments.comments) {
-              comments.comments = comments.comments.filter(v => {
-                return v.nicktype !== 'COMMENT_BOY'
-              })
-
-              comments.comments.map(v => {
-                v.user = new User(
-                  v.name,
-                  v.user_id,
-                  v.ip || '',
-                  ((new DOMParser()
-                    .parseFromString(v.gallog_icon, 'text/html')
-                    .querySelector('a.writer_nikcon img') ||
-                    {})! as HTMLImageElement).src
-                )
-              })
-
-              threadCounts = comments.comments
-                .map(v => v.depth)
-                .reduce((a, b) => a + b)
-            }
-
-            frame.subtitle = `${
-              comments.total_cnt !== comments.comment_cnt
-                ? `쓰레드 ${comments.comment_cnt}개, 총 댓글 ${comments.total_cnt}`
-                : comments.total_cnt
-            }개`
-            frame.isComment = true
-            frame.comments = comments
-
-            frame.setData('load', false)
-          })
-          .catch(e => {
-            frame.subtitle = ``
-
-            frame.error = {
-              title: '댓글',
-              detail: e.message || e || '알 수 없는 오류'
-            }
-          })
-      }
-
-      frame.load()
-      frame.retryFunction = frame.load
+      frame.functions.load()
+      frame.functions.retry = frame.functions.load
     }
 
     let makeSecondFrame = (
-      frame,
-      gall: string,
-      id: string,
-      title: string,
-      link: string,
+      frame: RefresherFrame,
+      preData: GalleryPredata,
       signal: AbortSignal
     ) => {
-      frame.setData('load', true)
+      frame.data.load = true
       frame.title = `댓글`
       frame.subtitle = `로딩 중`
 
-      let gall_id = gall || queryString('id')
+      new Promise<GalleryPredata>((resolve, _) => {
+        if (preData.gallery !== 'issuezoom') {
+          resolve({
+            gallery: preData.gallery,
+            id: preData.id
+          })
 
-      if (gall_id === 'issuezoom') {
-        waitPost = (v: string) => {
-          let datmatch = /(["'])(?:(?=(\\?))\2.)*?\1/g
-          let id_match = v
-            .match(/\$\(document\)\.data\('comment_id'\,\s\'.+'\);/g)![0]
-            .match(datmatch)![1]
-            .replace(/\'/g, '')
-
-          let comment_no = v
-            .match(/\$\(document\)\.data\('comment_no'\,\s\'.+'\);/g)![0]
-            .match(datmatch)![1]
-            .replace(/\'/g, '')
-
-          requestComment(
-            frame,
-            link,
-            gall_id!,
-            id,
-            id_match,
-            comment_no,
-            signal
-          )
+          return
         }
 
-        return
-      }
+        eventBus.on(
+          'RefresherPostCommentIDLoaded',
+          (commentId: string, commentNo: string) => {
+            resolve({
+              gallery: commentId,
+              id: commentNo
+            })
+          },
+          {
+            once: true
+          }
+        )
+      }).then(postData => {
+        frame.functions.load = () => {
+          frame.data.error = false
 
-      requestComment(frame, link, gall_id!, id, gall_id!, id, signal)
+          request
+            .comments(
+              {
+                link: preData.link || location.href,
+                gallery: preData.gallery,
+                id: preData.id,
+                commentId: postData.gallery,
+                commentNo: postData.id
+              },
+              signal
+            )
+            .then((comments: { [index: string]: any }) => {
+              if (!comments) {
+                frame.data.error = {
+                  detail: 'No comments'
+                }
+              }
+
+              let threadCounts = 0
+
+              if (comments.comments) {
+                comments.comments = comments.comments.filter(
+                  (v: { [index: string]: any }) => {
+                    return v.nicktype !== 'COMMENT_BOY'
+                  }
+                )
+
+                comments.comments.map((v: { [index: string]: any }) => {
+                  v.user = new User(
+                    v.name,
+                    v.user_id,
+                    v.ip || '',
+                    ((new DOMParser()
+                      .parseFromString(v.gallog_icon, 'text/html')
+                      .querySelector('a.writer_nikcon img') ||
+                      {})! as HTMLImageElement).src
+                  )
+                })
+
+                threadCounts = comments.comments
+                  .map((v: { [index: string]: any }) => Number(v.depth == 0))
+                  .reduce((a: number, b: number) => a + b)
+              }
+
+              frame.subtitle = `${(comments.total_cnt !== threadCounts &&
+                `쓰레드 ${threadCounts}개, 총 댓글`) ||
+                ''} ${comments.total_cnt}개`
+
+              frame.data.comments = comments
+              frame.data.load = false
+            })
+            .catch((e: Error) => {
+              frame.subtitle = ``
+
+              frame.data.error = {
+                title: '댓글',
+                detail: e.message || e || '알 수 없는 오류'
+              }
+            })
+        }
+
+        frame.functions.load()
+        frame.functions.retry = frame.functions.load
+      })
     }
 
     let previewFrame = (ev: MouseEvent) => {
       if (this.memory.preventOpen) {
         this.memory.preventOpen = false
+
+        return
+      }
+
+      let preData = getRelevantData(ev)
+
+      if (!preData) {
         return
       }
 
       let controller = new AbortController()
       let { signal } = controller
+
+      let lastScroll = 0
+      let scrolledCount = 0
 
       let frame = new Frame(
         [
@@ -416,7 +539,58 @@ export default {
           background: true,
           stack: true,
           groupOnce: true,
-          onScroll: (ev, app, group: HTMLElement) => {
+          onScroll: (ev: any, app: any, group: HTMLElement) => {
+            console.log(ev)
+
+            let scrolledToBottom =
+              group.scrollHeight - group.scrollTop === group.clientHeight
+
+            if (scrolledToBottom && ev.deltaY > 0 && lastScroll) {
+              if (lastScroll + 300 > Date.now()) {
+                lastScroll = Date.now()
+                return
+              }
+
+              console.log(app.$data)
+
+              app.$data.scrollMode = true
+
+              if (scrolledCount < 6) {
+                scrolledCount++
+                return
+              }
+
+              lastScroll = 0
+              scrolledCount = 0
+
+              let firstApp = frame.app.first()
+              let secondApp = frame.app.second()
+
+              if (firstApp.data.load) {
+                return
+              }
+
+              if (!preData) {
+                return
+              }
+
+              if (!firstApp.data.error) {
+                preData.id = (Number(preData.id) + 1).toString()
+              }
+
+              preData.title = '다음 게시글 로딩 중...'
+              firstApp.contents = ''
+
+              group.scrollTop = 0
+
+              app.$data.scrollMode = false
+
+              makeFirstFrame(firstApp, preData, signal)
+              makeSecondFrame(secondApp, preData, signal)
+            }
+
+            lastScroll = Date.now()
+
             // TODO : Implement macOS, Windows scroll bending
             // if (group.scrollTop === 0 || group.scrollTop + window.innerHeight >= group?.scrollHeight) {
             //   group.style.top = (ev.deltaY * -1) + 'px'
@@ -429,73 +603,8 @@ export default {
         controller.abort()
       })
 
-      let listId = findNeighbor(ev.target as HTMLElement, '.gall_num', 5, null)
-
-      let preId = ''
-      let preGall = ''
-      let preLink: HTMLLinkElement
-      let preTitle = ''
-
-      if (!listId) {
-        preLink = findNeighbor(
-          ev.target as HTMLElement,
-          'a',
-          2,
-          null
-        ) as HTMLLinkElement
-
-        if (typeof preLink !== null) {
-          preId = (preLink.href || '').match(/\&no=.+/)![0].replace('&no=', '')
-          preGall = ((preLink.href || '').match(/\id=.+\&/) || '')[0].replace(
-            /id=|&/g,
-            ''
-          )
-        }
-
-        let pt = findNeighbor(ev.target as HTMLElement, '.txt_box', 2, null)
-        if (pt !== null) {
-          preTitle = pt.innerHTML
-        }
-      } else {
-        preId =
-          listId.innerText === '공지'
-            ? new URLSearchParams(
-                findNeighbor(
-                  ev.target as HTMLElement,
-                  'a',
-                  5,
-                  null
-                )?.getAttribute('href')!
-              ).get('no')
-            : listId.innerText
-        preLink = findNeighbor(
-          ev.target as HTMLElement,
-          'a:not(.reply_numbox)',
-          3,
-          null
-        ) as HTMLLinkElement
-
-        if (typeof preLink !== null) {
-          preTitle = preLink.innerText
-        }
-      }
-
-      makeFirstFrame(
-        frame.app.first(),
-        preGall,
-        preId,
-        preTitle,
-        preLink.href,
-        signal
-      )
-      makeSecondFrame(
-        frame.app.second(),
-        preGall,
-        preId,
-        preTitle,
-        preLink.href,
-        signal
-      )
+      makeFirstFrame(frame.app.first(), preData, signal)
+      makeSecondFrame(frame.app.second(), preData, signal)
 
       setTimeout(() => {
         frame.app.fadeIn()
@@ -526,23 +635,25 @@ export default {
       }
     }
 
+    let addHandler = (e: HTMLElement) => {
+      e.addEventListener('mouseup', handleMousePress)
+      e.addEventListener('mousedown', handleMousePress)
+      e.addEventListener('contextmenu', previewFrame)
+    }
+
     this.memory.uuid = filter.add(
-      '.left_content article .us-post .ub-word, #right_issuezoom .inner',
-      (elem: HTMLElement) => {
-        elem.addEventListener('mouseup', handleMousePress)
-        elem.addEventListener('mousedown', handleMousePress)
-        elem.addEventListener('contextmenu', previewFrame)
-      }
+      '.left_content article .us-post .ub-word',
+      addHandler
     )
+
+    this.memory.uuid2 = filter.add('#right_issuezoom', addHandler)
 
     eventBus.on('refresh', (e: HTMLElement) => {
       let elems = e.querySelectorAll('.left_content article .us-post .ub-word')
 
       let iter = elems.length
       while (iter--) {
-        elems[iter].addEventListener('mouseup', handleMousePress)
-        elems[iter].addEventListener('mousedown', handleMousePress)
-        elems[iter].addEventListener('contextmenu', previewFrame)
+        addHandler(elems[iter] as HTMLElement)
       }
     })
   }

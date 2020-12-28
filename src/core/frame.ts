@@ -14,18 +14,21 @@ interface FrameStackOption {
   onScroll?: Function
 }
 
-import { Outer } from '../components/frame'
+import { Outer, Scroll } from '../components/frame'
 
-class InternalFrame {
+class InternalFrame implements RefresherFrame {
+  title: string
+  subtitle: string
+  comments: object
+  functions: { [index: string]: Function }
+
   class: string
   options: FrameOption
   app: Vue
-  data: object
+  data: { [index: string]: any }
 
   contents: string
   error: object | boolean
-  isComment: boolean
-  comments: any
   upvotes: any
   downvotes: any
   buttonError: any
@@ -34,28 +37,27 @@ class InternalFrame {
     this.class = cls
     this.options = options
 
+    this.title = ''
+    this.subtitle = ''
+    this.comments = {}
+    this.functions = {}
+
     this.app = app
     this.data = {}
 
     this.error = false
     this.contents = ''
-    this.isComment = false
-    this.comments = null
     this.upvotes = null
     this.downvotes = null
     this.buttonError = null
   }
 
-  setData (key: string, value: any) {
-    this.data[key] = value
+  querySelector (a: string) {
+    return this.app.$el.querySelector(a)
   }
 
-  querySelector (...a: string[]) {
-    return this.app.$el.querySelector(...a)
-  }
-
-  querySelectorAll (...a: string[]) {
-    return this.app.$el.querySelectorAll(...a)
+  querySelectorAll (a: string) {
+    return this.app.$el.querySelectorAll(a)
   }
 
   get center () {
@@ -89,7 +91,8 @@ export default class {
     this.frame = []
     this.app = new Vue({
       components: {
-        Outer
+        Outer,
+        Scroll
       },
       el: this.outer,
       data: () => {
@@ -98,7 +101,8 @@ export default class {
           ...option,
           activeGroup: option.groupOnce,
           fade: false,
-          stampMode: false
+          stampMode: false,
+          scrollMode: false
         }
       },
       methods: {
@@ -138,8 +142,8 @@ export default class {
       this.app.frames.push(new InternalFrame(this.class, childs[i], this.app))
     }
 
-    let keyupFunction = ev => {
-      if (ev.keyCode === 27) {
+    let keyupFunction = (ev: KeyboardEvent) => {
+      if (ev.code === 'Escape') {
         this.app.outerClick()
       }
 
@@ -149,10 +153,17 @@ export default class {
 
     document.querySelector('body')!.style.overflow = 'hidden'
 
-    if (typeof option.onScroll === 'function') {
+    if (option && option.onScroll) {
       let refresherGroup = this.app.$el.querySelector('.refresher-group')
+
+      if (!refresherGroup) {
+        return
+      }
+
       refresherGroup.addEventListener('wheel', ev => {
-        option.onScroll(ev, this.app, refresherGroup)
+        if (option.onScroll) {
+          option.onScroll(ev, this.app, refresherGroup)
+        }
       })
     }
   }

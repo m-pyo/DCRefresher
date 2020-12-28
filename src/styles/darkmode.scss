@@ -144,7 +144,7 @@ $dark-red: #e21919;
     border-top-color: $dark-dc-color;
   }
 
-  .miniwrap .sogaeimg_tit {
+  .miniwrap .sogaeimg_tit, .gallview_head .gall_comment a {
     background: $dark-tint2;
   }
 
@@ -152,8 +152,14 @@ $dark-red: #e21919;
   .mini_list_wrap a,
   .option_box li,
   .pop_wrap .my_minor_mini li a,
+  .migall_state .inner > .tit span,
+  .migall_state .inner > .txt,
   .pop_wrap .my_minor_mini .inner.my_minor_empty {
     color: $dark-text-color;
+  }
+
+  .access_limit.gall_list.case3 tbody::before {
+    filter: invert(0.868);
   }
 
   .hot_minigall .rank_num,

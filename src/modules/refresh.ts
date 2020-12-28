@@ -49,7 +49,7 @@ export default {
 
     let run = () => {
       if (!this.status.auto_delay) {
-        this.memory.delay = Math.max(1000, this.memory.delay || 2500)
+        this.memory.delay = Math.max(600, this.memory.delay || 2500)
       }
 
       this.memory.refresh = window.setTimeout(load, this.memory.delay)

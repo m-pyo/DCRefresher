@@ -74,6 +74,37 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   -webkit-overflow-scrolling: touch;
   height: 100%;
   width: 100%;
+  overscroll-behavior: contain;
+}
+
+.refresher-scroll {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 40%;
+  width: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(12, 23, 53, 0.7),
+    rgba(32, 42, 72, 0.3),
+    rgba(0, 0, 0, 0)
+  );
+  color: white;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+
+  .center {
+    position: relative;
+    margin: auto;
+    top: 20%;
+
+    p {
+      font-weight: bold;
+      font-size: 24px;
+      letter-spacing: -1.66px;
+    }
+  }
 }
 
 .refresherDark .refresher-frame {

@@ -7,6 +7,8 @@ import Frame from './frame'
 import * as ip from '../utils/ip'
 import * as http from '../utils/http'
 
+import { browser } from 'webextension-polyfill-ts'
+
 let ACCESSIBLE_UTILS = {
   filter,
   Frame,
@@ -15,7 +17,7 @@ let ACCESSIBLE_UTILS = {
   ip
 }
 
-let module_store = {}
+let module_store: { [index: string]: any } = {}
 let settings_store = {}
 
 let PERMISSION_REVOKE = {
@@ -80,13 +82,15 @@ export const modules = {
   lists: () => {
     return module_store
   },
-  load: async (...mods: RefresherModule[]) => {
-    for (let i = 0; i < mods.length; i++) {
-      await modules.register(mods[i])
-    }
+  load: (...mods: RefresherModule[]) =>
+    new Promise<void>(async (resolve, reject) => {
+      for (let i = 0; i < mods.length; i++) {
+        await modules.register(mods[i])
+      }
 
-    return true
-  },
+      resolve()
+    }),
+
   register: async (mod: RefresherModule) => {
     if (typeof module_store[mod.name] !== 'undefined') {
       throw new Error(`${mod.name} is already registered.`)
@@ -157,7 +161,7 @@ export const modules = {
 }
 
 if (runtime.onMessage) {
-  runtime.onMessage.addListener((msg: object) => {
+  runtime.onMessage.addListener((msg: { [index: string]: any }) => {
     if (typeof msg === 'object' && msg.updateModuleSettings) {
       module_store[msg.name].enable = msg.value
 
