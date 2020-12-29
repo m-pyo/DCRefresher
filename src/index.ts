@@ -20,21 +20,11 @@ import AdBlock from './modules/adblock'
 import Fonts from './modules/fonts'
 import Ip from './modules/ip'
 import AutoRefresh from './modules/refresh'
-import BlockCommentAds from './modules/comment_ads'
 import Layout from './modules/layout'
 
 if (location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') {
   modules
-    .load(
-      DarkMode,
-      Fonts,
-      AdBlock,
-      BlockCommentAds,
-      AutoRefresh,
-      Preview,
-      Ip,
-      Layout
-    )
+    .load(DarkMode, Fonts, AdBlock, AutoRefresh, Preview, Ip, Layout)
     .then(() => {
       log(
         `🍊👟 DCRefresher Module Loaded. took ${(

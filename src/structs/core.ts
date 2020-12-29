@@ -52,6 +52,7 @@ interface RefresherFrame {
   upvotes: any
   downvotes: any
   buttonError: any
+  error?: any
 
   data: { [index: string]: any }
   functions: { [index: string]: Function }

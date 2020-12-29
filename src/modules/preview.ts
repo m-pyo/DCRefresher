@@ -176,7 +176,7 @@ const request = {
           http.galleryType(link, '/') +
           http.urls.view +
           gallery}&no=${id}`,
-        { signal }
+        { signal, cache: 'no-cache' }
       )
       .then(response => parse(id, response))
   },
@@ -349,6 +349,7 @@ export default {
       }
 
       frame.functions.load = () => {
+        frame.error = false
         frame.data = {}
         frame.data.load = true
 
@@ -387,7 +388,7 @@ export default {
             frame.data.load = false
           })
           .catch((e: Error) => {
-            frame.data.error = {
+            frame.error = {
               title: '게시글',
               detail: e.message || e || '알 수 없는 오류'
             }
@@ -432,7 +433,7 @@ export default {
         )
       }).then(postData => {
         frame.functions.load = () => {
-          frame.data.error = false
+          frame.error = false
 
           request
             .comments(
@@ -447,7 +448,7 @@ export default {
             )
             .then((comments: { [index: string]: any }) => {
               if (!comments) {
-                frame.data.error = {
+                frame.error = {
                   detail: 'No comments'
                 }
               }
@@ -488,7 +489,7 @@ export default {
             .catch((e: Error) => {
               frame.subtitle = ``
 
-              frame.data.error = {
+              frame.error = {
                 title: '댓글',
                 detail: e.message || e || '알 수 없는 오류'
               }
@@ -516,8 +517,8 @@ export default {
       let controller = new AbortController()
       let { signal } = controller
 
-      let lastScroll = 0
       let scrolledCount = 0
+      let blockTo = 0
 
       let frame = new Frame(
         [
@@ -540,56 +541,76 @@ export default {
           stack: true,
           groupOnce: true,
           onScroll: (ev: any, app: any, group: HTMLElement) => {
-            console.log(ev)
-
+            let scrolledTop = group.scrollTop === 0
             let scrolledToBottom =
               group.scrollHeight - group.scrollTop === group.clientHeight
 
-            if (scrolledToBottom && ev.deltaY > 0 && lastScroll) {
-              if (lastScroll + 300 > Date.now()) {
-                lastScroll = Date.now()
+            if (Date.now() < blockTo) {
+              return
+            }
+            blockTo = 0
+
+            if (ev.deltaY < 0) {
+              app.$data.scrollModeBottom = false
+              app.$data.scrollModeTop = true
+
+              if (!scrolledTop) {
+                scrolledCount = 0
+                app.$data.scrollModeTop = false
+                app.$data.scrollModeBottom = false
+
                 return
               }
-
-              console.log(app.$data)
-
-              app.$data.scrollMode = true
 
               if (scrolledCount < 6) {
                 scrolledCount++
                 return
               }
-
-              lastScroll = 0
               scrolledCount = 0
-
-              let firstApp = frame.app.first()
-              let secondApp = frame.app.second()
-
-              if (firstApp.data.load) {
-                return
-              }
 
               if (!preData) {
                 return
               }
 
-              if (!firstApp.data.error) {
+              preData.id = (Number(preData.id) - 1).toString()
+
+              newPostWithData(preData)
+              group.scrollTop = 0
+              app.$data.scrollModeTop = false
+
+              blockTo = Date.now() + 100
+            } else {
+              app.$data.scrollModeTop = false
+              app.$data.scrollModeBottom = true
+
+              if (!scrolledToBottom) {
+                scrolledCount = 0
+                app.$data.scrollModeTop = false
+                app.$data.scrollModeBottom = false
+
+                return
+              }
+
+              if (scrolledCount < 6) {
+                scrolledCount++
+                return
+              }
+              scrolledCount = 0
+
+              if (!preData) {
+                return
+              }
+
+              if (!frame.app.first().error) {
                 preData.id = (Number(preData.id) + 1).toString()
               }
 
-              preData.title = '다음 게시글 로딩 중...'
-              firstApp.contents = ''
-
+              newPostWithData(preData)
               group.scrollTop = 0
+              app.$data.scrollModeBottom = false
 
-              app.$data.scrollMode = false
-
-              makeFirstFrame(firstApp, preData, signal)
-              makeSecondFrame(secondApp, preData, signal)
+              blockTo = Date.now() + 100
             }
-
-            lastScroll = Date.now()
 
             // TODO : Implement macOS, Windows scroll bending
             // if (group.scrollTop === 0 || group.scrollTop + window.innerHeight >= group?.scrollHeight) {
@@ -598,6 +619,21 @@ export default {
           }
         }
       )
+
+      let newPostWithData = (preData: GalleryPredata) => {
+        let firstApp = frame.app.first()
+        let secondApp = frame.app.second()
+
+        if (firstApp.data.load) {
+          return
+        }
+
+        preData.title = '게시글 로딩 중...'
+        firstApp.contents = ''
+
+        makeFirstFrame(firstApp, preData, signal)
+        makeSecondFrame(secondApp, preData, signal)
+      }
 
       frame.app.$on('close', () => {
         controller.abort()

@@ -102,7 +102,8 @@ export default class {
           activeGroup: option.groupOnce,
           fade: false,
           stampMode: false,
-          scrollMode: false
+          scrollModeTop: false,
+          scrollModeBottom: false
         }
       },
       methods: {

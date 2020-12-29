@@ -36,7 +36,7 @@ export const Frame = Vue.component('refresher-frame', {
     Icon
   },
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
-      <div class="refresher-preview-info" v-if="!frame.data.error">
+      <div class="refresher-preview-info" v-if="!frame.error">
         <div class="refresher-preview-title-zone">
           <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
             <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
@@ -53,7 +53,7 @@ export const Frame = Vue.component('refresher-frame', {
           </div>
         </div>
       </div>
-      <div class="refresher-preview-contents" v-if="!frame.data.error">
+      <div class="refresher-preview-contents" v-if="!frame.error">
         <refresher-loader v-show="frame.data.load"></refresher-loader>
         <transition name="refresher-opacity">
           <div v-html="frame.contents" :key="frame.contents"></div>
@@ -61,28 +61,36 @@ export const Frame = Vue.component('refresher-frame', {
 
         <div class="refresher-preview-comments" v-if="frame.data.comments && frame.data.comments.comments">
           <transition-group name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-            <Comment v-for="(comment, i) in frame.data.comments.comments" :data-index="i + 1" :parentUser="frame.data.user" :comment="comment" :key="'cmt_' + comment.no"></Comment>
+            <Comment v-for="(comment, i) in frame.data.comments.comments" :index="i + 1" :parentUser="frame.data.user" :comment="comment" :key="'cmt_' + comment.no"></Comment>
           </transition-group>
         </div>
         <div v-if="frame.data.comments && !frame.data.comments.comments">
-          <h3 class="refresher-nocomment">작성된 댓글이 없습니다.</h3>
-          <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
+          <div v-if="false">
+            <!-- TODO : 댓글 작성 -->
+            <h3 class="refresher-nocomment">작성된 댓글이 없습니다.</h3>
+            <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
+          </div>
+          <div v-else class="refresher-nocomment-wrap">
+            <img src="https://dcimg5.dcinside.com/dccon.php?no=62b5df2be09d3ca567b1c5bc12d46b394aa3b1058c6e4d0ca41648b65ceb246e13df9546348593b9b03553cb2b363e94da0bda2f33af133d69a3e3bd02836ad0aeef62ce"></img>
+            <h3>댓글이 없습니다.</h3>
+          </div>
         </div>
       </div>
-      <div class="refresher-preview-contents refresher-error" v-if="frame.data.error">
-        <h3>{{frame.data.error.title}}을 불러올 수 없습니다.</h3>
+      <div class="refresher-preview-contents refresher-error" v-if="frame.error">
+        <h3>{{frame.error.title}}을 불러올 수 없습니다.</h3>
         <br>
         <p>가능한 경우:</p>
-        <ul v-if="frame.data.error.detail.indexOf('50') > -1">
+        <ul v-if="frame.error.detail.indexOf('50') > -1">
           <li>서버가 불안정합니다. 페이지를 다시 고쳐보세요.</li>
           <li>서버 구조 변경으로 인한 내용 해석 실패. 지속될 경우 개발자에게 문의하세요.</li>
           <li>네트워크 방화벽에 의해 차단되지는 않았는지 확인해보세요.</li>
         </ul>
-        <ul v-else-if="frame.data.error.detail.indexOf('40') > -1">
+        <ul v-else-if="frame.error.detail.indexOf('40') > -1">
           <li>게시글이 이미 삭제됨</li>
+          <li>게시글이 없음</li>
           <li>서버 구조 변경으로 인한 잘못된 값으로 요청. 지속될 경우 개발자에게 문의하세요.</li>
         </ul>
-        <ul v-else-if="frame.data.error.detail.indexOf('Failed to fetch') > -1">
+        <ul v-else-if="frame.error.detail.indexOf('Failed to fetch') > -1">
           <li>연결 오류, 서버 오류일 가능성도 있습니다.</li>
           <li>브라우저 오류, 대부분 구현 오류로 확장 프로그램 업데이트가 필요합니다.</li>
           <li>서버 구조 변경으로 인한 잘못된 방식으로 요청. 지속될 경우 개발자에게 문의하세요.</li>
@@ -93,7 +101,7 @@ export const Frame = Vue.component('refresher-frame', {
         <br>
         <PreviewButton class="refresher-writecomment primary" id="refresh" text="다시 시도" :click="retry "></PreviewButton>
         <br>
-        <span class="refresher-mute">{{frame.data.error.detail}}</span>
+        <span class="refresher-mute">{{frame.error.detail}}</span>
       </div>
       <div class="refresher-preview-votes" v-if="frame.data.buttons">
         <div>
@@ -141,18 +149,27 @@ export const Frame = Vue.component('refresher-frame', {
 export const Outer = Vue.component('refresher-frame-outer', {
   template: `<div class="refresher-frame-outer" :class="{background: this.$root.background, fadeIn: this.$root.fade, fadeOut: !this.$root.fade, stack: this.$root.fade}" >
     <refresher-group></refresher-group>
+    <transition name="refresher-prev-post">
+      <refresher-scroll side="top" v-show="this.$root.scrollModeTop"></refresher-scroll>
+    </transition>
     <transition name="refresher-next-post">
-      <refresher-scroll v-show="this.$root.scrollMode"></refresher-scroll>
+      <refresher-scroll side="bottom" v-show="this.$root.scrollModeBottom"></refresher-scroll>
     </transition>
   </div>`
 })
 
 export const Scroll = Vue.component('refresher-scroll', {
-  template: `<div class="refresher-scroll">
+  template: `<div class="refresher-scroll" :class="{top: side === 'top'}">
     <div class="center">
-      <p>한번 더 스크롤 하면 다음 게시글을 봅니다.</p> 
+      <p>한번 더 스크롤 하면 {{side === 'top' ? '이전' : '다음'}} 게시글을 봅니다.</p> 
     </div>
-  </div>`
+  </div>`,
+  props: {
+    side: {
+      type: String,
+      required: true
+    }
+  }
 })
 
 export const Group = Vue.component('refresher-group', {

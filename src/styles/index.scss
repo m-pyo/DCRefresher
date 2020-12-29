@@ -94,6 +94,22 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   justify-content: center;
   pointer-events: none;
 
+  &.top {
+    top: 0;
+    bottom: unset;
+    background: linear-gradient(
+      to bottom,
+      rgba(12, 23, 53, 0.7),
+      rgba(32, 42, 72, 0.3),
+      rgba(0, 0, 0, 0)
+    );
+
+    .center {
+      top: unset;
+      bottom: 20%;
+    }
+  }
+
   .center {
     position: relative;
     margin: auto;
@@ -519,6 +535,24 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   margin-bottom: 5px;
 }
 
+.refresher-nocomment-wrap {
+  display: flex;
+  justify-content: center;
+
+  img,
+  h3 {
+    margin: auto;
+  }
+
+  img {
+    margin-right: 10px;
+  }
+
+  h3 {
+    margin-left: 10px;
+  }
+}
+
 .refresher-preview-button {
   width: 120px;
   height: 38px;
@@ -721,6 +755,9 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
 
 .refresher-preview-comments .refresher-comment[data-depth='1'] {
   margin-left: 2.2vw;
+}
+.refresher-preview-comments .refresher-comment[data-rereply='true'] {
+  margin-left: 4.4vw;
 }
 
 $btn-width: 38px;
