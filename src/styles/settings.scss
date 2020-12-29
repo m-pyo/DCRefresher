@@ -11,6 +11,7 @@
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
+    font-size: 100%;
   }
 
   h1,
@@ -46,6 +47,10 @@
 
   .settings {
     margin-top: 20px;
+
+    .need-refresh {
+      letter-spacing: -1.66px;
+    }
   }
 
   .refresher-setting-category {
@@ -59,27 +64,69 @@
       z-index: 5;
 
       border-radius: 13.3px;
+      margin-bottom: 10px;
     }
 
     .refresher-setting {
+      &::before {
+        content: ' ';
+        position: absolute;
+        width: 1px;
+        height: 100%;
+        left: -10px;
+        background-color: #333;
+      }
+
       position: relative;
       display: flex;
       width: 95%;
       margin-left: auto;
-      margin-bottom: 20px;
+      margin-right: auto;
+      margin-bottom: 15px;
 
       .info {
         flex: 8;
         display: block;
+
+        h4 {
+          font-size: 16px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 12px;
+          color: rgb(177, 177, 177);
+        }
       }
 
       .control {
         flex: 2;
+        display: flex;
+        justify-content: center;
+
+        .refresher-input {
+          margin-left: 10px;
+        }
 
         * {
           margin: auto;
         }
       }
+    }
+  }
+
+  .refresher-range {
+    display: flex;
+    input {
+      margin-right: 10px !important;
+    }
+
+    .indicator {
+      color: #a0a0a0;
+      font-size: 12px;
     }
   }
 
@@ -198,15 +245,16 @@
 
     .title {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
     }
 
     .desc {
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .mute {
       color: #a0a0a0;
+      font-size: 12px;
 
       letter-spacing: -0.66px;
 

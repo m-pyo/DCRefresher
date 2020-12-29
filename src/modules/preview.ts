@@ -3,7 +3,6 @@ import { User } from '../structs/user'
 import { PostInfo } from '../structs/post'
 import { findNeighbor } from '../utils/dom'
 import * as http from '../utils/http'
-import comment_ads from './comment_ads'
 
 /**
  * dcinside.com set cookie function
@@ -169,14 +168,20 @@ const request = {
       })
   },
 
-  post (link, gallery, id, signal) {
+  post (
+    link: string,
+    gallery: string,
+    id: string,
+    signal: AbortSignal,
+    noCache: boolean
+  ) {
     return http
       .make(
         `${http.urls.base +
           http.galleryType(link, '/') +
           http.urls.view +
           gallery}&no=${id}`,
-        { signal, cache: 'no-cache' }
+        { signal, cache: noCache ? 'no-cache' : 'default' }
       )
       .then(response => parse(id, response))
   },
@@ -286,15 +291,46 @@ export default {
   name: '미리보기',
   description: '글을 오른쪽 클릭 했을때 미리보기 창을 만들어줍니다.',
   author: { name: 'Sochiru', url: 'https://sochiru.pw' },
-  status: false,
+  status: {
+    longPressDelay: 300,
+    scrollToSkip: true,
+    noCacheHeader: false
+  },
   memory: {
     preventOpen: false,
     lastPress: 0,
     uuid: null,
-    uuid2: null
+    uuid2: null,
+    refreshId: null
   },
   enable: true,
   default_enable: true,
+  settings: {
+    longPressDelay: {
+      name: '기본 마우스 오른쪽 클릭 딜레이',
+      desc:
+        '마우스 오른쪽 버튼을 해당 밀리초 이상 눌러 뗄 때 기본 우클릭 메뉴가 나오게 합니다.',
+      default: 300,
+      type: 'range',
+      min: 200,
+      step: 50,
+      max: 2000,
+      unit: 'ms'
+    },
+    scrollToSkip: {
+      name: '스크롤하여 게시글 이동',
+      desc: '맨 위나 아래로 스크롤하여 다음 게시글로 이동할 수 있게 합니다.',
+      default: true,
+      type: 'check'
+    },
+    noCacheHeader: {
+      name: 'no-cache 헤더 추가',
+      desc: '전송하는 게시글 요청에 no-cache 헤더를 추가합니다.',
+      type: 'check',
+      default: false,
+      advanced: true
+    }
+  },
   require: ['filter', 'eventBus', 'Frame', 'http'],
   func (
     filter: RefresherFilter,
@@ -355,10 +391,11 @@ export default {
 
         request
           .post(
-            preData.link,
-            preData.gallery || queryString('id'),
+            preData.link || '',
+            preData.gallery || queryString('id')!,
             preData.id,
-            signal
+            signal,
+            this.status.noCacheHeader
           )
           .then((obj: any) => {
             if (!obj) {
@@ -541,6 +578,10 @@ export default {
           stack: true,
           groupOnce: true,
           onScroll: (ev: any, app: any, group: HTMLElement) => {
+            if (!this.status.scrollToSkip) {
+              return
+            }
+
             let scrolledTop = group.scrollTop === 0
             let scrolledToBottom =
               group.scrollHeight - group.scrollTop === group.clientHeight
@@ -611,11 +652,6 @@ export default {
 
               blockTo = Date.now() + 100
             }
-
-            // TODO : Implement macOS, Windows scroll bending
-            // if (group.scrollTop === 0 || group.scrollTop + window.innerHeight >= group?.scrollHeight) {
-            //   group.style.top = (ev.deltaY * -1) + 'px'
-            // }
           }
         }
       )
@@ -662,9 +698,8 @@ export default {
       if (
         ev.type === 'mouseup' &&
         this.memory.lastPress &&
-        Date.now() - 300 > this.memory.lastPress
+        Date.now() - this.status.longPressDelay > this.memory.lastPress
       ) {
-        // TODO : 300 고정 값을 설정에서 바꿀 수 있도록 하기 (마우스 몇초간 누르고 있으면 기본 메뉴 열기)
         this.memory.preventOpen = true
         this.memory.lastPress = 0
         return ev
@@ -677,20 +712,31 @@ export default {
       e.addEventListener('contextmenu', previewFrame)
     }
 
-    this.memory.uuid = filter.add(
-      '.left_content article .us-post .ub-word',
-      addHandler
-    )
+    this.memory.uuid = filter.add('.gall_list .us-post .ub-word', addHandler)
 
     this.memory.uuid2 = filter.add('#right_issuezoom', addHandler)
 
-    eventBus.on('refresh', (e: HTMLElement) => {
-      let elems = e.querySelectorAll('.left_content article .us-post .ub-word')
+    this.memory.refreshId = eventBus.on('refresh', (e: HTMLElement) => {
+      let elems = e.querySelectorAll('.gall_list .us-post .ub-word')
 
       let iter = elems.length
       while (iter--) {
         addHandler(elems[iter] as HTMLElement)
       }
     })
+  },
+
+  revoke (filter: RefresherFilter, eventBus: RefresherEventBus) {
+    if (this.memory.uuid) {
+      filter.remove(this.memory.uuid, true)
+    }
+
+    if (this.memory.uuid2) {
+      filter.remove(this.memory.uuid2, true)
+    }
+
+    if (this.memory.refreshId) {
+      eventBus.remove('refresh', this.memory.refreshId)
+    }
   }
 }

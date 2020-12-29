@@ -1,14 +1,14 @@
 import User from './user'
 import TimeStamp from './timestamp'
 
-const NRegex = /(ㄴ)(\s)?/
+const NRegex = /(ㄴ)(\s)?([^ ]+)/g
 
 export default {
   components: {
     TimeStamp,
     User
   },
-  template: `<div class="refresher-comment" :data-depth="comment.depth" :data-rereply="checkReReply(comment.memo)" :data-deleted="comment.del_yn === 'Y'">
+  template: `<div class="refresher-comment" :data-depth="comment.depth" :data-rereply="checkReReply()" :data-deleted="comment.del_yn === 'Y'">
     <div class="meta">
       <User :user="comment.user" :me="checkParticipant(comment.user.id)"></User>
       <div class="float-right">
@@ -89,18 +89,18 @@ export default {
       return same
     },
 
-    checkReReply (content: string): boolean {
-      if (!NRegex.test(content)) {
+    checkReReply (): boolean {
+      let content = this.comment.memo
+      let depth = this.comment.depth
+
+      if (depth < 1) {
         return false
       }
 
-      let matched = content.match(NRegex)
-
       if (
+        !NRegex.test(content) ||
         content.indexOf('ㄴ') !== 0 ||
-        content.indexOf('ㄴㄴ') === 0 ||
-        !matched ||
-        !matched[0]
+        content.indexOf('ㄴㄴ') === 0
       ) {
         return false
       }

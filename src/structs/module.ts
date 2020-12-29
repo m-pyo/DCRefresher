@@ -4,9 +4,13 @@ interface RefresherAuthor {
 }
 
 interface RefresherSettings {
-  general: any
-  advanced?: any
-  items?: Function | Array<string>
+  name: string
+  desc: string
+  type: string
+  default: any
+  bind?: any
+  advanced?: boolean
+  value?: any
 }
 
 interface RefresherModule {
@@ -29,7 +33,7 @@ interface RefresherModule {
   /**
    * 해당 모듈이 작동할 URL regex.
    */
-  url?: string
+  url?: RegExp
 
   /**
    * 해당 모듈이 가질 상탯값. 모듈 설정 저장용으로 사용됩니다.
@@ -37,9 +41,9 @@ interface RefresherModule {
   status: any
 
   /**
-   * 해당 모듈이 가질 메모리 값. 모듈에서 일시적으로 데이터를 저장하고 싶을 때 사용됩니다.
+   * 해당 모듈이 가질 메모리 값. 모듈에 일시적으로 데이터를 저장하고 싶을 때 사용됩니다.
    */
-  memory?: object | boolean
+  memory?: { [index: string]: any }
 
   /**
    * 모듈을 사용 설정할지에 대한 여부 값. 사용자가 설정하는 값이므로 가급적 프로그램적으로 이 값을 변경하지 마세요.
@@ -54,7 +58,7 @@ interface RefresherModule {
   /**
    * 설정 페이지에 등록할 설정 옵션
    */
-  settings?: RefresherSettings[] | null
+  settings?: { [index: string]: RefresherSettings } | null
 
   /**
    * 모듈에서 사용할 내장 유틸 목록.

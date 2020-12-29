@@ -16,7 +16,7 @@ export const get = (key: any) => {
     throw new Error("This browser doesn't support storage API.")
   }
 
-  return new Promise((resolve, reject) =>
+  return new Promise<any>((resolve, reject) =>
     str.sync.get(key, (v: any) => {
       resolve(v[key])
     })

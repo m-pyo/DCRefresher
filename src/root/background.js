@@ -36,13 +36,16 @@ runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return
   }
 
-  if (msg.registerModules) {
+  if (msg.module_store) {
     modules = msg.module_store
+  }
+
+  if (msg.settings_store) {
     settings = msg.settings_store
   }
 
-  if (msg.toggleAdBlock) {
-    blockAds = msg.data
+  if (typeof msg.toggleAdBlock !== 'undefined') {
+    blockAds = msg.toggleAdBlock
   }
 
   if (msg.requestRefresherModules) {

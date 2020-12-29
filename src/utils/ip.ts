@@ -9,7 +9,7 @@ const COUNTRY = {
   INTERNATIONAL: 1000
 }
 
-const COUNTRY_STR = {
+const COUNTRY_STR: { [index: number]: string } = {
   0: 'KR',
   1: 'US',
   2: 'JP',
@@ -27,7 +27,7 @@ const IP_TYPE = {
   CLOUD: 1001
 }
 
-const IP_TYPE_STR = {
+const IP_TYPE_STR: { [index: number]: string } = {
   0: '',
   1: '',
   2: '',
@@ -39,6 +39,7 @@ interface ISPInfo {
   name: string
   country: number
   type: number
+  detail?: string
 }
 
 const DCREF_ISP = {
@@ -99,10 +100,25 @@ const DCREF_ISP = {
     name: 'Cloudflare, GCP',
     country: COUNTRY.INTERNATIONAL,
     type: IP_TYPE.CLOUD
+  },
+  UNIV: {
+    name: '대학교',
+    country: COUNTRY.KR,
+    type: IP_TYPE.GENERAL
+  },
+  GENERAL: {
+    name: '.',
+    country: COUNTRY.KR,
+    type: IP_TYPE.GENERAL
   }
 }
 
-const DCREF_COMMON_IP = {
+const detailWrap = (obj: ISPInfo, detail: string) => {
+  obj.detail = detail
+  return obj
+}
+
+const DCREF_COMMON_IP: { [index: string]: object } = {
   '211.234': DCREF_ISP.SKT_UPLUS_3G,
   '203.226': DCREF_ISP.SKT_3G,
   '223.32': DCREF_ISP.SKT_LTE,
@@ -617,6 +633,7 @@ const DCREF_COMMON_IP = {
   '64.188': DCREF_ISP.BETTERNET,
   '108.61': DCREF_ISP.VULTR,
   '173.199': DCREF_ISP.VULTR,
+  '103.10': DCREF_ISP.ZENMATE,
   '31.171': DCREF_ISP.ZENMATE,
   '37.120': DCREF_ISP.ZENMATE,
   '27.50': DCREF_ISP.ZENMATE,
@@ -706,7 +723,18 @@ const DCREF_COMMON_IP = {
   '82.132': DCREF_ISP.O2,
   '82.194': DCREF_ISP.O2,
   '93.97': DCREF_ISP.O2,
-  '158.230': DCREF_ISP.O2
+  '158.230': DCREF_ISP.O2,
+  '147.46': detailWrap(DCREF_ISP.UNIV, '서울대'),
+  '147.47': detailWrap(DCREF_ISP.UNIV, '서울대'),
+  '163.152': detailWrap(DCREF_ISP.UNIV, '고려대'),
+  '165.132': detailWrap(DCREF_ISP.UNIV, '연세대'),
+  '164.125': detailWrap(DCREF_ISP.UNIV, '부산대'),
+  '165.194': detailWrap(DCREF_ISP.UNIV, '중앙대'),
+  '168.115': detailWrap(DCREF_ISP.UNIV, '동아대'),
+  '165.229': detailWrap(DCREF_ISP.UNIV, '영남대'),
+  '137.68': detailWrap(DCREF_ISP.UNIV, 'KAIST'),
+  '143.248': detailWrap(DCREF_ISP.UNIV, 'KAIST'),
+  '166.104': detailWrap(DCREF_ISP.UNIV, '한양대'),
 }
 
 export const ISPData = (ip: number | string, replace: any) =>
@@ -724,7 +752,8 @@ export const format = (data: ISPInfo) => {
       data.country !== COUNTRY.INTERNATIONAL
         ? `${COUNTRY_STR[data.country]} `
         : ''
-    }${data.name}` +
+    }
+    ${data.detail ? data.detail : data.name}` +
     (data.type && IP_TYPE_STR[data.type] ? ` (${IP_TYPE_STR[data.type]})` : '')
   )
 }

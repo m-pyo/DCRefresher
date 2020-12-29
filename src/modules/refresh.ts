@@ -5,15 +5,15 @@ export default {
   description: '글 목록을 자동으로 새로고침합니다.',
   author: { name: 'Sochiru', url: 'https://sochiru.pw' },
   status: {
-    delay: 2500,
-    auto_delay: true,
-    fadeIn: true
+    refreshRate: undefined,
+    fadeIn: undefined,
+    autoRate: undefined
   },
   memory: {
     cache: {},
     new_counts: 0,
     average_counts: new Array(AVERAGE_COUNTS_SIZE).fill(1),
-    delay: 0,
+    delay: 2500,
     refresh: 0,
     lastAccess: 0
   },
@@ -27,6 +27,24 @@ export default {
       type: 'range',
       default: 2500,
       bind: 'delay',
+      min: 1000,
+      step: 100,
+      max: 20000,
+      unit: 'ms',
+      advanced: false
+    },
+    autoRate: {
+      name: '자동 새로고침 주기',
+      desc: '새로 올라오는 글의 수에 따라 새로고침 주기를 자동으로 제어합니다.',
+      type: 'check',
+      default: true,
+      advanced: false
+    },
+    fadeIn: {
+      name: '새 게시글 효과',
+      desc: '새로 올라온 게시글에 서서히 등장하는 효과를 줍니다.',
+      type: 'check',
+      default: true,
       advanced: false
     }
   },
@@ -48,8 +66,8 @@ export default {
     }
 
     let run = () => {
-      if (!this.status.auto_delay) {
-        this.memory.delay = Math.max(600, this.memory.delay || 2500)
+      if (!this.status.autoRate) {
+        this.memory.delay = Math.max(1000, this.status.refreshRate || 2500)
       }
 
       this.memory.refresh = window.setTimeout(load, this.memory.delay)
@@ -107,36 +125,52 @@ export default {
               this.memory.average_counts.reduce((a, b) => a + b) /
               this.memory.average_counts.length
 
-            this.memory.delay = 8 * Math.pow(2 / 3, 3 * average) * 1000
+            if (this.status.autoRate) {
+              this.memory.delay = Math.max(
+                600,
+                8 * Math.pow(2 / 3, 3 * average) * 1000
+              )
+            }
           }
 
           // 미니 갤, 마이너 갤 관리자일 경우 체크박스를 생성합니다.
           if (isAdmin) {
+            let noTempl = false
             document.querySelectorAll('.us-post').forEach(elem => {
-              elem!.innerHTML =
-                document.querySelector('#minor_td-tmpl')!.innerHTML +
-                elem!.innerHTML
-            })
+              let tmpl = document.querySelector('#minor_td-tmpl')
 
-            document.querySelectorAll('.ub-content').forEach(elem => {
-              if (elem.className.indexOf('us-post') == -1) {
-                elem.insertBefore(document.createElement('td'), elem.firstChild)
+              if (!tmpl) {
+                noTempl = true
+                return
               }
+
+              elem!.innerHTML = tmpl.innerHTML + elem!.innerHTML
             })
 
-            if (document.querySelector('#comment_chk_all')) {
-              var tbody_colspan = document.querySelector(
-                'table.gall_list tbody td'
-              )
-
-              if (tbody_colspan) {
-                let colspan = tbody_colspan.getAttribute('colspan') || ''
-
-                if (parseInt(colspan) == 6) {
-                  tbody_colspan?.setAttribute(
-                    'colspan',
-                    (parseInt(colspan) + 1).toString()
+            if (!noTempl) {
+              document.querySelectorAll('.ub-content').forEach(elem => {
+                if (elem.className.indexOf('us-post') == -1) {
+                  elem.insertBefore(
+                    document.createElement('td'),
+                    elem.firstChild
                   )
+                }
+              })
+
+              if (document.querySelector('#comment_chk_all')) {
+                var tbody_colspan = document.querySelector(
+                  'table.gall_list tbody td'
+                )
+
+                if (tbody_colspan) {
+                  let colspan = tbody_colspan.getAttribute('colspan') || ''
+
+                  if (parseInt(colspan) == 6) {
+                    tbody_colspan?.setAttribute(
+                      'colspan',
+                      (parseInt(colspan) + 1).toString()
+                    )
+                  }
                 }
               }
             }
@@ -154,7 +188,7 @@ export default {
         this.memory.lastAccess = Date.now()
 
         if (this.memory.refresh) {
-          clearInterval(this.memory.refresh)
+          clearTimeout(this.memory.refresh)
         }
 
         return
@@ -170,5 +204,9 @@ export default {
     run()
   },
 
-  beforeDestroy () {}
+  revoke () {
+    if (this.memory.refresh) {
+      clearTimeout(this.memory.refresh)
+    }
+  }
 }

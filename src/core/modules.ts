@@ -9,7 +9,9 @@ import * as http from '../utils/http'
 
 import { browser } from 'webextension-polyfill-ts'
 
-let ACCESSIBLE_UTILS = {
+import * as settings from './settings'
+
+let ACCESSIBLE_UTILS: { [index: string]: object } = {
   filter,
   Frame,
   eventBus,
@@ -18,7 +20,6 @@ let ACCESSIBLE_UTILS = {
 }
 
 let module_store: { [index: string]: any } = {}
-let settings_store = {}
 
 let PERMISSION_REVOKE = {
   fetch: fetch
@@ -70,11 +71,9 @@ const revokeModule = (mod: RefresherModule) => {
   }
 
   if (mod.memory) {
-    let keys = Object.keys(mod.memory)
-
-    keys.forEach(v => {
-      delete mod.memory[v]
-    })
+    for (const key in mod.memory) {
+      mod.memory[key] = undefined
+    }
   }
 }
 
@@ -96,47 +95,30 @@ export const modules = {
       throw new Error(`${mod.name} is already registered.`)
     }
 
-    let status = await store.get(`${mod.name}.status`)
-    if (
-      mod.status !== false &&
-      ((typeof status === 'object' && !Object.keys(status).length) ||
-        typeof status === 'undefined' ||
-        status === null)
-    ) {
-      store.set(`${mod.name}.status`, JSON.stringify(mod.status))
-    }
-
     let enable = await store.get(`${mod.name}.enable`)
+    mod.enable = enable
+
     if (typeof enable === 'undefined' || enable === null) {
       store.set(`${mod.name}.enable`, mod.default_enable)
+      mod.enable = mod.default_enable
     }
-
-    mod.enable = await store.get(`${mod.name}.enable`)
-    mod.status = await store.get(`${mod.name}.status`)
 
     if (mod.settings) {
       for (const key in mod.settings) {
-        const setting = mod.settings[key]
-
-        if (typeof setting.items === 'function') {
-          mod.settings[key].items = setting.items()
-        }
+        mod.status[key] = await settings.loadDefault(
+          mod.name,
+          key,
+          mod.settings[key]
+        )
       }
-
-      if (!settings_store[mod.name]) {
-        settings_store[mod.name] = mod.settings
-      }
-
-      // TODO : 모듈 object에 settings field가 존재할 경우 탭에 넣는 등의 처리하기
     }
 
     module_store[mod.name] = mod
 
     if (runtime) {
-      runtime.sendMessage(null, {
-        registerModules: true,
+      runtime.sendMessage('', {
         module_store,
-        settings_store: settings_store
+        settings_store: settings.dump()
       })
     }
 
@@ -164,6 +146,11 @@ if (runtime.onMessage) {
   runtime.onMessage.addListener((msg: { [index: string]: any }) => {
     if (typeof msg === 'object' && msg.updateModuleSettings) {
       module_store[msg.name].enable = msg.value
+      store.set(`${msg.name}.enable`, msg.value)
+
+      runtime.sendMessage('', {
+        module_store
+      })
 
       if (!msg.value) {
         revokeModule(module_store[msg.name])
@@ -172,7 +159,16 @@ if (runtime.onMessage) {
 
       runModule(module_store[msg.name])
     } else if (typeof msg === 'object' && msg.updateUserSetting) {
-      module_store[msg.name].settings[msg.name].value = msg.value
+      settings.set(msg.name, msg.key, msg.value)
     }
   })
 }
+
+eventBus.on(
+  'RefresherUpdateSetting',
+  (module: string, key: string, value: any) => {
+    if (module_store[module]) {
+      module_store[module].status[key] = value
+    }
+  }
+)

@@ -78,7 +78,7 @@ export const eventBus = {
    * @param cb 나중에 호출 될 이벤트 콜백 함수.
    * @param options 이벤트에 등록할 옵션.
    */
-  on: (event: string, cb: Function, options: Object) => {
+  on: (event: string, cb: Function, options?: Object) => {
     let uuid = strings.uuid()
 
     if (typeof lists[event] === 'undefined') {
