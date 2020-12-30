@@ -18,7 +18,9 @@ export default {
 
       let text = document.createElement('span')
       text.className = 'ip refresherIP'
-      text.innerHTML = ip.format(ip_data)
+      let format = ip.format(ip_data)
+      text.innerHTML = format
+      text.title = format
 
       let fl = elem.querySelector('.fl')
       if (fl) {
@@ -27,7 +29,7 @@ export default {
         elem.appendChild(text)
       }
 
-      elem.dataset.refresherIp = ip_data && ip_data.name && ip.format(ip_data)
+      elem.dataset.refresherIp = ip_data && ip_data.name && format
     }
 
     this.memory.uuid = filter.add('.ub-writer', (elem: HTMLElement) => {

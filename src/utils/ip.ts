@@ -23,14 +23,18 @@ const IP_TYPE = {
   GENERAL: 0,
   MOBILE: 1,
   ISP: 2,
+  NATIONAL: 500,
+  CORP: 501,
   VPN: 1000,
-  CLOUD: 1001
+  CLOUD: 1001,
+  IDC: 1002
 }
 
 const IP_TYPE_STR: { [index: number]: string } = {
   0: '',
   1: '',
   2: '',
+  500: '정부기관',
   1000: 'Proxy',
   1001: 'Cloud'
 }
@@ -45,11 +49,20 @@ interface ISPInfo {
 const DCREF_ISP = {
   SKT_3G: { name: 'SKT 3G', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
   SKT_LTE: { name: 'SKT LTE', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
+  SKT_INT: { name: 'SKT', country: COUNTRY.KR, type: IP_TYPE.ISP },
+  SKB_INT: { name: 'SKB', country: COUNTRY.KR, type: IP_TYPE.ISP },
+  KT_INT: { name: 'KT', country: COUNTRY.KR, type: IP_TYPE.ISP },
   KT: { name: 'KT', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
   KT_5G: { name: 'KT 5G', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
+  KT_PUBNET: { name: 'KT 국가망', country: COUNTRY.KR, type: IP_TYPE.ISP },
   UPLUS_3G: { name: 'U+ 3G', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
   UPLUS_LTE: { name: 'U+ LTE', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
   UPLUS_5G: { name: 'U+ 5G', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
+  UPLUS: { name: 'U+', country: COUNTRY.KR, type: IP_TYPE.MOBILE },
+  LG: { name: 'LG', country: COUNTRY.KR, type: IP_TYPE.ISP },
+  LG_HELLO: { name: 'LG 헬로비전', country: COUNTRY.KR, type: IP_TYPE.ISP },
+  LG_PUBNET: { name: 'LG 국가망', country: COUNTRY.KR, type: IP_TYPE.ISP },
+  TBROAD: { name: 'Tbroad', country: COUNTRY.KR, type: IP_TYPE.ISP },
   SOFTBANK: { name: 'Softbank', country: COUNTRY.JP, type: IP_TYPE.MOBILE },
   DOCOMO: { name: 'docomo', country: COUNTRY.JP, type: IP_TYPE.MOBILE },
   AU: { name: 'au', country: COUNTRY.JP, type: IP_TYPE.MOBILE },
@@ -85,16 +98,58 @@ const DCREF_ISP = {
     type: IP_TYPE.VPN
   },
   VULTR: { name: 'Vultr', country: COUNTRY.INTERNATIONAL, type: IP_TYPE.CLOUD },
+  KINX: { name: 'KINX', country: COUNTRY.KR, type: IP_TYPE.CLOUD },
+  LIMELIGHT: { name: 'Limelight', country: COUNTRY.KR, type: IP_TYPE.CLOUD },
+  KCT: { name: 'KCT', country: COUNTRY.KR, type: IP_TYPE.ISP },
+  FLEXNETWORKS: {
+    name: 'flexnetworks',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  DREAMMARK1: {
+    name: '드림마크원',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  DREAMLINE: {
+    name: '드림라인',
+    country: COUNTRY.KR,
+    type: IP_TYPE.ISP
+  },
+  BROADBANDIDC: {
+    name: '브로드밴드 IDC',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  GABIA: {
+    name: '가비아',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  EHOSTICT: {
+    name: '이호스트 IDC',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  INET: {
+    name: '아이네트',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
   ZENMATE: {
     name: 'Zenmate',
     country: COUNTRY.INTERNATIONAL,
     type: IP_TYPE.VPN
   },
-  SKT_UPLUS_3G: { name: 'SKT, U+ 3G', country: COUNTRY.KR },
+  DLIVE: {
+    name: 'DLIVE',
+    country: COUNTRY.KR,
+    type: IP_TYPE.ISP
+  },
   CLOUDFLARE_WARP: {
     name: 'Cloudflare',
     country: COUNTRY.INTERNATIONAL,
-    type: IP_TYPE.CLOUD
+    type: IP_TYPE.VPN
   },
   CLOUDFLARE_GCP: {
     name: 'Cloudflare, GCP',
@@ -110,60 +165,77 @@ const DCREF_ISP = {
     name: '.',
     country: COUNTRY.KR,
     type: IP_TYPE.GENERAL
+  },
+  EDUCATION: {
+    name: '교육청',
+    country: COUNTRY.KR,
+    type: IP_TYPE.NATIONAL
+  },
+  CLOUD_KR: {
+    name: '국내 클라우드 서비스',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  NETROPI: {
+    name: '네트로피',
+    country: COUNTRY.KR,
+    type: IP_TYPE.VPN
+  },
+  PURPLESTONES: {
+    name: '퍼플스톤즈',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  NBP: {
+    name: '네이버 비즈니스 플랫폼',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  KISA: {
+    name: 'KISA',
+    country: COUNTRY.KR,
+    type: IP_TYPE.NATIONAL
+  },
+  CDNETWORKS: {
+    name: 'CDNetworks',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  SHINSEGAE_IC: {
+    name: '신세계 I & C',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  DOTNAME: {
+    name: '닷네임코리아',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  HOSTWAY: {
+    name: '호스트웨이 IDC',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  SHINBIRO: {
+    name: '신비넷IDC',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
+  },
+  TRUENETWORKS: {
+    name: 'Truenetworks',
+    country: COUNTRY.KR,
+    type: IP_TYPE.CLOUD
   }
 }
 
 const detailWrap = (obj: ISPInfo, detail: string) => {
-  obj.detail = detail
-  return obj
+  return {
+    ...obj,
+    detail
+  }
 }
 
 const DCREF_COMMON_IP: { [index: string]: object } = {
-  '211.234': DCREF_ISP.SKT_UPLUS_3G,
-  '203.226': DCREF_ISP.SKT_3G,
-  '223.32': DCREF_ISP.SKT_LTE,
-  '223.33': DCREF_ISP.SKT_LTE,
-  '223.34': DCREF_ISP.SKT_LTE,
-  '223.35': DCREF_ISP.SKT_LTE,
-  '223.36': DCREF_ISP.SKT_LTE,
-  '223.37': DCREF_ISP.SKT_LTE,
-  '223.38': DCREF_ISP.SKT_LTE,
-  '223.39': DCREF_ISP.SKT_LTE,
-  '223.40': DCREF_ISP.SKT_LTE,
-  '223.41': DCREF_ISP.SKT_LTE,
-  '223.42': DCREF_ISP.SKT_LTE,
-  '223.43': DCREF_ISP.SKT_LTE,
-  '223.44': DCREF_ISP.SKT_LTE,
-  '223.45': DCREF_ISP.SKT_LTE,
-  '223.46': DCREF_ISP.SKT_LTE,
-  '223.47': DCREF_ISP.SKT_LTE,
-  '223.48': DCREF_ISP.SKT_LTE,
-  '223.49': DCREF_ISP.SKT_LTE,
-  '223.50': DCREF_ISP.SKT_LTE,
-  '223.51': DCREF_ISP.SKT_LTE,
-  '223.52': DCREF_ISP.SKT_LTE,
-  '223.53': DCREF_ISP.SKT_LTE,
-  '223.54': DCREF_ISP.SKT_LTE,
-  '223.55': DCREF_ISP.SKT_LTE,
-  '223.56': DCREF_ISP.SKT_LTE,
-  '223.57': DCREF_ISP.SKT_LTE,
-  '223.58': DCREF_ISP.SKT_LTE,
-  '223.59': DCREF_ISP.SKT_LTE,
-  '223.60': DCREF_ISP.SKT_LTE,
-  '223.61': DCREF_ISP.SKT_LTE,
-  '223.62': DCREF_ISP.SKT_LTE,
-  '223.63': DCREF_ISP.SKT_LTE,
-  '39.7': DCREF_ISP.KT,
-  '110.70': DCREF_ISP.KT,
-  '175.223': DCREF_ISP.KT,
-  '175.252': DCREF_ISP.KT,
-  '211.246': DCREF_ISP.KT,
-  '118.235': DCREF_ISP.KT_5G,
-  '61.43': DCREF_ISP.UPLUS_3G,
-  '117.111': DCREF_ISP.UPLUS_LTE,
-  '211.36': DCREF_ISP.UPLUS_LTE,
-  '106.102': DCREF_ISP.UPLUS_LTE,
-  '106.101': DCREF_ISP.UPLUS_5G,
   '60.100': DCREF_ISP.SOFTBANK,
   '60.106': DCREF_ISP.SOFTBANK,
   '60.107': DCREF_ISP.SOFTBANK,
@@ -630,15 +702,12 @@ const DCREF_COMMON_IP: { [index: string]: object } = {
   '139.28': DCREF_ISP.BETTERNET,
   '185.209': DCREF_ISP.BETTERNET,
   '76.164': DCREF_ISP.BETTERNET,
-  '64.188': DCREF_ISP.BETTERNET,
   '108.61': DCREF_ISP.VULTR,
   '173.199': DCREF_ISP.VULTR,
-  '103.10': DCREF_ISP.ZENMATE,
   '31.171': DCREF_ISP.ZENMATE,
   '37.120': DCREF_ISP.ZENMATE,
   '27.50': DCREF_ISP.ZENMATE,
   '185.242': DCREF_ISP.ZENMATE,
-  '27.255': DCREF_ISP.ZENMATE,
   '154.6': DCREF_ISP.ZENMATE,
   '193.7': DCREF_ISP.ZENMATE,
   '8.38': DCREF_ISP.CLOUDFLARE_WARP,
@@ -665,8 +734,6 @@ const DCREF_COMMON_IP: { [index: string]: object } = {
   '8.47': DCREF_ISP.CLOUDFLARE_WARP,
   '8.48': DCREF_ISP.CLOUDFLARE_WARP,
   '8.35': DCREF_ISP.CLOUDFLARE_GCP,
-  '103.21': DCREF_ISP.CLOUDFLARE_WARP,
-  '103.22': DCREF_ISP.CLOUDFLARE_WARP,
   '104.16': DCREF_ISP.CLOUDFLARE_WARP,
   '104.17': DCREF_ISP.CLOUDFLARE_WARP,
   '104.18': DCREF_ISP.CLOUDFLARE_WARP,
@@ -724,17 +791,3181 @@ const DCREF_COMMON_IP: { [index: string]: object } = {
   '82.194': DCREF_ISP.O2,
   '93.97': DCREF_ISP.O2,
   '158.230': DCREF_ISP.O2,
-  '147.46': detailWrap(DCREF_ISP.UNIV, '서울대'),
-  '147.47': detailWrap(DCREF_ISP.UNIV, '서울대'),
-  '163.152': detailWrap(DCREF_ISP.UNIV, '고려대'),
-  '165.132': detailWrap(DCREF_ISP.UNIV, '연세대'),
-  '164.125': detailWrap(DCREF_ISP.UNIV, '부산대'),
-  '165.194': detailWrap(DCREF_ISP.UNIV, '중앙대'),
-  '168.115': detailWrap(DCREF_ISP.UNIV, '동아대'),
-  '165.229': detailWrap(DCREF_ISP.UNIV, '영남대'),
-  '137.68': detailWrap(DCREF_ISP.UNIV, 'KAIST'),
-  '143.248': detailWrap(DCREF_ISP.UNIV, 'KAIST'),
-  '166.104': detailWrap(DCREF_ISP.UNIV, '한양대'),
+  ///
+  ///
+  ///
+  ///
+  '1.11': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 다우기술'),
+  '1.16': detailWrap(DCREF_ISP.GENERAL, '다우기술'),
+  '1.18': DCREF_ISP.KISA,
+  '1.96': DCREF_ISP.KT,
+  '1.97': DCREF_ISP.KT,
+  '1.98': DCREF_ISP.KT,
+  '1.99': DCREF_ISP.KT,
+  '1.100': DCREF_ISP.KT,
+  '1.101': DCREF_ISP.KT,
+  '1.102': DCREF_ISP.KT,
+  '1.103': DCREF_ISP.KT,
+  '1.104': DCREF_ISP.KT,
+  '1.105': DCREF_ISP.KT,
+  '1.106': DCREF_ISP.KT,
+  '1.107': DCREF_ISP.KT,
+  '1.108': DCREF_ISP.KT,
+  '1.109': DCREF_ISP.KT,
+  '1.110': DCREF_ISP.KT,
+  '1.111': DCREF_ISP.KT,
+  '1.176': DCREF_ISP.LG_HELLO,
+  '1.177': DCREF_ISP.LG_HELLO,
+  '1.201': detailWrap(DCREF_ISP.GENERAL, 'KINX, Kakao'),
+  '1.208': DCREF_ISP.LG,
+  '1.209': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 중앙일보, 건국대학병원, 신영증권, KOSCOM, 우리은행, HALLAHOLDINGS, 포스코ICT, 분당제생병원, NHN, 한화정보서비스부서, 중부대'
+  ),
+  '1.210': DCREF_ISP.LG,
+  '1.211': DCREF_ISP.LG,
+  '1.212': DCREF_ISP.LG,
+  '1.213': DCREF_ISP.LG,
+  '1.214': detailWrap(DCREF_ISP.GENERAL, 'LG, 농협, 동국여대'),
+  '1.215': DCREF_ISP.LG,
+  '1.216': DCREF_ISP.LG,
+  '1.217': DCREF_ISP.LG,
+  '1.218': DCREF_ISP.LG,
+  '1.219': DCREF_ISP.LG,
+  '1.220': DCREF_ISP.LG,
+  '1.221': DCREF_ISP.LG,
+  '1.222': detailWrap(DCREF_ISP.GENERAL, 'LG, HCN, 부산케이블'),
+  '1.223': DCREF_ISP.LG,
+  '1.224': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 티브로드, 국민은행, 가톨릭대, 브로드밴드 IDC, 더존 비즈온'
+  ),
+  '1.225': detailWrap(DCREF_ISP.GENERAL, 'SKB, 서울교통공사'),
+  '1.226': detailWrap(DCREF_ISP.GENERAL, 'SKB, HMC SECURITIES CO., LTD.'),
+  '1.227': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한국영상대'),
+  '1.228': DCREF_ISP.SKB_INT,
+  '1.229': DCREF_ISP.SKB_INT,
+  '1.230': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, kbcard, 대우증권, Cross On Net Inc., 농협'
+  ),
+  '1.231': detailWrap(DCREF_ISP.GENERAL, 'SKB, 서울교통공사, 교육청'),
+  '1.232': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, LG홈쇼핑, 우리은행, Seoul Guarantee Insurance Company, 해외문화홍보원, 한진정보통신, FDIK, 서울교통공사, Hyundai Movex'
+  ),
+  '1.233': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 서울아산병원, KIS정보통신, 연세대'
+  ),
+  '1.234': detailWrap(DCREF_ISP.GENERAL, 'SKB, GS네오텍'),
+  '1.235': detailWrap(DCREF_ISP.GENERAL, 'SKB, HANASK card, Cross On Net Inc.'),
+  '1.236': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청, 하나은행'),
+  '1.237': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 교육청, 한경대, GYEONGGIDO JOB FOUNDATION, SHINHAN DS'
+  ),
+  '1.238': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한경대, 교육청'),
+  '1.239': detailWrap(DCREF_ISP.GENERAL, 'SKB, 순천향대'),
+  '1.240': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청'),
+  '1.241': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청, 농협, 신한생명보험'),
+  '1.242': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청, 건강보험심사평가원'),
+  '1.243': DCREF_ISP.SKB_INT,
+  '1.244': detailWrap(DCREF_ISP.GENERAL, 'SKB, 더존 비즈온'),
+  '1.245': detailWrap(DCREF_ISP.GENERAL, 'SKB, 목원대'),
+  '1.246': DCREF_ISP.SKB_INT,
+  '1.247': detailWrap(DCREF_ISP.GENERAL, 'SKB, 청운대'),
+  '1.248': detailWrap(DCREF_ISP.GENERAL, 'SKB, daewonpharm, GS네오텍'),
+  '1.249': detailWrap(DCREF_ISP.GENERAL, 'SKB, 브랭섬홀아시아'),
+  '1.250': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한국국토정보공사'),
+  '1.251': DCREF_ISP.SKB_INT,
+  '1.252': detailWrap(DCREF_ISP.GENERAL, 'SKB, 주택도시보증공사'),
+  '1.253': detailWrap(DCREF_ISP.GENERAL, 'SKB, 울산대'),
+  '1.254': detailWrap(DCREF_ISP.GENERAL, 'SKB, KOSCOM'),
+  '1.255': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KINX, LG 헬로비전, AS23594, FAMOUS WORKER, Cross On Net Inc., kakaogames, 네이버 비즈니스 플랫폼, 농협'
+  ),
+  '10.68': DCREF_ISP.LG_HELLO,
+  '10.69': DCREF_ISP.LG_HELLO,
+  '10.100': DCREF_ISP.LG_HELLO,
+  '10.101': DCREF_ISP.LG_HELLO,
+  '10.102': DCREF_ISP.LG_HELLO,
+  '10.103': DCREF_ISP.LG_HELLO,
+  '10.122': DCREF_ISP.LG_HELLO,
+  '10.125': DCREF_ISP.LG_HELLO,
+  '10.134': DCREF_ISP.LG_HELLO,
+  '10.135': DCREF_ISP.LG_HELLO,
+  '10.245': DCREF_ISP.LG_HELLO,
+  '10.246': DCREF_ISP.LG_HELLO,
+  '14.0': DCREF_ISP.CDNETWORKS,
+  '14.4': DCREF_ISP.LG,
+  '14.5': DCREF_ISP.LG,
+  '14.6': DCREF_ISP.LG,
+  '14.7': DCREF_ISP.LG,
+  '14.32': detailWrap(DCREF_ISP.GENERAL, 'KT, Oscar Enterprise'),
+  '14.33': detailWrap(DCREF_ISP.GENERAL, 'KT, Citibank Korea'),
+  '14.34': detailWrap(DCREF_ISP.GENERAL, 'KT, 제일제당, 한경대'),
+  '14.35': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, YABESK'),
+  '14.36': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 신세계 I & C, 신한은행, SHINHAN DS'
+  ),
+  '14.37': DCREF_ISP.KT,
+  '14.38': detailWrap(DCREF_ISP.GENERAL, 'KT, 한경대'),
+  '14.39': detailWrap(DCREF_ISP.GENERAL, 'KT, kbcard, DGB데이터시스템'),
+  '14.40': DCREF_ISP.KT,
+  '14.41': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온'),
+  '14.42': detailWrap(DCREF_ISP.GENERAL, 'KT, 중부대'),
+  '14.43': DCREF_ISP.KT,
+  '14.44': detailWrap(DCREF_ISP.GENERAL, 'KT, 부경대'),
+  '14.45': DCREF_ISP.KT,
+  '14.46': DCREF_ISP.KT,
+  '14.47': detailWrap(DCREF_ISP.GENERAL, 'KT, 한화정보서비스부서, KOREA DATA'),
+  '14.48': DCREF_ISP.KT,
+  '14.49': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Cafe24 Corp., NLCS Jeju, 제주한라대'
+  ),
+  '14.50': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '14.51': DCREF_ISP.KT,
+  '14.52': detailWrap(DCREF_ISP.GENERAL, 'KT, Macquarie Telecom, 농협'),
+  '14.53': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '14.54': DCREF_ISP.KT,
+  '14.55': DCREF_ISP.KT,
+  '14.56': detailWrap(DCREF_ISP.GENERAL, 'KT, 조선일보'),
+  '14.57': detailWrap(DCREF_ISP.GENERAL, 'KT, yoido full gaspel church'),
+  '14.58': DCREF_ISP.KT,
+  '14.59': DCREF_ISP.KT,
+  '14.60': DCREF_ISP.KT,
+  '14.61': DCREF_ISP.KT,
+  '14.62': DCREF_ISP.KT,
+  '14.63': detailWrap(DCREF_ISP.GENERAL, 'KT, N I.Net Technologies Inc.'),
+  '14.64': DCREF_ISP.KT,
+  '14.65': DCREF_ISP.KT,
+  '14.66': DCREF_ISP.KT,
+  '14.67': DCREF_ISP.KT,
+  '14.68': DCREF_ISP.KT,
+  '14.69': DCREF_ISP.KT,
+  '14.70': DCREF_ISP.KT,
+  '14.71': DCREF_ISP.KT,
+  '14.72': DCREF_ISP.KT,
+  '14.73': DCREF_ISP.KT,
+  '14.74': DCREF_ISP.KT,
+  '14.75': DCREF_ISP.KT,
+  '14.76': DCREF_ISP.KT,
+  '14.77': DCREF_ISP.KT,
+  '14.78': DCREF_ISP.KT,
+  '14.79': DCREF_ISP.KT,
+  '14.80': DCREF_ISP.KT,
+  '14.81': DCREF_ISP.KT,
+  '14.82': DCREF_ISP.KT,
+  '14.83': DCREF_ISP.KT,
+  '14.84': DCREF_ISP.KT,
+  '14.85': DCREF_ISP.KT,
+  '14.86': DCREF_ISP.KT,
+  '14.87': DCREF_ISP.KT,
+  '14.88': DCREF_ISP.KT,
+  '14.89': DCREF_ISP.KT,
+  '14.90': DCREF_ISP.KT,
+  '14.91': DCREF_ISP.KT,
+  '14.92': DCREF_ISP.KT,
+  '14.93': DCREF_ISP.KT,
+  '14.94': DCREF_ISP.KT,
+  '14.95': DCREF_ISP.KT,
+  '14.128': DCREF_ISP.KT,
+  '14.129': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KINX, 다우기술, 코리아센터, flexnetworks'
+  ),
+  '14.138': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, 강남 케이블TV'),
+  '14.192': DCREF_ISP.FLEXNETWORKS,
+  '14.206': detailWrap(DCREF_ISP.GENERAL, '피라냐 시스템'),
+  '23.49': DCREF_ISP.LG,
+  '23.53': DCREF_ISP.LG,
+  '23.58': DCREF_ISP.LG,
+  '23.61': DCREF_ISP.LG,
+  '23.62': DCREF_ISP.LG,
+  '23.74': DCREF_ISP.LG,
+  '23.195': DCREF_ISP.LG,
+  '23.197': DCREF_ISP.LG,
+  '23.248': DCREF_ISP.KT,
+  '27.0': detailWrap(DCREF_ISP.GENERAL, 'Kakao'),
+  '27.1': detailWrap(DCREF_ISP.GENERAL, '강남 케이블TV, 다우기술'),
+  '27.35': detailWrap(DCREF_ISP.GENERAL, 'HCN, 부산케이블'),
+  '27.96': DCREF_ISP.KT,
+  '27.100': detailWrap(DCREF_ISP.GENERAL, 'KCTV 제주 방송'),
+  '27.101': detailWrap(DCREF_ISP.GENERAL, '국가정보자원관리원'),
+  '27.102': detailWrap(DCREF_ISP.GENERAL, 'SKB, 다우기술, STARVANKOREA'),
+  '27.111': detailWrap(DCREF_ISP.GENERAL, 'PINE ASSET SERVICE'),
+  '27.112': DCREF_ISP.TBROAD,
+  '27.113': detailWrap(DCREF_ISP.GENERAL, '한국케이블TV푸른방송'),
+  '27.115': DCREF_ISP.TBROAD,
+  '27.116': detailWrap(DCREF_ISP.GENERAL, '티브로드, ABN-AS-KR ABN'),
+  '27.117': DCREF_ISP.TBROAD,
+  '27.118': detailWrap(DCREF_ISP.GENERAL, '티브로드, NexG Co., LTD'),
+  '27.119': DCREF_ISP.TBROAD,
+  '27.120': DCREF_ISP.TBROAD,
+  '27.122': detailWrap(DCREF_ISP.GENERAL, 'LG CNS'),
+  '27.124': DCREF_ISP.TBROAD,
+  '27.125': detailWrap(DCREF_ISP.GENERAL, 'KT, 유엘네트웍스'),
+  '27.126': detailWrap(DCREF_ISP.GENERAL, 'CMB, 교육청'),
+  '27.160': DCREF_ISP.SKT_INT,
+  '27.161': DCREF_ISP.SKT_INT,
+  '27.162': DCREF_ISP.SKT_INT,
+  '27.163': DCREF_ISP.SKT_INT,
+  '27.164': DCREF_ISP.SKT_INT,
+  '27.165': DCREF_ISP.SKT_INT,
+  '27.166': DCREF_ISP.SKT_INT,
+  '27.167': DCREF_ISP.SKT_INT,
+  '27.168': DCREF_ISP.SKT_INT,
+  '27.169': DCREF_ISP.SKT_INT,
+  '27.170': DCREF_ISP.SKT_INT,
+  '27.171': DCREF_ISP.SKT_INT,
+  '27.172': DCREF_ISP.SKT_INT,
+  '27.173': DCREF_ISP.SKT_INT,
+  '27.174': DCREF_ISP.SKT_INT,
+  '27.175': DCREF_ISP.SKT_INT,
+  '27.176': DCREF_ISP.SKT_INT,
+  '27.177': DCREF_ISP.SKT_INT,
+  '27.178': DCREF_ISP.SKT_INT,
+  '27.179': DCREF_ISP.SKT_INT,
+  '27.180': DCREF_ISP.SKT_INT,
+  '27.181': DCREF_ISP.SKT_INT,
+  '27.182': DCREF_ISP.SKT_INT,
+  '27.183': DCREF_ISP.SKT_INT,
+  '27.232': DCREF_ISP.KT,
+  '27.233': DCREF_ISP.KT,
+  '27.234': DCREF_ISP.KT,
+  '27.235': DCREF_ISP.KT,
+  '27.236': DCREF_ISP.KT,
+  '27.237': DCREF_ISP.KT,
+  '27.238': DCREF_ISP.KT,
+  '27.239': DCREF_ISP.KT,
+  '27.255': detailWrap(DCREF_ISP.GENERAL, 'KT, LG, KINX, 이호스트 IDC, KCT'),
+  '36.38': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 다우기술'),
+  '36.39': DCREF_ISP.LG_HELLO,
+  '38.77': DCREF_ISP.NBP,
+  '39.4': DCREF_ISP.KT,
+  '39.5': DCREF_ISP.KT,
+  '39.6': DCREF_ISP.KT,
+  '39.7': DCREF_ISP.KT,
+  '39.16': DCREF_ISP.KT,
+  '39.17': DCREF_ISP.KT,
+  '39.18': DCREF_ISP.KT,
+  '39.19': DCREF_ISP.KT,
+  '39.20': DCREF_ISP.KT,
+  '39.21': DCREF_ISP.KT,
+  '39.22': DCREF_ISP.KT,
+  '39.23': DCREF_ISP.KT,
+  '39.112': DCREF_ISP.SKB_INT,
+  '39.113': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KYONGNAMBANK, 주택도시보증공사'
+  ),
+  '39.114': DCREF_ISP.SKB_INT,
+  '39.115': detailWrap(DCREF_ISP.GENERAL, 'SKB, kakaogames, INICIS Co., Ltd'),
+  '39.116': DCREF_ISP.SKB_INT,
+  '39.117': detailWrap(DCREF_ISP.GENERAL, 'SKB, GYEONGGIDO JOB FOUNDATION'),
+  '39.118': detailWrap(DCREF_ISP.GENERAL, 'SKB, SK하이닉스'),
+  '39.119': detailWrap(DCREF_ISP.GENERAL, 'SKB, KTNG Coporation'),
+  '39.120': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교보라이프플래닛'),
+  '39.121': DCREF_ISP.SKB_INT,
+  '39.122': DCREF_ISP.SKB_INT,
+  '39.123': DCREF_ISP.SKB_INT,
+  '39.124': DCREF_ISP.SKB_INT,
+  '39.125': DCREF_ISP.SKB_INT,
+  '39.126': detailWrap(DCREF_ISP.GENERAL, '부산케이블, HCN'),
+  '39.127': detailWrap(DCREF_ISP.GENERAL, 'SKB, 선문대, 하나은행, KISA'),
+  '42.16': DCREF_ISP.SKT_INT,
+  '42.17': DCREF_ISP.SKT_INT,
+  '42.18': DCREF_ISP.SKT_INT,
+  '42.19': DCREF_ISP.SKT_INT,
+  '42.20': DCREF_ISP.SKT_INT,
+  '42.21': DCREF_ISP.SKT_INT,
+  '42.22': DCREF_ISP.SKT_INT,
+  '42.23': DCREF_ISP.SKT_INT,
+  '42.24': DCREF_ISP.SKT_INT,
+  '42.25': DCREF_ISP.SKT_INT,
+  '42.26': DCREF_ISP.SKT_INT,
+  '42.27': DCREF_ISP.SKT_INT,
+  '42.28': DCREF_ISP.SKT_INT,
+  '42.29': DCREF_ISP.SKT_INT,
+  '42.30': DCREF_ISP.SKT_INT,
+  '42.31': DCREF_ISP.SKT_INT,
+  '42.32': DCREF_ISP.SKT_INT,
+  '42.33': DCREF_ISP.SKT_INT,
+  '42.34': DCREF_ISP.SKT_INT,
+  '42.35': DCREF_ISP.SKT_INT,
+  '42.36': DCREF_ISP.SKT_INT,
+  '42.37': DCREF_ISP.SKT_INT,
+  '42.38': DCREF_ISP.SKT_INT,
+  '42.39': DCREF_ISP.SKT_INT,
+  '42.40': DCREF_ISP.SKT_INT,
+  '42.41': DCREF_ISP.SKT_INT,
+  '42.42': DCREF_ISP.SKT_INT,
+  '42.43': DCREF_ISP.SKT_INT,
+  '42.44': DCREF_ISP.SKT_INT,
+  '42.45': DCREF_ISP.SKT_INT,
+  '42.46': DCREF_ISP.SKT_INT,
+  '42.47': DCREF_ISP.SKT_INT,
+  '42.82': DCREF_ISP.LG_HELLO,
+  '43.224': detailWrap(DCREF_ISP.GENERAL, 'KT, LG 헬로비전, 베고니아 네트워크'),
+  '43.227': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 베고니아 네트워크, NHN, 광주방송'
+  ),
+  '43.228': DCREF_ISP.KT,
+  '43.230': detailWrap(DCREF_ISP.GENERAL, 'SKB, KT, LG, 티브로드'),
+  '43.231': detailWrap(DCREF_ISP.GENERAL, 'KT, 베고니아 네트워크'),
+  '43.241': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '43.242': DCREF_ISP.INET,
+  '43.247': DCREF_ISP.LG_HELLO,
+  '43.250': DCREF_ISP.NBP,
+  '43.251': DCREF_ISP.LG_HELLO,
+  '43.254': DCREF_ISP.PURPLESTONES,
+  '43.255': DCREF_ISP.FLEXNETWORKS,
+  '45.58': DCREF_ISP.EDUCATION,
+  '45.64': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온, CMB, NEXINNO'),
+  '45.112': DCREF_ISP.TBROAD,
+  '45.113': detailWrap(DCREF_ISP.GENERAL, 'KOREA DATA, 아이엔티매니지먼트'),
+  '45.114': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 베고니아 네트워크, 이호스트 IDC'
+  ),
+  '45.115': DCREF_ISP.LG,
+  '45.117': detailWrap(DCREF_ISP.GENERAL, 'KT, 베고니아 네트워크'),
+  '45.119': DCREF_ISP.KT,
+  '45.120': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 닷네임코리아, 베고니아 네트워크'
+  ),
+  '45.121': detailWrap(DCREF_ISP.GENERAL, '대우증권'),
+  '45.125': detailWrap(DCREF_ISP.GENERAL, 'NHN'),
+  '45.136': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '45.138': DCREF_ISP.LG,
+  '45.141': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '45.225': DCREF_ISP.EHOSTICT,
+  '45.248': detailWrap(DCREF_ISP.GENERAL, '한국정보화진흥원'),
+  '45.249': detailWrap(DCREF_ISP.GENERAL, 'KT, godosoft'),
+  '45.250': detailWrap(DCREF_ISP.GENERAL, 'FAMOUS WORKER, flexnetworks'),
+  '49.1': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '49.8': detailWrap(DCREF_ISP.GENERAL, 'KISA, 브로드밴드 IDC'),
+  '49.16': DCREF_ISP.KT,
+  '49.17': DCREF_ISP.KT,
+  '49.18': DCREF_ISP.KT,
+  '49.19': DCREF_ISP.KT,
+  '49.20': DCREF_ISP.KT,
+  '49.21': DCREF_ISP.KT,
+  '49.22': DCREF_ISP.KT,
+  '49.23': DCREF_ISP.KT,
+  '49.24': DCREF_ISP.KT,
+  '49.25': DCREF_ISP.KT,
+  '49.26': DCREF_ISP.KT,
+  '49.27': DCREF_ISP.KT,
+  '49.28': DCREF_ISP.KT,
+  '49.29': DCREF_ISP.KT,
+  '49.30': DCREF_ISP.KT,
+  '49.31': DCREF_ISP.KT,
+  '49.50': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, National Cancer Center, GORayNet, SK Co.'
+  ),
+  '49.56': DCREF_ISP.KT,
+  '49.57': DCREF_ISP.KT,
+  '49.58': DCREF_ISP.KT,
+  '49.59': DCREF_ISP.KT,
+  '49.60': DCREF_ISP.KT,
+  '49.61': DCREF_ISP.KT,
+  '49.62': DCREF_ISP.KT,
+  '49.63': DCREF_ISP.KT,
+  '49.128': detailWrap(DCREF_ISP.GENERAL, 'KT, AS138195, 베고니아 네트워크'),
+  '49.142': detailWrap(DCREF_ISP.GENERAL, 'HCN, 부산케이블'),
+  '49.143': detailWrap(DCREF_ISP.GENERAL, 'KT, HCN, CMB'),
+  '49.160': DCREF_ISP.LG,
+  '49.161': DCREF_ISP.LG,
+  '49.162': DCREF_ISP.LG,
+  '49.163': DCREF_ISP.LG,
+  '49.164': DCREF_ISP.LG,
+  '49.165': DCREF_ISP.LG,
+  '49.166': DCREF_ISP.LG,
+  '49.167': DCREF_ISP.LG,
+  '49.168': DCREF_ISP.LG,
+  '49.169': DCREF_ISP.LG,
+  '49.170': DCREF_ISP.LG,
+  '49.171': DCREF_ISP.LG,
+  '49.172': DCREF_ISP.LG,
+  '49.173': DCREF_ISP.LG,
+  '49.174': DCREF_ISP.LG,
+  '49.175': DCREF_ISP.LG,
+  '49.236': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 효성ITX, 네이버 비즈니스 플랫폼'
+  ),
+  '49.238': detailWrap(DCREF_ISP.GENERAL, 'KT, 효성ITX, 드림마크원'),
+  '49.239': detailWrap(DCREF_ISP.GENERAL, '엘림넷'),
+  '49.246': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '49.247': detailWrap(DCREF_ISP.GENERAL, 'KT, SMILESERV'),
+  '49.254': DCREF_ISP.KT,
+  '58.29': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB, 교육청'),
+  '58.65': detailWrap(DCREF_ISP.GENERAL, '서경방송'),
+  '58.72': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 부산케이블, 린나이, 피라냐 시스템, 청주대, 농협, KCTC, AS23591'
+  ),
+  '58.73': DCREF_ISP.LG,
+  '58.74': DCREF_ISP.LG,
+  '58.75': DCREF_ISP.LG,
+  '58.76': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, 부산케이블, HCN, 농협'
+  ),
+  '58.77': DCREF_ISP.LG,
+  '58.78': DCREF_ISP.LG,
+  '58.79': DCREF_ISP.LG,
+  '58.87': detailWrap(DCREF_ISP.GENERAL, 'LG, 현대오토에버'),
+  '58.102': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, SKB, LG 헬로비전, 진남케이블네트워크, SFS-AS-KR SFS, DAILY SPORTSWORLD, 미금유선방송, SEVITNET'
+  ),
+  '58.103': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, YABESK, 부경대, 군산금강방송, 교육청'
+  ),
+  '58.120': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, Standard Chartered, 한진정보통신, 건강보험심사평가원, Macquarie Telecom'
+  ),
+  '58.121': DCREF_ISP.SKB_INT,
+  '58.122': DCREF_ISP.SKB_INT,
+  '58.123': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KOSCOM, FAMOUS WORKER, 한국금융투자협회, Infraware Inc.'
+  ),
+  '58.124': detailWrap(DCREF_ISP.GENERAL, 'SKB, KOSCOM'),
+  '58.125': DCREF_ISP.SKB_INT,
+  '58.126': DCREF_ISP.SKB_INT,
+  '58.127': detailWrap(DCREF_ISP.GENERAL, 'SKB, 아모레퍼시픽'),
+  '58.138': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA'),
+  '58.140': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '58.141': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, LG, HCN'),
+  '58.142': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '58.143': DCREF_ISP.DLIVE,
+  '58.145': DCREF_ISP.TBROAD,
+  '58.146': DCREF_ISP.LG_HELLO,
+  '58.147': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '58.148': DCREF_ISP.LG,
+  '58.149': DCREF_ISP.LG,
+  '58.150': detailWrap(DCREF_ISP.GENERAL, 'LG, 서울교통공사, 신한카드, 배재대'),
+  '58.151': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG홈쇼핑, 경운대, 서울과기대 정보기술센터, AS23591, Citibank Korea, 키움증권'
+  ),
+  '58.180': detailWrap(
+    DCREF_ISP.GENERAL,
+    '신비넷IDC, flexnetworks, 세종텔레콤, 롯데정보통신'
+  ),
+  '58.181': detailWrap(DCREF_ISP.GENERAL, 'NexG Co., LTD'),
+  '58.184': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, LG, 과학기술정보통신부, SCOURTFAMILYDR SCOURTFAMILY, 국가정보자원관리원, 관세청'
+  ),
+  '58.224': detailWrap(DCREF_ISP.GENERAL, 'SKB, 더존 비즈온'),
+  '58.225': detailWrap(DCREF_ISP.GENERAL, 'SKB, 서울교통공사'),
+  '58.226': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한진정보통신'),
+  '58.227': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, Firstfire Marine Insurance, TaeguTec, 한솔고등학교'
+  ),
+  '58.228': DCREF_ISP.SKB_INT,
+  '58.229': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 브랭섬홀아시아, 브로드밴드 IDC'
+  ),
+  '58.230': DCREF_ISP.SKB_INT,
+  '58.231': detailWrap(DCREF_ISP.GENERAL, 'SKB, 채드윅 국제학교'),
+  '58.232': DCREF_ISP.SKB_INT,
+  '58.233': DCREF_ISP.SKB_INT,
+  '58.234': detailWrap(DCREF_ISP.GENERAL, 'SKB, HANNET Co.,Ltd., 한진정보통신'),
+  '58.235': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한국동서발전'),
+  '58.236': detailWrap(DCREF_ISP.GENERAL, 'SKB, 아모레퍼시픽'),
+  '58.237': DCREF_ISP.SKB_INT,
+  '58.238': detailWrap(DCREF_ISP.GENERAL, 'SKB, 브랭섬홀아시아'),
+  '58.239': DCREF_ISP.SKB_INT,
+  '59.0': DCREF_ISP.KT,
+  '59.1': detailWrap(DCREF_ISP.GENERAL, 'KT, 전북대'),
+  '59.2': detailWrap(DCREF_ISP.GENERAL, 'KT, 대동대, 군산대'),
+  '59.3': DCREF_ISP.KT,
+  '59.4': DCREF_ISP.KT,
+  '59.5': detailWrap(DCREF_ISP.GENERAL, 'KT, 코리아크레딧뷰로, KAIST, 삼육대'),
+  '59.6': detailWrap(DCREF_ISP.GENERAL, 'KT, 키움증권'),
+  '59.7': detailWrap(DCREF_ISP.GENERAL, 'KT, 신한은행'),
+  '59.8': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '59.9': DCREF_ISP.KT,
+  '59.10': detailWrap(DCREF_ISP.GENERAL, 'KT, 국민은행'),
+  '59.11': detailWrap(DCREF_ISP.GENERAL, 'KT, 하나은행'),
+  '59.12': detailWrap(DCREF_ISP.GENERAL, 'KT, 티브로드, 신한은행, SK하이닉스'),
+  '59.13': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '59.14': detailWrap(DCREF_ISP.GENERAL, 'KT, YABESK'),
+  '59.15': detailWrap(DCREF_ISP.GENERAL, 'KT, 한진정보통신, KOSCOM'),
+  '59.16': DCREF_ISP.KT,
+  '59.17': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 채드윅 국제학교, 교육청, 공항철도'
+  ),
+  '59.18': detailWrap(DCREF_ISP.GENERAL, 'KT, SHINHAN DS'),
+  '59.19': DCREF_ISP.KT,
+  '59.20': DCREF_ISP.KT,
+  '59.21': DCREF_ISP.KT,
+  '59.22': DCREF_ISP.KT,
+  '59.23': DCREF_ISP.KT,
+  '59.24': DCREF_ISP.KT,
+  '59.25': detailWrap(DCREF_ISP.GENERAL, 'KT, 혜전대'),
+  '59.26': detailWrap(DCREF_ISP.GENERAL, 'KT, 우송대, 대전보건대, 한남대'),
+  '59.27': detailWrap(DCREF_ISP.GENERAL, 'KT, NACUFOK, 나사렛대'),
+  '59.28': DCREF_ISP.KT,
+  '59.29': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온'),
+  '59.30': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온'),
+  '59.31': DCREF_ISP.KT,
+  '59.86': DCREF_ISP.LG_HELLO,
+  '59.150': detailWrap(
+    DCREF_ISP.GENERAL,
+    'DREAMLINE, Hanwha Investment Securities Co., Ltd., 현대홈쇼핑, flexnetworks, 드림마크원'
+  ),
+  '59.151': detailWrap(DCREF_ISP.GENERAL, 'HCN'),
+  '59.152': DCREF_ISP.LG_HELLO,
+  '59.186': detailWrap(DCREF_ISP.GENERAL, 'LG, KCN금강방송, 부산케이블, 농협'),
+  '59.187': detailWrap(DCREF_ISP.GENERAL, 'LG, HCN'),
+  '60.196': detailWrap(DCREF_ISP.GENERAL, 'LG, 신세계 I & C, 한국증권금융'),
+  '60.197': DCREF_ISP.LG,
+  '60.253': detailWrap(DCREF_ISP.GENERAL, 'HCN, SK communications'),
+  '61.4': DCREF_ISP.LG_HELLO,
+  '61.5': DCREF_ISP.LG,
+  '61.14': detailWrap(DCREF_ISP.GENERAL, 'KINX, 이호스트 IDC'),
+  '61.32': detailWrap(DCREF_ISP.GENERAL, 'LG, AS23591, KDB산업은행, 연세대'),
+  '61.33': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, LG CNS, 한화정보서비스부서, 군산대, DB그룹, 한국정보통신, NACUFOK, AS23591, 제일제당, 하나은행'
+  ),
+  '61.34': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG CNS, 혜전대, KOSAF, 아이엔티매니지먼트, AS23591, HANATI, 티머니, 선문대'
+  ),
+  '61.35': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG CNS, 풍산, 신한은행, KCTV 제주 방송, KCN금강방송, AS23591'
+  ),
+  '61.36': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, KCN금강방송, 경운대, KAIT, HANA TI, AS23591, FDIK, 계명대, 한국가스공사'
+  ),
+  '61.37': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 수협은행, 신한금융투자, DB그룹, AS23591, Teachiworld Auto Insurance, 농협'
+  ),
+  '61.38': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, 백석대, AS23591, 남서울대, KCTV 제주 방송, 교보생명보험'
+  ),
+  '61.39': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, KCTV 제주 방송, AS23591, JT CAPITAL, KOSCOM, 계명대, 제주한라대'
+  ),
+  '61.40': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG CNS, 서울과기대 정보기술센터, KIS정보통신, ABL Life Insurance Co., Ltd., SMILESERV, 현대카드, 연합뉴스'
+  ),
+  '61.41': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, AS23591, 농협, Ktoto, 케이프투자증권, KCTV 제주 방송, 배재대, 교육청'
+  ),
+  '61.42': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, LG CNS, KCTV 제주 방송, 군산금강방송, 백석대, 경북대, 한화정보서비스부서, AS23591, ABL Life Insurance Co., Ltd., 농협, 계명대, NHN, KB DATA SYSTEMS, 국민은행'
+  ),
+  '61.43': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, LG CNS, KCTV 제주 방송, HANASK card, 한국방송통신대, 경인여대, 한국무역보험공사, OCI정보통신, 연세대, 포스텍, 한국부동산원, 부산케이블'
+  ),
+  '61.47': DCREF_ISP.TBROAD,
+  '61.72': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Seoul Guarantee Insurance Company, 삼명대, 국가정보자원관리원, 우리카드'
+  ),
+  '61.73': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 금융감독원, TRUSTONASSET, 더존 비즈온'
+  ),
+  '61.74': detailWrap(DCREF_ISP.GENERAL, 'KT, GS네오텍, 포스텍'),
+  '61.75': detailWrap(DCREF_ISP.GENERAL, 'KT, 연암공대, 영산대, 포스텍'),
+  '61.76': detailWrap(DCREF_ISP.GENERAL, 'KT, 포스텍, 영산대'),
+  '61.77': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '61.78': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 더존 비즈온, GS네오텍, 하나은행, KISA'
+  ),
+  '61.79': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, 청운대'),
+  '61.80': detailWrap(DCREF_ISP.GENERAL, 'KT, 구미대'),
+  '61.81': detailWrap(DCREF_ISP.GENERAL, 'KT, 우송대, 중부대'),
+  '61.82': detailWrap(DCREF_ISP.GENERAL, 'KT, viaweb, 한국해양대'),
+  '61.83': detailWrap(DCREF_ISP.GENERAL, 'KT, 현대중공업, 교육청, DAELIM'),
+  '61.84': detailWrap(DCREF_ISP.GENERAL, 'KT, 하나은행, 서정대, 목포대'),
+  '61.85': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, NLCS Jeju, The Daegu Bank, Ltd, NACUFOK'
+  ),
+  '61.96': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KTBnetwork Co., Ltd., DREAMLINE, CCS-AS-KR CCS, flexnetworks, 드림마크원, 현대해상화재보험, Infraware Inc., 율촌'
+  ),
+  '61.97': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, LG, KT, LG 헬로비전, KINX, SK Co., AS23591, 세종텔레콤, 퍼플스톤즈, 네이버 비즈니스 플랫폼, ABN-AS-KR ABN, 이호스트 IDC'
+  ),
+  '61.98': detailWrap(DCREF_ISP.GENERAL, 'SKB, 금산교육'),
+  '61.99': DCREF_ISP.SKB_INT,
+  '61.100': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, 티브로드, LG, Hostway IDC, 세종텔레콤, 진남케이블네트워크, Silla Univ, 유엘네트웍스'
+  ),
+  '61.101': detailWrap(DCREF_ISP.GENERAL, 'SKB, LG, ubase'),
+  '61.102': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 티브로드'),
+  '61.103': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KTBnetwork Co., Ltd., DREAMLINE, 드림마크원'
+  ),
+  '61.104': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, 미금유선방송, 삼성SDS, 국가정보자원관리원, Shinjin Network, jin san cable net company ltd'
+  ),
+  '61.105': DCREF_ISP.SKB_INT,
+  '61.106': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KINX, LG 헬로비전, KT, 티브로드, LG, KDDI KOREA, 엘림넷, 강남 케이블TV'
+  ),
+  '61.107': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, DREAMLINE, Korea Insurance Development Instute, 울산중앙방송, 드림마크원'
+  ),
+  '61.108': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, LG, 교육청, KORECO, Kyonggi provin educational information research institute, KAIT, incheon city, 한국투자공사, 한국고용정보원, EPKINET KERIS'
+  ),
+  '61.109': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, LG 헬로비전, 세종텔레콤, 부산케이블, Hostway IDC'
+  ),
+  '61.110': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, KT, 신비넷IDC, 롯데정보통신, KCN금강방송, CDNetworks'
+  ),
+  '61.111': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 신비넷IDC, flexnetworks, AS138195, 세종텔레콤'
+  ),
+  '61.147': DCREF_ISP.KINX,
+  '61.245': detailWrap(DCREF_ISP.GENERAL, '광주방송, 원광대'),
+  '61.247': detailWrap(DCREF_ISP.GENERAL, '티브로드, DLIVE'),
+  '61.248': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 신비넷IDC, flexnetworks, KHNP, KISA'
+  ),
+  '61.249': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 신비넷IDC, flexnetworks, KHNP, HCN'
+  ),
+  '61.250': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, 세종텔레콤, Hostway IDC, 울산중앙방송, 퍼플스톤즈'
+  ),
+  '61.251': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KINX, KT, LG, 티브로드, CMB, KDDI KOREA, flexnetworks'
+  ),
+  '61.252': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, DLIVE, LG 헬로비전, 티브로드, 드림마크원, 한국정보화진흥원, 퍼플스톤즈, 세종텔레콤, BSITC'
+  ),
+  '61.253': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, LG 헬로비전, Industrial Bank of Korea'
+  ),
+  '61.254': detailWrap(DCREF_ISP.GENERAL, 'SKB, SKT, 대우증권'),
+  '61.255': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, LG 헬로비전, 채드윅 국제학교, 인천경제산업정보테크노파크, 교육정보연구원, ottogi.co.kr'
+  ),
+  '63.105': DCREF_ISP.KINX,
+  '63.124': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '64.23': detailWrap(DCREF_ISP.GENERAL, '세종텔레콤, Hostway IDC'),
+  '64.188': detailWrap(DCREF_ISP.GENERAL, '-AP TOPNET. IP Transit AS'),
+  '65.215': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '66.232': detailWrap(DCREF_ISP.GENERAL, 'Hostway IDC, 세종텔레콤'),
+  '101.1': detailWrap(DCREF_ISP.GENERAL, '전주대, 현대오토에버'),
+  '101.53': DCREF_ISP.FLEXNETWORKS,
+  '101.55': detailWrap(DCREF_ISP.GENERAL, 'KT, LG'),
+  '101.79': detailWrap(DCREF_ISP.GENERAL, '퍼플스톤즈, CDNetworks'),
+  '101.101': DCREF_ISP.KT,
+  '101.202': DCREF_ISP.DREAMMARK1,
+  '101.235': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '101.250': detailWrap(DCREF_ISP.GENERAL, '피라냐 시스템'),
+  '103.2': DCREF_ISP.KT,
+  '103.4': detailWrap(DCREF_ISP.GENERAL, 'KT, KOMSCO'),
+  '103.5': detailWrap(DCREF_ISP.GENERAL, '티브로드, KT'),
+  '103.6': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, KINX, 네이버 비즈니스 플랫폼'
+  ),
+  '103.7': detailWrap(DCREF_ISP.GENERAL, 'KT, LG 헬로비전, 한국국토정보공사'),
+  '103.8': detailWrap(DCREF_ISP.GENERAL, '더존 비즈온, 한국천문연구원'),
+  '103.9': detailWrap(DCREF_ISP.GENERAL, 'AMWAYKOREA, flexnetworks'),
+  '103.10': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '103.11': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, 효성ITX, 남인천방송, 울산중앙방송'
+  ),
+  '103.12': detailWrap(DCREF_ISP.GENERAL, 'KT, DREAMLINE'),
+  '103.13': detailWrap(DCREF_ISP.GENERAL, 'SKB, 대우증권, AS138195'),
+  '103.19': detailWrap(DCREF_ISP.GENERAL, 'S1 CORPORATION'),
+  '103.20': detailWrap(DCREF_ISP.GENERAL, 'KCN금강방송'),
+  '103.21': DCREF_ISP.LG_HELLO,
+  '103.22': detailWrap(DCREF_ISP.GENERAL, '한국정보화진흥원'),
+  '103.23': DCREF_ISP.DLIVE,
+  '103.24': DCREF_ISP.HOSTWAY,
+  '103.25': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA'),
+  '103.27': detailWrap(DCREF_ISP.GENERAL, '드림마크원, Kakao'),
+  '103.28': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '103.30': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, Cross On Net Inc., SEOUL AGRICULTURAL & MARINE PRODUCTS CORP.'
+  ),
+  '103.31': DCREF_ISP.DOTNAME,
+  '103.38': DCREF_ISP.INET,
+  '103.39': detailWrap(DCREF_ISP.GENERAL, '삼성전자'),
+  '103.42': DCREF_ISP.LG_HELLO,
+  '103.43': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG 헬로비전, 한국천문연구원, 베고니아 네트워크'
+  ),
+  '103.46': detailWrap(DCREF_ISP.GENERAL, 'KT, 베고니아 네트워크'),
+  '103.49': detailWrap(DCREF_ISP.GENERAL, 'LG, SKB'),
+  '103.50': detailWrap(DCREF_ISP.GENERAL, '티브로드, KT, 베고니아 네트워크'),
+  '103.51': DCREF_ISP.TBROAD,
+  '103.52': detailWrap(DCREF_ISP.GENERAL, '아이엔티매니지먼트'),
+  '103.53': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SUDOKWON Landfill Site Management Corp'
+  ),
+  '103.54': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 베고니아 네트워크, 이호스트 IDC'
+  ),
+  '103.55': detailWrap(DCREF_ISP.GENERAL, 'KTOA, LG'),
+  '103.56': DCREF_ISP.LG,
+  '103.57': detailWrap(DCREF_ISP.GENERAL, 'KT, 베고니아 네트워크'),
+  '103.59': detailWrap(DCREF_ISP.GENERAL, '금융보안원'),
+  '103.60': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, 베고니아 네트워크, 대우증권'
+  ),
+  '103.62': detailWrap(DCREF_ISP.GENERAL, 'SRAIL-AS-KR SR'),
+  '103.66': detailWrap(DCREF_ISP.GENERAL, 'CMB, 카카오뱅크'),
+  '103.68': detailWrap(DCREF_ISP.GENERAL, '울산중앙방송'),
+  '103.74': detailWrap(DCREF_ISP.GENERAL, 'pearlabyss'),
+  '103.77': detailWrap(DCREF_ISP.GENERAL, 'kbank'),
+  '103.78': detailWrap(DCREF_ISP.GENERAL, '다우기술'),
+  '103.79': detailWrap(DCREF_ISP.GENERAL, '효성ITX'),
+  '103.80': DCREF_ISP.LG,
+  '103.82': detailWrap(DCREF_ISP.GENERAL, '베고니아 네트워크'),
+  '103.85': detailWrap(DCREF_ISP.GENERAL, '현대오토에버'),
+  '103.86': detailWrap(DCREF_ISP.GENERAL, 'KT, AS138195'),
+  '103.87': detailWrap(DCREF_ISP.GENERAL, 'ENTERMATE'),
+  '103.90': detailWrap(DCREF_ISP.GENERAL, 'namyang, AIA'),
+  '103.97': detailWrap(DCREF_ISP.GENERAL, 'pearlabyss'),
+  '103.99': DCREF_ISP.LG,
+  '103.103': DCREF_ISP.EHOSTICT,
+  '103.105': detailWrap(
+    DCREF_ISP.GENERAL,
+    'Wider Planet, National Electoin Commission'
+  ),
+  '103.106': detailWrap(DCREF_ISP.GENERAL, 'BSITC'),
+  '103.108': detailWrap(DCREF_ISP.GENERAL, '한국농수산식품유통공사'),
+  '103.110': DCREF_ISP.EHOSTICT,
+  '103.114': detailWrap(DCREF_ISP.GENERAL, 'Kangwon Land,Inc., KRAFTON INC'),
+  '103.122': DCREF_ISP.BROADBANDIDC,
+  '103.124': DCREF_ISP.HOSTWAY,
+  '103.125': detailWrap(DCREF_ISP.GENERAL, '정보통신정책연구원'),
+  '103.126': detailWrap(DCREF_ISP.GENERAL, 'KUMHO TIRE'),
+  '103.127': detailWrap(DCREF_ISP.GENERAL, 'AS138195, Korean Red Cross'),
+  '103.129': detailWrap(DCREF_ISP.GENERAL, 'KTE'),
+  '103.131': DCREF_ISP.KINX,
+  '103.132': detailWrap(DCREF_ISP.GENERAL, 'NHN Bugs, CRETEC CHEGIM'),
+  '103.133': detailWrap(DCREF_ISP.GENERAL, '다우기술'),
+  '103.138': DCREF_ISP.EDUCATION,
+  '103.139': detailWrap(
+    DCREF_ISP.GENERAL,
+    '국민연금공단, 드림마크원, barofn, 전남창의융합교육원'
+  ),
+  '103.140': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KTNG Coporation, 이호스트 IDC, AS139281'
+  ),
+  '103.141': detailWrap(DCREF_ISP.GENERAL, 'KFTC'),
+  '103.142': DCREF_ISP.LG,
+  '103.143': detailWrap(DCREF_ISP.GENERAL, '-AP CloudNX, 교육정보연구원'),
+  '103.144': detailWrap(
+    DCREF_ISP.GENERAL,
+    'Korea Security Technology Co., Ltd.'
+  ),
+  '103.145': DCREF_ISP.SKT_INT,
+  '103.146': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KINX, SEONAM Infromation Telecom Co., Ltd.'
+  ),
+  '103.149': DCREF_ISP.TRUENETWORKS,
+  '103.150': detailWrap(
+    DCREF_ISP.GENERAL,
+    'National Pension Corporation, AS23588, AS23594'
+  ),
+  '103.153': DCREF_ISP.EDUCATION,
+  '103.157': DCREF_ISP.LG,
+  '103.193': DCREF_ISP.EHOSTICT,
+  '103.194': detailWrap(DCREF_ISP.GENERAL, 'NHN, viaweb'),
+  '103.199': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '103.206': detailWrap(DCREF_ISP.GENERAL, '건강보험심사평가원'),
+  '103.212': detailWrap(DCREF_ISP.GENERAL, 'KT, 이호스트 IDC'),
+  '103.214': detailWrap(DCREF_ISP.GENERAL, 'AS138195, KCTV 제주 방송'),
+  '103.215': detailWrap(DCREF_ISP.GENERAL, 'NHN KCP Corp.'),
+  '103.216': detailWrap(DCREF_ISP.GENERAL, '국립환경과학원'),
+  '103.218': detailWrap(DCREF_ISP.GENERAL, 'godosoft, 건국대'),
+  '103.219': detailWrap(DCREF_ISP.GENERAL, 'FAMOUS WORKER'),
+  '103.226': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, LG, 광주방송'),
+  '103.228': DCREF_ISP.KT,
+  '103.229': detailWrap(DCREF_ISP.GENERAL, '여호와의 증인'),
+  '103.230': DCREF_ISP.KINX,
+  '103.234': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '103.236': DCREF_ISP.LG,
+  '103.237': detailWrap(DCREF_ISP.GENERAL, '교육청, 퍼플스톤즈'),
+  '103.239': detailWrap(
+    DCREF_ISP.GENERAL,
+    'Korea Racing Association, flexnetworks'
+  ),
+  '103.240': detailWrap(DCREF_ISP.GENERAL, 'KISA, 브로드밴드 IDC, 가비아'),
+  '103.243': detailWrap(DCREF_ISP.GENERAL, 'NHN PlayMuseum, NHN'),
+  '103.244': detailWrap(DCREF_ISP.GENERAL, 'KOSCOM'),
+  '103.246': detailWrap(DCREF_ISP.GENERAL, 'Kakao, CMB'),
+  '103.247': detailWrap(DCREF_ISP.GENERAL, 'KT, TMON'),
+  '103.248': DCREF_ISP.CDNETWORKS,
+  '103.249': DCREF_ISP.EHOSTICT,
+  '103.251': DCREF_ISP.KT,
+  '103.254': detailWrap(DCREF_ISP.GENERAL, '카카오뱅크'),
+  '104.77': DCREF_ISP.LG,
+  '104.123': DCREF_ISP.LG,
+  '105.154': DCREF_ISP.KINX,
+  '106.10': detailWrap(DCREF_ISP.GENERAL, '효성ITX, 드림마크원'),
+  '106.96': DCREF_ISP.UPLUS,
+  '106.101': DCREF_ISP.UPLUS,
+  '106.102': DCREF_ISP.UPLUS,
+  '106.103': detailWrap(DCREF_ISP.GENERAL, 'LG U+, LG'),
+  '106.240': DCREF_ISP.LG,
+  '106.241': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 건국대학병원, 우리은행, 신한은행, Cross On Net Inc., 서울교통공사, KCN금강방송, 우리카드'
+  ),
+  '106.242': DCREF_ISP.LG,
+  '106.243': DCREF_ISP.LG,
+  '106.244': DCREF_ISP.LG,
+  '106.245': DCREF_ISP.LG,
+  '106.246': DCREF_ISP.LG,
+  '106.247': DCREF_ISP.LG,
+  '106.248': DCREF_ISP.LG,
+  '106.249': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, NHN, 아이엔티매니지먼트, 한국거래소, SHINHAN DS'
+  ),
+  '106.250': DCREF_ISP.LG,
+  '106.251': DCREF_ISP.LG,
+  '106.252': DCREF_ISP.LG,
+  '106.253': DCREF_ISP.LG,
+  '106.254': DCREF_ISP.LG,
+  '106.255': DCREF_ISP.LG,
+  '107.155': detailWrap(DCREF_ISP.GENERAL, 'KT, 이호스트 IDC'),
+  '110.4': detailWrap(DCREF_ISP.GENERAL, '퍼플스톤즈, DREAMLINE'),
+  '110.5': DCREF_ISP.TBROAD,
+  '110.8': DCREF_ISP.SKB_INT,
+  '110.9': DCREF_ISP.SKB_INT,
+  '110.10': DCREF_ISP.SKB_INT,
+  '110.11': detailWrap(DCREF_ISP.GENERAL, 'SKB, 신한은행'),
+  '110.12': DCREF_ISP.SKB_INT,
+  '110.13': DCREF_ISP.SKB_INT,
+  '110.14': detailWrap(DCREF_ISP.GENERAL, 'SKB, F U Credit Information'),
+  '110.15': detailWrap(DCREF_ISP.GENERAL, 'SKB, Shinjin Network, 한진정보통신'),
+  '110.34': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '110.35': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, CMB, HCN, 세종텔레콤, 다우기술'
+  ),
+  '110.44': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 드림마크원'),
+  '110.45': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, LG, 케이엘넷'),
+  '110.46': DCREF_ISP.LG_HELLO,
+  '110.47': DCREF_ISP.LG_HELLO,
+  '110.68': DCREF_ISP.KT,
+  '110.69': DCREF_ISP.KT,
+  '110.70': DCREF_ISP.KT,
+  '110.71': DCREF_ISP.KT,
+  '110.76': detailWrap(DCREF_ISP.GENERAL, 'KAIST, Kakao'),
+  '110.92': detailWrap(DCREF_ISP.GENERAL, 'KT, KISA, 강남 케이블TV, 다우기술'),
+  '110.93': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Gyeonggi Technopark, 효성ITX, 네이버 비즈니스 플랫폼'
+  ),
+  '110.165': detailWrap(
+    DCREF_ISP.GENERAL,
+    '네이버 비즈니스 플랫폼, 피라냐 시스템'
+  ),
+  '110.172': detailWrap(DCREF_ISP.GENERAL, 'LG, 다우기술'),
+  '110.232': DCREF_ISP.LG,
+  '110.234': DCREF_ISP.NBP,
+  '111.65': DCREF_ISP.TBROAD,
+  '111.67': DCREF_ISP.FLEXNETWORKS,
+  '111.91': detailWrap(DCREF_ISP.GENERAL, '네이버 비즈니스 플랫폼, 광주방송'),
+  '111.92': DCREF_ISP.HOSTWAY,
+  '111.118': detailWrap(DCREF_ISP.GENERAL, 'HCN, 부산케이블'),
+  '111.171': DCREF_ISP.TBROAD,
+  '111.218': DCREF_ISP.SKT_INT,
+  '111.219': DCREF_ISP.SKT_INT,
+  '111.221': DCREF_ISP.LIMELIGHT,
+  '112.72': detailWrap(DCREF_ISP.GENERAL, 'LG, HCN'),
+  '112.76': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, LG'),
+  '112.77': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, 한국투자공사, 교육청'),
+  '112.78': detailWrap(DCREF_ISP.GENERAL, '-AP TOPNET. IP Transit AS'),
+  '112.106': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '112.107': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '112.108': detailWrap(DCREF_ISP.GENERAL, 'LG, 삼성SDS, AS138380'),
+  '112.109': detailWrap(DCREF_ISP.GENERAL, '울산중앙방송'),
+  '112.121': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, -AP TOPNET. IP Transit AS, CMB'
+  ),
+  '112.133': detailWrap(DCREF_ISP.GENERAL, 'KCTV 제주 방송, CMB'),
+  '112.136': detailWrap(DCREF_ISP.GENERAL, 'NexG Co., LTD'),
+  '112.137': detailWrap(DCREF_ISP.GENERAL, '대구대'),
+  '112.140': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, LG 헬로비전, KCT, 전주대'
+  ),
+  '112.144': DCREF_ISP.LG,
+  '112.145': DCREF_ISP.LG,
+  '112.146': DCREF_ISP.LG,
+  '112.147': DCREF_ISP.LG,
+  '112.148': DCREF_ISP.LG,
+  '112.149': DCREF_ISP.LG,
+  '112.150': DCREF_ISP.LG,
+  '112.151': DCREF_ISP.LG,
+  '112.152': DCREF_ISP.LG,
+  '112.153': DCREF_ISP.LG,
+  '112.154': DCREF_ISP.LG,
+  '112.155': DCREF_ISP.LG,
+  '112.156': DCREF_ISP.LG,
+  '112.157': DCREF_ISP.LG,
+  '112.158': DCREF_ISP.LG,
+  '112.159': DCREF_ISP.LG,
+  '112.160': DCREF_ISP.KT,
+  '112.161': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 아이엔티매니지먼트, KB손해보험'
+  ),
+  '112.162': detailWrap(DCREF_ISP.GENERAL, 'KT, 부경대'),
+  '112.163': DCREF_ISP.KT,
+  '112.164': DCREF_ISP.KT,
+  '112.165': DCREF_ISP.KT,
+  '112.166': detailWrap(DCREF_ISP.GENERAL, 'KT, KOSCOM'),
+  '112.167': DCREF_ISP.KT,
+  '112.168': detailWrap(DCREF_ISP.GENERAL, 'KT, 신한캐피탈'),
+  '112.169': DCREF_ISP.KT,
+  '112.170': detailWrap(DCREF_ISP.GENERAL, 'KT, 우리은행, 신분당선'),
+  '112.171': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 신세계 I & C, AIG, 인천경제산업정보테크노파크, 청운대'
+  ),
+  '112.172': detailWrap(DCREF_ISP.GENERAL, 'KT, 전국24시콜화물'),
+  '112.173': DCREF_ISP.KT,
+  '112.174': DCREF_ISP.KT,
+  '112.175': detailWrap(DCREF_ISP.GENERAL, 'KT, GS네오텍'),
+  '112.176': DCREF_ISP.KT,
+  '112.177': DCREF_ISP.KT,
+  '112.178': DCREF_ISP.KT,
+  '112.179': DCREF_ISP.KT,
+  '112.180': DCREF_ISP.KT,
+  '112.181': DCREF_ISP.KT,
+  '112.182': DCREF_ISP.KT,
+  '112.183': DCREF_ISP.KT,
+  '112.184': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온'),
+  '112.185': DCREF_ISP.KT,
+  '112.186': DCREF_ISP.KT,
+  '112.187': DCREF_ISP.KT,
+  '112.188': DCREF_ISP.KT,
+  '112.189': DCREF_ISP.KT,
+  '112.190': DCREF_ISP.KT,
+  '112.191': DCREF_ISP.KT,
+  '112.196': detailWrap(DCREF_ISP.GENERAL, 'KT, AS138195, 베고니아 네트워크'),
+  '112.212': DCREF_ISP.TBROAD,
+  '112.213': detailWrap(DCREF_ISP.GENERAL, '피라냐 시스템'),
+  '112.214': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '112.216': DCREF_ISP.LG,
+  '112.217': detailWrap(DCREF_ISP.GENERAL, 'LG, KCTV 제주 방송'),
+  '112.218': DCREF_ISP.LG,
+  '112.219': DCREF_ISP.LG,
+  '112.220': DCREF_ISP.LG,
+  '112.221': DCREF_ISP.LG,
+  '112.222': DCREF_ISP.LG,
+  '112.223': detailWrap(DCREF_ISP.GENERAL, 'LG, KCTV 제주 방송'),
+  '113.10': detailWrap(DCREF_ISP.GENERAL, '강남 케이블TV, 다우기술'),
+  '113.21': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA'),
+  '113.29': detailWrap(DCREF_ISP.GENERAL, 'Kakao, 다우기술'),
+  '113.30': detailWrap(DCREF_ISP.GENERAL, '티브로드, 퍼플스톤즈'),
+  '113.52': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, flexnetworks'),
+  '113.59': detailWrap(DCREF_ISP.GENERAL, 'HCN'),
+  '113.60': DCREF_ISP.TBROAD,
+  '113.61': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, Kakao'),
+  '113.130': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 신비넷IDC'),
+  '113.131': DCREF_ISP.LG_HELLO,
+  '113.192': detailWrap(DCREF_ISP.GENERAL, '울산중앙방송'),
+  '113.197': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, -AP TOPNET. IP Transit AS, 유엘네트웍스'
+  ),
+  '113.198': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 전북대, CNUE, 건국대, 충북대, 제주대, 국민대, 경인여대, 동의대'
+  ),
+  '113.199': detailWrap(DCREF_ISP.GENERAL, 'ABN-AS-KR ABN'),
+  '113.216': DCREF_ISP.SKT_INT,
+  '113.217': detailWrap(DCREF_ISP.GENERAL, 'SKT, KINX'),
+  '114.29': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 티브로드'),
+  '114.30': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, LG 헬로비전, HCN'),
+  '114.31': detailWrap(
+    DCREF_ISP.GENERAL,
+    '효성ITX, KOSCOM, 조일 케이블 네트워크'
+  ),
+  '114.52': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, SEVITNET, Industrial Bank of Korea, 미금유선방송'
+  ),
+  '114.53': detailWrap(DCREF_ISP.GENERAL, 'SKT, SKB'),
+  '114.70': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, UNIST, 건국대, 연성대, 순천대, 강원대, 배재대, 목포대, KOSAF, 목원대, 부천대, 서울기독대, 호서대, 강릉원주대, 동의대, 전북대, 서정대'
+  ),
+  '114.71': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, SKB, 계명대, 대구가톨릭대, 대전보건대, 제주대, DGIST, 충북대, 중부대, 순천향대'
+  ),
+  '114.108': detailWrap(DCREF_ISP.GENERAL, '티브로드, LG, KICA'),
+  '114.110': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA'),
+  '114.111': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, 네이버 비즈니스 플랫폼, CDNetworks'
+  ),
+  '114.129': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, HCN'),
+  '114.141': detailWrap(DCREF_ISP.GENERAL, '퍼플스톤즈, 피라냐 시스템'),
+  '114.199': detailWrap(
+    DCREF_ISP.GENERAL,
+    '한국케이블TV푸른방송, HCN, CCS-AS-KR CCS'
+  ),
+  '114.200': detailWrap(DCREF_ISP.GENERAL, 'SKB, yoido full gaspel church'),
+  '114.201': DCREF_ISP.SKB_INT,
+  '114.202': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한솔고등학교, 한진정보통신'),
+  '114.203': detailWrap(DCREF_ISP.GENERAL, 'SKB, yoido full gaspel church'),
+  '114.204': detailWrap(DCREF_ISP.GENERAL, 'SKB, 서울교통공사, 한진정보통신'),
+  '114.205': DCREF_ISP.SKB_INT,
+  '114.206': DCREF_ISP.SKB_INT,
+  '114.207': DCREF_ISP.SKB_INT,
+  '114.229': DCREF_ISP.KINX,
+  '115.0': DCREF_ISP.KT,
+  '115.1': DCREF_ISP.KT,
+  '115.2': DCREF_ISP.KT,
+  '115.3': DCREF_ISP.KT,
+  '115.4': DCREF_ISP.KT,
+  '115.5': DCREF_ISP.KT,
+  '115.6': DCREF_ISP.KT,
+  '115.7': DCREF_ISP.KT,
+  '115.8': DCREF_ISP.KT,
+  '115.9': DCREF_ISP.KT,
+  '115.10': DCREF_ISP.KT,
+  '115.11': DCREF_ISP.KT,
+  '115.12': DCREF_ISP.KT,
+  '115.13': DCREF_ISP.KT,
+  '115.14': DCREF_ISP.KT,
+  '115.15': DCREF_ISP.KT,
+  '115.16': DCREF_ISP.KT,
+  '115.17': DCREF_ISP.KT,
+  '115.18': DCREF_ISP.KT,
+  '115.19': DCREF_ISP.KT,
+  '115.20': DCREF_ISP.KT,
+  '115.21': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 현대해상화재보험, 국민은행, AS23591'
+  ),
+  '115.22': detailWrap(DCREF_ISP.GENERAL, 'KT, 한국거래소'),
+  '115.23': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '115.31': DCREF_ISP.LG_HELLO,
+  '115.40': DCREF_ISP.LG_HELLO,
+  '115.41': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 다우기술'),
+  '115.68': detailWrap(DCREF_ISP.GENERAL, 'SMILESERV'),
+  '115.69': detailWrap(DCREF_ISP.GENERAL, 'HCN'),
+  '115.71': detailWrap(DCREF_ISP.GENERAL, '다우기술'),
+  '115.84': detailWrap(DCREF_ISP.GENERAL, '서울교통공사'),
+  '115.85': DCREF_ISP.KT,
+  '115.86': DCREF_ISP.LG_HELLO,
+  '115.88': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KCTV 제주 방송, 제주한라대, 연세대, BCCARD, 군산금강방송, 경북대, NHN, AS23591'
+  ),
+  '115.89': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, daewonpharm, KCTV 제주 방송, NHN, NICE, HANATI, 교보라이프플래닛, 한국농촌경제연구원'
+  ),
+  '115.90': DCREF_ISP.LG,
+  '115.91': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG CNS, AS23591, AS138195, hyundaicapital, KDB산업은행'
+  ),
+  '115.92': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, NHN, 퍼플스톤즈, KCTV 제주 방송, 하나펀드서비스, 농협정보시스템, KDB산업은행, 티머니'
+  ),
+  '115.93': DCREF_ISP.LG,
+  '115.94': DCREF_ISP.LG,
+  '115.95': detailWrap(DCREF_ISP.GENERAL, 'LG, 국가정보자원관리원'),
+  '115.126': detailWrap(DCREF_ISP.GENERAL, '남인천방송'),
+  '115.136': DCREF_ISP.LG,
+  '115.137': DCREF_ISP.LG,
+  '115.138': DCREF_ISP.LG,
+  '115.139': DCREF_ISP.LG,
+  '115.140': DCREF_ISP.LG,
+  '115.141': DCREF_ISP.LG,
+  '115.142': DCREF_ISP.LG,
+  '115.143': DCREF_ISP.LG,
+  '115.144': detailWrap(DCREF_ISP.GENERAL, 'KT, KINX, HAIonNet'),
+  '115.145': detailWrap(DCREF_ISP.GENERAL, '성균관대'),
+  '115.160': detailWrap(DCREF_ISP.GENERAL, '서경방송'),
+  '115.161': DCREF_ISP.TBROAD,
+  '115.165': DCREF_ISP.FLEXNETWORKS,
+  '115.178': detailWrap(DCREF_ISP.GENERAL, 'SKB, KOREA DATA'),
+  '115.187': detailWrap(DCREF_ISP.GENERAL, 'GS네오텍'),
+  '116.32': DCREF_ISP.LG,
+  '116.33': DCREF_ISP.LG,
+  '116.34': DCREF_ISP.LG,
+  '116.35': DCREF_ISP.LG,
+  '116.36': DCREF_ISP.LG,
+  '116.37': DCREF_ISP.LG,
+  '116.38': DCREF_ISP.LG,
+  '116.39': DCREF_ISP.LG,
+  '116.40': DCREF_ISP.LG,
+  '116.41': DCREF_ISP.LG,
+  '116.42': DCREF_ISP.LG,
+  '116.43': DCREF_ISP.LG,
+  '116.44': DCREF_ISP.LG,
+  '116.45': DCREF_ISP.LG,
+  '116.46': DCREF_ISP.LG,
+  '116.47': DCREF_ISP.LG,
+  '116.67': detailWrap(DCREF_ISP.GENERAL, '국가정보자원관리원'),
+  '116.68': detailWrap(DCREF_ISP.GENERAL, '나사렛대'),
+  '116.84': detailWrap(DCREF_ISP.GENERAL, 'IIAC'),
+  '116.89': detailWrap(DCREF_ISP.GENERAL, '한국정보화진흥원'),
+  '116.90': detailWrap(DCREF_ISP.GENERAL, '대구가톨릭대'),
+  '116.93': detailWrap(DCREF_ISP.GENERAL, '티브로드, KOREA DATA'),
+  '116.120': detailWrap(DCREF_ISP.GENERAL, 'SKB, 두산정보통신, 교육청'),
+  '116.121': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 현대백화점, 제일제당, 퍼플스톤즈'
+  ),
+  '116.122': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 퍼플스톤즈, 서울교통공사, 교육청'
+  ),
+  '116.123': detailWrap(DCREF_ISP.GENERAL, 'SKB, 포스코ICT'),
+  '116.124': detailWrap(DCREF_ISP.GENERAL, 'SKB, 국민은행, 교육청, 포스코ICT'),
+  '116.125': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 퍼플스톤즈, 미래에셋, 교육정보연구원, S-OIL Corp., Ltd'
+  ),
+  '116.126': detailWrap(DCREF_ISP.GENERAL, 'SKB, NICE TCM'),
+  '116.127': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 포스코ICT, 두산정보통신, cyberlogitec'
+  ),
+  '116.193': detailWrap(DCREF_ISP.GENERAL, 'CDNetworks, AS138195'),
+  '116.199': DCREF_ISP.TBROAD,
+  '116.200': DCREF_ISP.KT,
+  '116.201': DCREF_ISP.KT,
+  '116.204': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '116.212': detailWrap(DCREF_ISP.GENERAL, '울산중앙방송'),
+  '116.255': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '117.16': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, LG, 조선대, 삼명대, 호서대, 건국대, 경상대, 우송대, 인천대'
+  ),
+  '117.17': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, SKB, KT, DAELIM, 안양대, 목포대, 제주대, 군산대, 강원대, 서정대, 광주교육대, 서경대, 고려대, 인천대, 대구가톨릭대, 경기대'
+  ),
+  '117.20': detailWrap(DCREF_ISP.GENERAL, '티브로드, HCN'),
+  '117.52': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, 중앙일보, NHN, 네이버 비즈니스 플랫폼, GS네오텍'
+  ),
+  '117.53': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, 강남 케이블TV, SK communications'
+  ),
+  '117.55': DCREF_ISP.LG_HELLO,
+  '117.58': DCREF_ISP.TBROAD,
+  '117.110': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB, 교육청'),
+  '117.111': detailWrap(DCREF_ISP.GENERAL, 'LG U+, LGPUB, 교육청'),
+  '117.123': DCREF_ISP.TBROAD,
+  '118.32': DCREF_ISP.KT,
+  '118.33': DCREF_ISP.KT,
+  '118.34': DCREF_ISP.KT,
+  '118.35': detailWrap(DCREF_ISP.GENERAL, 'KT, S-OIL Corp., Ltd'),
+  '118.36': DCREF_ISP.KT,
+  '118.37': DCREF_ISP.KT,
+  '118.38': DCREF_ISP.KT,
+  '118.39': DCREF_ISP.KT,
+  '118.40': DCREF_ISP.KT,
+  '118.41': DCREF_ISP.KT,
+  '118.42': DCREF_ISP.KT,
+  '118.43': DCREF_ISP.KT,
+  '118.44': DCREF_ISP.KT,
+  '118.45': detailWrap(DCREF_ISP.GENERAL, 'KT, 포스코ICT'),
+  '118.46': DCREF_ISP.KT,
+  '118.47': detailWrap(DCREF_ISP.GENERAL, 'KT, 현대중공업'),
+  '118.48': DCREF_ISP.KT,
+  '118.49': DCREF_ISP.KT,
+  '118.50': DCREF_ISP.KT,
+  '118.51': DCREF_ISP.KT,
+  '118.52': DCREF_ISP.KT,
+  '118.53': DCREF_ISP.KT,
+  '118.54': DCREF_ISP.KT,
+  '118.55': DCREF_ISP.KT,
+  '118.56': DCREF_ISP.KT,
+  '118.57': DCREF_ISP.KT,
+  '118.58': DCREF_ISP.KT,
+  '118.59': DCREF_ISP.KT,
+  '118.60': DCREF_ISP.KT,
+  '118.61': DCREF_ISP.KT,
+  '118.62': DCREF_ISP.KT,
+  '118.63': DCREF_ISP.KT,
+  '118.67': detailWrap(DCREF_ISP.GENERAL, 'KINX, KT'),
+  '118.91': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, HCN, CCS-AS-KR CCS, 퍼플스톤즈'
+  ),
+  '118.103': detailWrap(DCREF_ISP.GENERAL, '남인천방송'),
+  '118.107': DCREF_ISP.CDNETWORKS,
+  '118.127': DCREF_ISP.LG_HELLO,
+  '118.128': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KCTV 제주 방송, CNCITY energy CO.,LTD, 경북대, 한국항공대'
+  ),
+  '118.129': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 하나금융투자, 포스코ICT, 퍼플스톤즈, 경북대, 배재대, INICIS Co., Ltd'
+  ),
+  '118.130': detailWrap(DCREF_ISP.GENERAL, 'LG, DLIVE, 경북대, AS23591'),
+  '118.131': DCREF_ISP.LG,
+  '118.139': DCREF_ISP.LG_HELLO,
+  '118.176': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '118.214': DCREF_ISP.LG,
+  '118.216': DCREF_ISP.SKB_INT,
+  '118.217': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한솔고등학교'),
+  '118.218': detailWrap(DCREF_ISP.GENERAL, 'SKB, 우리은행'),
+  '118.219': DCREF_ISP.SKB_INT,
+  '118.220': detailWrap(DCREF_ISP.GENERAL, 'SKB, 서울교통공사, KYONGNAMBANK'),
+  '118.221': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청'),
+  '118.222': DCREF_ISP.SKB_INT,
+  '118.223': DCREF_ISP.SKB_INT,
+  '118.234': DCREF_ISP.KT,
+  '118.235': DCREF_ISP.KT,
+  '119.17': detailWrap(DCREF_ISP.GENERAL, '티브로드, 한국케이블TV푸른방송'),
+  '119.18': DCREF_ISP.LG_HELLO,
+  '119.30': DCREF_ISP.KINX,
+  '119.31': detailWrap(
+    DCREF_ISP.GENERAL,
+    'National IT Industry Promotion Agency'
+  ),
+  '119.42': DCREF_ISP.INET,
+  '119.56': detailWrap(DCREF_ISP.GENERAL, 'HCN'),
+  '119.63': DCREF_ISP.LG_HELLO,
+  '119.64': DCREF_ISP.LG,
+  '119.65': DCREF_ISP.LG,
+  '119.66': DCREF_ISP.LG,
+  '119.67': DCREF_ISP.LG,
+  '119.68': DCREF_ISP.LG,
+  '119.69': DCREF_ISP.LG,
+  '119.70': DCREF_ISP.LG,
+  '119.71': DCREF_ISP.LG,
+  '119.75': detailWrap(DCREF_ISP.GENERAL, '티브로드, LG 헬로비전'),
+  '119.77': detailWrap(DCREF_ISP.GENERAL, '광주방송'),
+  '119.82': DCREF_ISP.TBROAD,
+  '119.148': detailWrap(DCREF_ISP.GENERAL, '티브로드, LG 헬로비전'),
+  '119.149': DCREF_ISP.LG_HELLO,
+  '119.192': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, KTBnetwork Co., Ltd., 국민은행, 나이스평가정보'
+  ),
+  '119.193': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '119.194': DCREF_ISP.KT,
+  '119.195': detailWrap(DCREF_ISP.GENERAL, 'KT, 부산은행'),
+  '119.196': DCREF_ISP.KT,
+  '119.197': detailWrap(DCREF_ISP.GENERAL, 'KT, AS23591, KONAI'),
+  '119.198': DCREF_ISP.KT,
+  '119.199': DCREF_ISP.KT,
+  '119.200': DCREF_ISP.KT,
+  '119.201': DCREF_ISP.KT,
+  '119.202': detailWrap(DCREF_ISP.GENERAL, 'KT, 포스코ICT'),
+  '119.203': DCREF_ISP.KT,
+  '119.204': DCREF_ISP.KT,
+  '119.205': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온, GS네오텍'),
+  '119.206': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '119.207': DCREF_ISP.KT,
+  '119.208': DCREF_ISP.KT,
+  '119.209': DCREF_ISP.KT,
+  '119.210': DCREF_ISP.KT,
+  '119.211': DCREF_ISP.KT,
+  '119.212': DCREF_ISP.KT,
+  '119.213': DCREF_ISP.KT,
+  '119.214': DCREF_ISP.KT,
+  '119.215': DCREF_ISP.KT,
+  '119.216': DCREF_ISP.KT,
+  '119.217': DCREF_ISP.KT,
+  '119.218': DCREF_ISP.KT,
+  '119.219': DCREF_ISP.KT,
+  '119.220': DCREF_ISP.KT,
+  '119.221': DCREF_ISP.KT,
+  '119.222': DCREF_ISP.KT,
+  '119.223': DCREF_ISP.KT,
+  '119.235': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '120.29': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '120.50': detailWrap(
+    DCREF_ISP.GENERAL,
+    'HCN, CCS-AS-KR CCS, SK communications'
+  ),
+  '120.73': detailWrap(DCREF_ISP.GENERAL, 'KUMHO'),
+  '120.136': DCREF_ISP.LG_HELLO,
+  '120.142': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '120.143': DCREF_ISP.TBROAD,
+  '121.0': detailWrap(DCREF_ISP.GENERAL, '닷네임코리아, 퍼플스톤즈'),
+  '121.1': detailWrap(DCREF_ISP.GENERAL, '서경방송'),
+  '121.50': detailWrap(DCREF_ISP.GENERAL, 'LG CNS, KINX, 티브로드'),
+  '121.53': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, DREAMLINE, Kakao, 드림마크원, 율촌'
+  ),
+  '121.54': DCREF_ISP.LG_HELLO,
+  '121.55': detailWrap(DCREF_ISP.GENERAL, '한국케이블TV푸른방송'),
+  '121.64': DCREF_ISP.LG,
+  '121.65': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, MMAAC C, 경북대, 해외문화홍보원, 서경대, NH투자증권'
+  ),
+  '121.66': DCREF_ISP.LG,
+  '121.67': detailWrap(DCREF_ISP.GENERAL, 'LG, KT, 영산대, 농협정보시스템'),
+  '121.78': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KINX, 코리아센터, CDNetworks, 가비아, Riot Games, Inc., 이호스트 IDC'
+  ),
+  '121.88': DCREF_ISP.DLIVE,
+  '121.100': DCREF_ISP.DLIVE,
+  '121.101': detailWrap(DCREF_ISP.GENERAL, 'KT, DLIVE'),
+  '121.124': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 채드윅 국제학교, 한진정보통신'
+  ),
+  '121.125': DCREF_ISP.SKB_INT,
+  '121.126': detailWrap(DCREF_ISP.GENERAL, 'KT, KINX, HAIonNet'),
+  '121.127': DCREF_ISP.TBROAD,
+  '121.128': detailWrap(DCREF_ISP.GENERAL, 'KT, 조선일보, 서울교통공사'),
+  '121.129': detailWrap(DCREF_ISP.GENERAL, 'KT, 국민은행'),
+  '121.130': detailWrap(DCREF_ISP.GENERAL, 'KT, 한화정보서비스부서'),
+  '121.131': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 나이스정보통신, SCI평가정보, 연세의료원, 나이스평가정보, NH투자증권'
+  ),
+  '121.132': DCREF_ISP.KT,
+  '121.133': detailWrap(DCREF_ISP.GENERAL, 'KT, KISA, NICEPAYMENTS.CO, 교육청'),
+  '121.134': detailWrap(DCREF_ISP.GENERAL, 'KT, 한국농수산식품유통공사'),
+  '121.135': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한경대, PHIS, Oscar Enterprise'
+  ),
+  '121.136': detailWrap(DCREF_ISP.GENERAL, 'KT, 신한생명보험'),
+  '121.137': detailWrap(DCREF_ISP.GENERAL, 'KT, YABESK'),
+  '121.138': detailWrap(DCREF_ISP.GENERAL, 'KT, KSNET.Inc, KPETRO'),
+  '121.139': detailWrap(DCREF_ISP.GENERAL, 'KT, LG'),
+  '121.140': detailWrap(DCREF_ISP.GENERAL, 'KT, 신세계 I & C'),
+  '121.141': detailWrap(DCREF_ISP.GENERAL, 'KT, 국민은행'),
+  '121.142': DCREF_ISP.KT,
+  '121.143': detailWrap(DCREF_ISP.GENERAL, 'KT, 교보생명보험'),
+  '121.144': detailWrap(DCREF_ISP.GENERAL, 'KT, 동의대'),
+  '121.145': DCREF_ISP.KT,
+  '121.146': DCREF_ISP.KT,
+  '121.147': detailWrap(DCREF_ISP.GENERAL, 'KT, KISA'),
+  '121.148': DCREF_ISP.KT,
+  '121.149': DCREF_ISP.KT,
+  '121.150': DCREF_ISP.KT,
+  '121.151': DCREF_ISP.KT,
+  '121.152': DCREF_ISP.KT,
+  '121.153': DCREF_ISP.KT,
+  '121.154': DCREF_ISP.KT,
+  '121.155': DCREF_ISP.KT,
+  '121.156': detailWrap(DCREF_ISP.GENERAL, 'KT, 우리카드'),
+  '121.157': detailWrap(DCREF_ISP.GENERAL, 'KT, GORayNet, KCTC, 농협'),
+  '121.158': DCREF_ISP.KT,
+  '121.159': detailWrap(DCREF_ISP.GENERAL, 'KT, 우송대'),
+  '121.160': detailWrap(DCREF_ISP.GENERAL, 'KT, 교보생명보험, 서울교통공사'),
+  '121.161': DCREF_ISP.KT,
+  '121.162': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, 농협정보시스템, 나이스평가정보'
+  ),
+  '121.163': detailWrap(DCREF_ISP.GENERAL, 'KT, KB손해보험, 교육청'),
+  '121.164': detailWrap(DCREF_ISP.GENERAL, 'KT, 대진대'),
+  '121.165': DCREF_ISP.KT,
+  '121.166': DCREF_ISP.KT,
+  '121.167': DCREF_ISP.KT,
+  '121.168': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한화정보서비스부서, 두산정보통신'
+  ),
+  '121.169': DCREF_ISP.KT,
+  '121.170': detailWrap(DCREF_ISP.GENERAL, 'KT, 신세계 I & C, 이호스트 IDC'),
+  '121.171': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 신세계 I & C, 교보생명보험, 린나이'
+  ),
+  '121.172': detailWrap(DCREF_ISP.GENERAL, 'KT, HANATI'),
+  '121.173': DCREF_ISP.KT,
+  '121.174': DCREF_ISP.KT,
+  '121.175': detailWrap(DCREF_ISP.GENERAL, 'KT, 부산은행'),
+  '121.176': DCREF_ISP.KT,
+  '121.177': detailWrap(DCREF_ISP.GENERAL, 'KT, 포스텍'),
+  '121.178': DCREF_ISP.KT,
+  '121.179': DCREF_ISP.KT,
+  '121.180': DCREF_ISP.KT,
+  '121.181': detailWrap(DCREF_ISP.GENERAL, 'KT, 한국뇌연구원'),
+  '121.182': DCREF_ISP.KT,
+  '121.183': DCREF_ISP.KT,
+  '121.184': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, CNCITY energy CO.,LTD, 순천향대'
+  ),
+  '121.185': detailWrap(DCREF_ISP.GENERAL, 'KT, MEMC Korea'),
+  '121.186': detailWrap(DCREF_ISP.GENERAL, 'KT, 대동대'),
+  '121.187': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온, 강원대'),
+  '121.188': DCREF_ISP.KT,
+  '121.189': detailWrap(DCREF_ISP.GENERAL, 'KT, GS네오텍, CNUE'),
+  '121.190': detailWrap(DCREF_ISP.GENERAL, 'KT, LG, 한진정보통신, 교육청'),
+  '121.191': DCREF_ISP.KT,
+  '121.200': DCREF_ISP.TBROAD,
+  '121.253': detailWrap(DCREF_ISP.GENERAL, 'LG, 삼성SDS'),
+  '121.254': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, LG, GS네오텍, HANATI, 케이엘넷'
+  ),
+  '122.0': detailWrap(DCREF_ISP.GENERAL, 'KCN금강방송'),
+  '122.32': DCREF_ISP.LG,
+  '122.33': DCREF_ISP.LG,
+  '122.34': DCREF_ISP.LG,
+  '122.35': DCREF_ISP.LG,
+  '122.36': DCREF_ISP.LG,
+  '122.37': DCREF_ISP.LG,
+  '122.38': detailWrap(DCREF_ISP.GENERAL, 'LG, 교육청'),
+  '122.39': DCREF_ISP.LG,
+  '122.40': DCREF_ISP.LG,
+  '122.41': DCREF_ISP.LG,
+  '122.42': DCREF_ISP.LG,
+  '122.43': DCREF_ISP.LG,
+  '122.44': DCREF_ISP.LG,
+  '122.45': DCREF_ISP.LG,
+  '122.46': DCREF_ISP.LG,
+  '122.47': DCREF_ISP.LG,
+  '122.49': detailWrap(DCREF_ISP.GENERAL, 'KINX, 피라냐 시스템'),
+  '122.99': DCREF_ISP.DREAMMARK1,
+  '122.101': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '122.128': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, ABN-AS-KR ABN, CMB'),
+  '122.129': detailWrap(DCREF_ISP.GENERAL, 'CMB, GORayNet'),
+  '122.152': detailWrap(DCREF_ISP.GENERAL, 'NeoWiz'),
+  '122.153': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB, 교육청'),
+  '122.199': detailWrap(DCREF_ISP.GENERAL, 'HCN, NexG Co., LTD'),
+  '122.202': detailWrap(DCREF_ISP.GENERAL, 'HCN, KCTV 제주 방송'),
+  '122.203': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, 교육청'),
+  '122.252': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, CMB'),
+  '122.254': DCREF_ISP.TBROAD,
+  '123.32': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '123.98': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 강남 케이블TV'),
+  '123.99': DCREF_ISP.TBROAD,
+  '123.100': detailWrap(DCREF_ISP.GENERAL, '광주방송'),
+  '123.108': detailWrap(DCREF_ISP.GENERAL, '원광대, HCN'),
+  '123.109': DCREF_ISP.TBROAD,
+  '123.111': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 나이스평가정보, 해외문화홍보원, 현대백화점, 한진정보통신'
+  ),
+  '123.140': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KCTDI, 신세계 I & C, 조선일보, STARVANKOREA, 농협정보시스템'
+  ),
+  '123.141': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 한국부동산원, HALLAHOLDINGS, 국민은행'
+  ),
+  '123.142': DCREF_ISP.LG,
+  '123.143': DCREF_ISP.LG,
+  '123.199': DCREF_ISP.LG_HELLO,
+  '123.200': DCREF_ISP.LG_HELLO,
+  '123.212': DCREF_ISP.SKB_INT,
+  '123.213': DCREF_ISP.SKB_INT,
+  '123.214': detailWrap(DCREF_ISP.GENERAL, 'SKB, KOCCA, 네트콤'),
+  '123.215': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, Gyeonggi Technopark, 현대해상화재보험'
+  ),
+  '123.228': DCREF_ISP.SKT_INT,
+  '123.229': DCREF_ISP.SKT_INT,
+  '123.248': DCREF_ISP.LG_HELLO,
+  '123.254': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 티브로드'),
+  '123.255': detailWrap(DCREF_ISP.GENERAL, '-AP TOPNET. IP Transit AS'),
+  '124.0': detailWrap(DCREF_ISP.GENERAL, 'SKT, 교육청'),
+  '124.1': detailWrap(DCREF_ISP.GENERAL, 'SKT, 교육청'),
+  '124.2': detailWrap(DCREF_ISP.GENERAL, 'SKT, 교육청'),
+  '124.3': detailWrap(DCREF_ISP.GENERAL, 'SKT, 교육청'),
+  '124.5': DCREF_ISP.DLIVE,
+  '124.28': DCREF_ISP.TBROAD,
+  '124.46': detailWrap(DCREF_ISP.GENERAL, 'LG CNS, KCN금강방송'),
+  '124.48': DCREF_ISP.LG,
+  '124.49': DCREF_ISP.LG,
+  '124.50': DCREF_ISP.LG,
+  '124.51': DCREF_ISP.LG,
+  '124.52': DCREF_ISP.LG,
+  '124.53': DCREF_ISP.LG,
+  '124.54': DCREF_ISP.LG,
+  '124.55': DCREF_ISP.LG,
+  '124.56': DCREF_ISP.LG,
+  '124.57': DCREF_ISP.LG,
+  '124.58': DCREF_ISP.LG,
+  '124.59': DCREF_ISP.LG,
+  '124.60': DCREF_ISP.LG,
+  '124.61': DCREF_ISP.LG,
+  '124.62': DCREF_ISP.LG,
+  '124.63': DCREF_ISP.LG,
+  '124.66': detailWrap(DCREF_ISP.GENERAL, 'KT, SK Co., 베고니아 네트워크'),
+  '124.80': DCREF_ISP.TBROAD,
+  '124.111': detailWrap(DCREF_ISP.GENERAL, 'SKB, 하이투자증권'),
+  '124.136': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, LG 헬로비전, SKB, 군산금강방송, 진남케이블네트워크'
+  ),
+  '124.137': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, SKB, 현대홈쇼핑, The National Library of Korea, 한국예탁결제원, SK communications, jin san cable net company ltd'
+  ),
+  '124.138': detailWrap(DCREF_ISP.GENERAL, 'SKT, 교육청'),
+  '124.139': detailWrap(DCREF_ISP.GENERAL, 'SKT, SKB, 교육청'),
+  '124.146': DCREF_ISP.LG_HELLO,
+  '124.153': detailWrap(DCREF_ISP.GENERAL, '서경방송'),
+  '124.194': detailWrap(DCREF_ISP.GENERAL, 'LG, MMAAC C'),
+  '124.195': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '124.197': DCREF_ISP.TBROAD,
+  '124.198': DCREF_ISP.KT,
+  '124.199': DCREF_ISP.TBROAD,
+  '124.216': detailWrap(DCREF_ISP.GENERAL, '울산중앙방송'),
+  '124.217': DCREF_ISP.PURPLESTONES,
+  '124.243': detailWrap(DCREF_ISP.GENERAL, '롯데정보통신'),
+  '124.254': DCREF_ISP.TBROAD,
+  '125.7': detailWrap(DCREF_ISP.GENERAL, 'KT, LG, KCN금강방송'),
+  '125.31': DCREF_ISP.TBROAD,
+  '125.57': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, DREAMLINE, 드림마크원, flexnetworks, Truenetworks'
+  ),
+  '125.60': detailWrap(DCREF_ISP.GENERAL, '국가정보자원관리원, 롯데정보통신'),
+  '125.61': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, SKT, The National Library of Korea, 국가정보자원관리원'
+  ),
+  '125.62': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '125.128': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 연합뉴스, 국가정보자원관리원, 서울여대'
+  ),
+  '125.129': detailWrap(DCREF_ISP.GENERAL, 'KT, 우리은행, 한국저작권보호원'),
+  '125.130': detailWrap(DCREF_ISP.GENERAL, 'KT, 신한은행'),
+  '125.131': detailWrap(DCREF_ISP.GENERAL, 'KT, KOTRA, 교육청'),
+  '125.132': detailWrap(DCREF_ISP.GENERAL, '티브로드, KT, 분당서울대학교병원'),
+  '125.133': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, KORECO'),
+  '125.134': DCREF_ISP.KT,
+  '125.135': detailWrap(DCREF_ISP.GENERAL, 'KT, 현대중공업'),
+  '125.136': DCREF_ISP.KT,
+  '125.137': DCREF_ISP.KT,
+  '125.138': detailWrap(DCREF_ISP.GENERAL, 'KT, 남서울대'),
+  '125.139': DCREF_ISP.KT,
+  '125.140': DCREF_ISP.KT,
+  '125.141': detailWrap(DCREF_ISP.GENERAL, 'KT, 우리은행'),
+  '125.142': detailWrap(DCREF_ISP.GENERAL, 'KT, 현대카드'),
+  '125.143': detailWrap(DCREF_ISP.GENERAL, 'KT, 나이스평가정보'),
+  '125.144': DCREF_ISP.KT,
+  '125.145': DCREF_ISP.KT,
+  '125.146': DCREF_ISP.KT,
+  '125.147': DCREF_ISP.KT,
+  '125.148': DCREF_ISP.KT,
+  '125.149': DCREF_ISP.KT,
+  '125.150': DCREF_ISP.KT,
+  '125.151': DCREF_ISP.KT,
+  '125.152': DCREF_ISP.KT,
+  '125.153': DCREF_ISP.KT,
+  '125.154': DCREF_ISP.KT,
+  '125.155': DCREF_ISP.KT,
+  '125.156': DCREF_ISP.KT,
+  '125.157': DCREF_ISP.KT,
+  '125.158': DCREF_ISP.KT,
+  '125.159': DCREF_ISP.KT,
+  '125.176': DCREF_ISP.LG,
+  '125.177': DCREF_ISP.LG,
+  '125.178': DCREF_ISP.LG,
+  '125.179': DCREF_ISP.LG,
+  '125.180': DCREF_ISP.LG,
+  '125.181': DCREF_ISP.LG,
+  '125.182': DCREF_ISP.LG,
+  '125.183': DCREF_ISP.LG,
+  '125.184': DCREF_ISP.LG,
+  '125.185': DCREF_ISP.LG,
+  '125.186': DCREF_ISP.LG,
+  '125.187': DCREF_ISP.LG,
+  '125.188': DCREF_ISP.LG,
+  '125.189': DCREF_ISP.LG,
+  '125.190': DCREF_ISP.LG,
+  '125.191': DCREF_ISP.LG,
+  '125.208': detailWrap(DCREF_ISP.GENERAL, '티브로드, 한국케이블TV푸른방송'),
+  '125.209': detailWrap(DCREF_ISP.GENERAL, '티브로드, 네이버 비즈니스 플랫폼'),
+  '125.240': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, LG'),
+  '125.241': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB, 교육청'),
+  '125.242': DCREF_ISP.LG,
+  '125.243': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB, 교육청'),
+  '125.244': DCREF_ISP.LG_PUBNET,
+  '125.245': DCREF_ISP.LG_PUBNET,
+  '125.246': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, 교육청'),
+  '125.247': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, LG, 교육청'),
+  '125.248': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB, 교육청'),
+  '125.249': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB'),
+  '125.250': detailWrap(DCREF_ISP.GENERAL, 'LG, LGPUB, 교육청'),
+  '125.251': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, LG, 교육청'),
+  '125.252': detailWrap(DCREF_ISP.GENERAL, 'ABN-AS-KR ABN'),
+  '128.1': DCREF_ISP.KT,
+  '128.134': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 강원대, Seoul Housing Communities Corporation, 연세의료원, 안양대, DB Financial Investment Co.,Ltd., 한화정보서비스부서, KOSCOM, 신한금융투자, viaweb'
+  ),
+  '129.192': DCREF_ISP.KT,
+  '129.254': detailWrap(DCREF_ISP.GENERAL, 'KT, 한국전자통신연구원'),
+  '133.186': detailWrap(DCREF_ISP.GENERAL, 'NHN, TMON'),
+  '134.75': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 한국과학기술정보연구원, KISTI, 한국항공대, 한국항공우주연구원, 호서대, 한국원자력안전기술원, 선문대, 동의대'
+  ),
+  '137.68': detailWrap(DCREF_ISP.GENERAL, 'KAIST'),
+  '138.113': DCREF_ISP.CDNETWORKS,
+  '139.150': detailWrap(DCREF_ISP.GENERAL, 'KINX, LG, Kakao'),
+  '139.181': DCREF_ISP.KT,
+  '141.223': detailWrap(DCREF_ISP.GENERAL, 'KT, 포항공대'),
+  '143.248': detailWrap(DCREF_ISP.GENERAL, 'KAIST'),
+  '144.48': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA, KCTV 제주 방송'),
+  '147.6': DCREF_ISP.KT,
+  '147.43': detailWrap(DCREF_ISP.GENERAL, '한국원자력연구원'),
+  '147.46': detailWrap(DCREF_ISP.GENERAL, 'KT, 서울대'),
+  '147.47': detailWrap(DCREF_ISP.GENERAL, '서울대, 한국과학기술정보연구원'),
+  '150.107': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, Hostway IDC, 남인천방송'
+  ),
+  '150.150': detailWrap(DCREF_ISP.GENERAL, 'LG CNS'),
+  '150.183': detailWrap(DCREF_ISP.GENERAL, '한국과학기술정보연구원'),
+  '150.197': detailWrap(DCREF_ISP.GENERAL, '한국항공우주연구원'),
+  '150.242': detailWrap(DCREF_ISP.GENERAL, 'danal.co, CMB'),
+  '152.99': detailWrap(DCREF_ISP.GENERAL, '국가정보자원관리원'),
+  '152.149': detailWrap(DCREF_ISP.GENERAL, 'SKB, DSME, 대우정보시스템'),
+  '154.10': detailWrap(DCREF_ISP.GENERAL, '제일제당'),
+  '154.18': DCREF_ISP.KINX,
+  '155.230': detailWrap(DCREF_ISP.GENERAL, '경북대'),
+  '156.147': detailWrap(DCREF_ISP.GENERAL, 'LG CNS'),
+  '156.234': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '156.255': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '157.119': detailWrap(DCREF_ISP.GENERAL, 'KINX, NHN KCP Corp.'),
+  '157.185': DCREF_ISP.CDNETWORKS,
+  '157.197': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '158.44': DCREF_ISP.SKB_INT,
+  '160.202': detailWrap(DCREF_ISP.GENERAL, 'KT, 이호스트 IDC'),
+  '161.122': detailWrap(DCREF_ISP.GENERAL, 'KIST'),
+  '161.195': DCREF_ISP.KT,
+  '163.53': DCREF_ISP.EDUCATION,
+  '163.152': detailWrap(DCREF_ISP.GENERAL, 'LG, 고려대, KUMC'),
+  '163.171': DCREF_ISP.CDNETWORKS,
+  '163.180': detailWrap(DCREF_ISP.GENERAL, '경희대'),
+  '163.213': DCREF_ISP.KT,
+  '163.222': DCREF_ISP.KT,
+  '163.229': DCREF_ISP.KT,
+  '163.239': detailWrap(DCREF_ISP.GENERAL, 'SKB, LG, 서강대'),
+  '163.255': DCREF_ISP.KT,
+  '164.124': DCREF_ISP.LG,
+  '164.125': detailWrap(DCREF_ISP.GENERAL, '부산대'),
+  '165.132': detailWrap(DCREF_ISP.GENERAL, 'LG, KT, 연세대'),
+  '165.133': detailWrap(DCREF_ISP.GENERAL, 'KT, 대우정보시스템'),
+  '165.141': detailWrap(DCREF_ISP.GENERAL, 'KUMHO TIRE, KUMHO'),
+  '165.186': detailWrap(DCREF_ISP.GENERAL, 'LG CNS'),
+  '165.194': detailWrap(DCREF_ISP.GENERAL, 'SKT, 중앙대'),
+  '165.213': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '165.229': detailWrap(DCREF_ISP.GENERAL, '영남대'),
+  '165.243': detailWrap(DCREF_ISP.GENERAL, 'LG CNS, LG'),
+  '165.244': detailWrap(DCREF_ISP.GENERAL, 'LG CNS'),
+  '165.246': detailWrap(DCREF_ISP.GENERAL, '인하대'),
+  '166.104': detailWrap(DCREF_ISP.GENERAL, '안양대'),
+  '166.125': detailWrap(DCREF_ISP.GENERAL, 'SK하이닉스'),
+  '168.78': detailWrap(DCREF_ISP.GENERAL, 'KEPCO'),
+  '168.115': detailWrap(DCREF_ISP.GENERAL, 'KT, 동아대'),
+  '168.126': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Oscar Enterprise, 한진정보통신, 국가정보자원관리원, 부천대, DB그룹'
+  ),
+  '168.131': detailWrap(DCREF_ISP.GENERAL, '전남대'),
+  '168.154': detailWrap(DCREF_ISP.GENERAL, 'SK Co., 미래에셋생명'),
+  '168.188': detailWrap(DCREF_ISP.GENERAL, '충남대'),
+  '168.219': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '168.248': DCREF_ISP.KT,
+  '169.140': detailWrap(DCREF_ISP.GENERAL, '포스코ICT'),
+  '169.208': DCREF_ISP.KT,
+  '169.209': DCREF_ISP.KT,
+  '169.210': DCREF_ISP.KT,
+  '169.211': DCREF_ISP.KT,
+  '169.212': DCREF_ISP.KT,
+  '169.213': DCREF_ISP.KT,
+  '169.214': DCREF_ISP.KT,
+  '169.215': DCREF_ISP.KT,
+  '169.216': DCREF_ISP.KT,
+  '169.217': DCREF_ISP.KT,
+  '169.218': DCREF_ISP.KT,
+  '169.219': DCREF_ISP.KT,
+  '169.220': DCREF_ISP.KT,
+  '169.221': DCREF_ISP.KT,
+  '169.222': DCREF_ISP.KT,
+  '169.223': DCREF_ISP.KT,
+  '172.94': DCREF_ISP.KT,
+  '172.111': DCREF_ISP.KT,
+  '175.28': DCREF_ISP.DLIVE,
+  '175.45': detailWrap(DCREF_ISP.GENERAL, 'KT, KSNET.Inc'),
+  '175.106': DCREF_ISP.KT,
+  '175.107': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA'),
+  '175.111': DCREF_ISP.FLEXNETWORKS,
+  '175.112': DCREF_ISP.SKB_INT,
+  '175.113': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KTE, EXPORT-IMPORT BANK OF KOREA'
+  ),
+  '175.114': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 우리카드, 대통령비서실, 울산대'
+  ),
+  '175.115': DCREF_ISP.SKB_INT,
+  '175.116': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 건강보험심사평가원, 한솔고등학교'
+  ),
+  '175.117': DCREF_ISP.SKB_INT,
+  '175.118': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, National Medical Center, 교육청'
+  ),
+  '175.119': detailWrap(DCREF_ISP.GENERAL, 'SKB, 가톨릭대'),
+  '175.120': detailWrap(DCREF_ISP.GENERAL, 'SKB, 신한금융투자, NICE TCM'),
+  '175.121': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KOREA CREDIT GUARANTEE FUND, 교육청'
+  ),
+  '175.122': detailWrap(DCREF_ISP.GENERAL, 'SKB, KTO-AS-KR KTO'),
+  '175.123': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 더존 비즈온, KORAIL, 우리카드'
+  ),
+  '175.124': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, Standard Chartered, 하나은행, IBK투자증권, 국민은행, Korea Insurance Development Instute, GS네오텍'
+  ),
+  '175.125': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 브로드밴드 IDC, 해외문화홍보원'
+  ),
+  '175.126': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 티브로드, 목원대, 브로드밴드 IDC'
+  ),
+  '175.127': DCREF_ISP.SKB_INT,
+  '175.158': DCREF_ISP.NBP,
+  '175.176': DCREF_ISP.FLEXNETWORKS,
+  '175.192': detailWrap(DCREF_ISP.GENERAL, 'KT, 조선일보'),
+  '175.193': detailWrap(DCREF_ISP.GENERAL, 'KT, 케이프투자증권'),
+  '175.194': detailWrap(DCREF_ISP.GENERAL, 'KT, 신한은행'),
+  '175.195': detailWrap(DCREF_ISP.GENERAL, 'KT, 한화정보서비스부서'),
+  '175.196': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Oscar Enterprise, KISA, YABESK'
+  ),
+  '175.197': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, viaweb, NHN KCP Corp., flexnetworks, 한진정보통신'
+  ),
+  '175.198': DCREF_ISP.KT,
+  '175.199': DCREF_ISP.KT,
+  '175.200': detailWrap(DCREF_ISP.GENERAL, 'KT, 현대중공업'),
+  '175.201': DCREF_ISP.KT,
+  '175.202': detailWrap(DCREF_ISP.GENERAL, 'KT, 포스코ICT'),
+  '175.203': DCREF_ISP.KT,
+  '175.204': detailWrap(DCREF_ISP.GENERAL, 'KT, 청운대, 순천향대'),
+  '175.205': DCREF_ISP.KT,
+  '175.206': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온'),
+  '175.207': detailWrap(DCREF_ISP.GENERAL, 'KT, netmarble, HALLAHOLDINGS'),
+  '175.208': DCREF_ISP.KT,
+  '175.209': detailWrap(DCREF_ISP.GENERAL, 'KT, Oscar Enterprise'),
+  '175.210': DCREF_ISP.KT,
+  '175.211': detailWrap(DCREF_ISP.GENERAL, 'KT, LG CNS, MMAAC C, 교육청'),
+  '175.212': DCREF_ISP.KT,
+  '175.213': detailWrap(DCREF_ISP.GENERAL, 'KT, 순천향대'),
+  '175.214': detailWrap(DCREF_ISP.GENERAL, 'KT, 에셋플러스자산운용, 부경대'),
+  '175.215': DCREF_ISP.KT,
+  '175.216': DCREF_ISP.KT,
+  '175.217': DCREF_ISP.KT,
+  '175.218': DCREF_ISP.KT,
+  '175.219': DCREF_ISP.KT,
+  '175.220': DCREF_ISP.KT,
+  '175.221': DCREF_ISP.KT,
+  '175.222': DCREF_ISP.KT,
+  '175.223': DCREF_ISP.KT,
+  '175.224': DCREF_ISP.KT,
+  '175.225': DCREF_ISP.KT,
+  '175.226': DCREF_ISP.KT,
+  '175.227': DCREF_ISP.KT,
+  '175.228': DCREF_ISP.KT,
+  '175.229': DCREF_ISP.KT,
+  '175.230': DCREF_ISP.KT,
+  '175.231': DCREF_ISP.KT,
+  '175.232': DCREF_ISP.KT,
+  '175.233': DCREF_ISP.KT,
+  '175.234': DCREF_ISP.KT,
+  '175.235': DCREF_ISP.KT,
+  '175.236': DCREF_ISP.KT,
+  '175.237': DCREF_ISP.KT,
+  '175.238': DCREF_ISP.KT,
+  '175.239': DCREF_ISP.KT,
+  '175.240': DCREF_ISP.KT,
+  '175.241': DCREF_ISP.KT,
+  '175.242': DCREF_ISP.KT,
+  '175.243': DCREF_ISP.KT,
+  '175.244': DCREF_ISP.KT,
+  '175.245': DCREF_ISP.KT,
+  '175.246': DCREF_ISP.KT,
+  '175.247': DCREF_ISP.KT,
+  '175.248': DCREF_ISP.KT,
+  '175.249': DCREF_ISP.KT,
+  '175.250': DCREF_ISP.KT,
+  '175.251': DCREF_ISP.KT,
+  '175.252': DCREF_ISP.KT,
+  '175.253': DCREF_ISP.KT,
+  '175.254': DCREF_ISP.KT,
+  '175.255': DCREF_ISP.KT,
+  '176.96': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '180.64': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 한솔고등학교, 교육정보연구원, 서울교통공사'
+  ),
+  '180.65': detailWrap(DCREF_ISP.GENERAL, 'SKB, 연세의료원'),
+  '180.66': DCREF_ISP.SKB_INT,
+  '180.67': detailWrap(DCREF_ISP.GENERAL, 'SKB, 연세의료원'),
+  '180.68': DCREF_ISP.SKB_INT,
+  '180.69': DCREF_ISP.SKB_INT,
+  '180.70': DCREF_ISP.SKB_INT,
+  '180.71': DCREF_ISP.SKB_INT,
+  '180.80': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, LG'),
+  '180.81': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, 교육청'),
+  '180.82': detailWrap(DCREF_ISP.GENERAL, 'LGPUB, 교육청'),
+  '180.83': DCREF_ISP.LG,
+  '180.92': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, KT'),
+  '180.131': detailWrap(DCREF_ISP.GENERAL, 'KT, KINX, 가비아'),
+  '180.132': DCREF_ISP.SKT_INT,
+  '180.133': DCREF_ISP.SKT_INT,
+  '180.134': DCREF_ISP.SKT_INT,
+  '180.135': DCREF_ISP.SKT_INT,
+  '180.148': detailWrap(DCREF_ISP.GENERAL, '한국도로공사'),
+  '180.150': detailWrap(DCREF_ISP.GENERAL, '티브로드, KT, LG, 이호스트 IDC'),
+  '180.182': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 다우기술'),
+  '180.189': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, 퍼플스톤즈'),
+  '180.210': detailWrap(DCREF_ISP.GENERAL, 'LG U+, KT, 퍼플스톤즈'),
+  '180.211': detailWrap(DCREF_ISP.GENERAL, '울산중앙방송'),
+  '180.222': DCREF_ISP.KISA,
+  '180.224': DCREF_ISP.LG,
+  '180.225': DCREF_ISP.LG,
+  '180.226': DCREF_ISP.LG,
+  '180.227': DCREF_ISP.LG,
+  '180.228': DCREF_ISP.LG,
+  '180.229': DCREF_ISP.LG,
+  '180.230': DCREF_ISP.LG,
+  '180.231': DCREF_ISP.LG,
+  '180.233': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '182.31': detailWrap(DCREF_ISP.GENERAL, '서경방송'),
+  '182.50': detailWrap(DCREF_ISP.GENERAL, 'BSITC, SK Co.'),
+  '182.161': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KINX, 코리아센터, 울산중앙방송'
+  ),
+  '182.162': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 네이버 비즈니스 플랫폼, GS네오텍, NeoWiz'
+  ),
+  '182.163': detailWrap(DCREF_ISP.GENERAL, '피라냐 시스템'),
+  '182.172': detailWrap(DCREF_ISP.GENERAL, 'DLIVE, HCN'),
+  '182.173': detailWrap(DCREF_ISP.GENERAL, 'KOREA DATA, 신세계 I & C, 효성ITX'),
+  '182.192': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.193': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.194': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.195': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.196': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.197': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.198': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.199': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '182.208': DCREF_ISP.LG,
+  '182.209': DCREF_ISP.LG,
+  '182.210': DCREF_ISP.LG,
+  '182.211': DCREF_ISP.LG,
+  '182.212': DCREF_ISP.LG,
+  '182.213': DCREF_ISP.LG,
+  '182.214': DCREF_ISP.LG,
+  '182.215': DCREF_ISP.LG,
+  '182.216': DCREF_ISP.LG,
+  '182.217': DCREF_ISP.LG,
+  '182.218': DCREF_ISP.LG,
+  '182.219': DCREF_ISP.LG,
+  '182.220': DCREF_ISP.LG,
+  '182.221': DCREF_ISP.LG,
+  '182.222': DCREF_ISP.LG,
+  '182.223': DCREF_ISP.LG,
+  '182.224': DCREF_ISP.LG,
+  '182.225': DCREF_ISP.LG,
+  '182.226': DCREF_ISP.LG,
+  '182.227': DCREF_ISP.LG,
+  '182.228': DCREF_ISP.LG,
+  '182.229': DCREF_ISP.LG,
+  '182.230': DCREF_ISP.LG,
+  '182.231': DCREF_ISP.LG,
+  '182.237': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, flexnetworks, 유엘네트웍스, KCN금강방송'
+  ),
+  '182.252': detailWrap(DCREF_ISP.GENERAL, 'LG, 퍼플스톤즈, DREAMLINE'),
+  '182.255': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA'),
+  '183.78': detailWrap(DCREF_ISP.GENERAL, 'KT, LG 헬로비전'),
+  '183.86': detailWrap(DCREF_ISP.GENERAL, 'KT, KTE, 가비아'),
+  '183.90': DCREF_ISP.LG_HELLO,
+  '183.91': detailWrap(DCREF_ISP.GENERAL, '남인천방송'),
+  '183.96': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 안양대, 우리은행, 나이스평가정보'
+  ),
+  '183.97': DCREF_ISP.KT,
+  '183.98': detailWrap(DCREF_ISP.GENERAL, 'KT, KOCES, NH투자증권'),
+  '183.99': detailWrap(DCREF_ISP.GENERAL, 'KT, 티브로드'),
+  '183.100': DCREF_ISP.KT,
+  '183.101': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한국교통안전공단, flexnetworks'
+  ),
+  '183.102': detailWrap(DCREF_ISP.GENERAL, 'KT, INITECH'),
+  '183.103': DCREF_ISP.KT,
+  '183.104': DCREF_ISP.KT,
+  '183.105': DCREF_ISP.KT,
+  '183.106': DCREF_ISP.KT,
+  '183.107': DCREF_ISP.KT,
+  '183.108': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온'),
+  '183.109': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, HANA TI, INICIS Co., Ltd, 동화기업'
+  ),
+  '183.110': detailWrap(DCREF_ISP.GENERAL, 'KT, netmarble, GS네오텍'),
+  '183.111': detailWrap(DCREF_ISP.GENERAL, 'KT, GS네오텍'),
+  '183.112': DCREF_ISP.KT,
+  '183.113': DCREF_ISP.KT,
+  '183.114': DCREF_ISP.KT,
+  '183.115': DCREF_ISP.KT,
+  '183.116': DCREF_ISP.KT,
+  '183.117': DCREF_ISP.KT,
+  '183.118': DCREF_ISP.KT,
+  '183.119': DCREF_ISP.KT,
+  '183.120': DCREF_ISP.KT,
+  '183.121': DCREF_ISP.KT,
+  '183.122': DCREF_ISP.KT,
+  '183.123': DCREF_ISP.KT,
+  '183.124': DCREF_ISP.KT,
+  '183.125': DCREF_ISP.KT,
+  '183.126': DCREF_ISP.KT,
+  '183.127': DCREF_ISP.KT,
+  '184.85': DCREF_ISP.LG,
+  '185.192': DCREF_ISP.EHOSTICT,
+  '185.227': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
+  '185.249': DCREF_ISP.LG,
+  '192.0': DCREF_ISP.KINX,
+  '192.5': DCREF_ISP.KISA,
+  '192.104': detailWrap(DCREF_ISP.GENERAL, '한국원자력연구원'),
+  '192.132': DCREF_ISP.KISA,
+  '192.157': detailWrap(DCREF_ISP.GENERAL, 'AS138380'),
+  '192.193': detailWrap(DCREF_ISP.GENERAL, 'Citibank Korea'),
+  '192.203': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 제주대, 전북대, KISA, 강원대, 건국대'
+  ),
+  '192.245': detailWrap(DCREF_ISP.GENERAL, 'SKB, LG, KT, 국가정보자원관리원'),
+  '192.249': detailWrap(DCREF_ISP.GENERAL, 'KAIST'),
+  '194.133': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '196.17': DCREF_ISP.EHOSTICT,
+  '198.208': detailWrap(
+    DCREF_ISP.GENERAL,
+    'GM-AP-GMTHAI General Motors Thailand, Rayong'
+  ),
+  '202.3': DCREF_ISP.SHINSEGAE_IC,
+  '202.6': DCREF_ISP.LG,
+  '202.8': DCREF_ISP.SHINSEGAE_IC,
+  '202.14': detailWrap(DCREF_ISP.GENERAL, 'KT, 서울교통공사'),
+  '202.20': detailWrap(
+    DCREF_ISP.GENERAL,
+    'cyberlogitec, KISA, 목포대, 동국여대, 삼성SDS'
+  ),
+  '202.21': detailWrap(DCREF_ISP.GENERAL, 'LG CNS'),
+  '202.30': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, LG, JUNGBU, 건국대, 한국과학기술정보연구원, 순천대, KISA, 한밭대, 강릉원주대, 목포해양대, 한남대, 군산대, 한국정보화진흥원, 신비넷IDC, KHNP, 롯데정보통신'
+  ),
+  '202.31': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KINX, KT, 금오공대, 군산대, 광주교육대, SBS, 한국과학기술정보연구원, Hostway IDC, INAMES, KISA, 전주대'
+  ),
+  '202.41': detailWrap(
+    DCREF_ISP.GENERAL,
+    'ISC-SEL1 Internet Systems Consortium, Inc.'
+  ),
+  '202.43': DCREF_ISP.LG,
+  '202.59': DCREF_ISP.LIMELIGHT,
+  '202.68': DCREF_ISP.KINX,
+  '202.86': DCREF_ISP.KT,
+  '202.89': detailWrap(DCREF_ISP.GENERAL, 'HANSOL GYOYOOK'),
+  '202.90': DCREF_ISP.GABIA,
+  '202.124': detailWrap(DCREF_ISP.GENERAL, '베고니아 네트워크'),
+  '202.126': DCREF_ISP.KT,
+  '202.128': detailWrap(
+    DCREF_ISP.GENERAL,
+    'Construction Guarantee Cooperative'
+  ),
+  '202.133': DCREF_ISP.KT,
+  '202.136': detailWrap(DCREF_ISP.GENERAL, 'INET, 강남 케이블TV'),
+  '202.150': detailWrap(DCREF_ISP.GENERAL, 'HCN'),
+  '202.158': DCREF_ISP.DREAMMARK1,
+  '202.163': detailWrap(DCREF_ISP.GENERAL, 'VTOPIA'),
+  '202.165': detailWrap(DCREF_ISP.GENERAL, '동서대'),
+  '202.167': detailWrap(DCREF_ISP.GENERAL, 'INET, 더존 비즈온'),
+  '202.168': DCREF_ISP.KT,
+  '202.171': DCREF_ISP.EDUCATION,
+  '202.174': detailWrap(DCREF_ISP.GENERAL, '전주대'),
+  '203.17': DCREF_ISP.KCT,
+  '203.77': detailWrap(DCREF_ISP.GENERAL, '엑스퍼다이트'),
+  '203.81': detailWrap(DCREF_ISP.GENERAL, 'KFTC, ABN-AS-KR ABN'),
+  '203.82': detailWrap(DCREF_ISP.GENERAL, 'LG U+, LG, 하이플러스카드, KCT'),
+  '203.83': DCREF_ISP.KISA,
+  '203.84': DCREF_ISP.KINX,
+  '203.90': DCREF_ISP.TBROAD,
+  '203.100': DCREF_ISP.LG_HELLO,
+  '203.104': DCREF_ISP.NBP,
+  '203.109': DCREF_ISP.KT,
+  '203.110': detailWrap(DCREF_ISP.GENERAL, 'Yahoo!'),
+  '203.123': DCREF_ISP.TBROAD,
+  '203.126': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '203.128': detailWrap(
+    DCREF_ISP.GENERAL,
+    '남인천방송, ABN-AS-KR ABN, 서울교통공사'
+  ),
+  '203.129': DCREF_ISP.KCT,
+  '203.130': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, CDNetworks, 강남 케이블TV'
+  ),
+  '203.132': DCREF_ISP.LG_HELLO,
+  '203.133': detailWrap(DCREF_ISP.GENERAL, 'Kakao'),
+  '203.142': detailWrap(DCREF_ISP.GENERAL, 'ABN-AS-KR ABN, 서울교통공사'),
+  '203.149': DCREF_ISP.TBROAD,
+  '203.152': DCREF_ISP.DLIVE,
+  '203.153': DCREF_ISP.LG,
+  '203.166': detailWrap(DCREF_ISP.GENERAL, 'CMB'),
+  '203.169': detailWrap(DCREF_ISP.GENERAL, '포스텍'),
+  '203.170': detailWrap(DCREF_ISP.GENERAL, 'HCN'),
+  '203.171': DCREF_ISP.LG_HELLO,
+  '203.173': DCREF_ISP.FLEXNETWORKS,
+  '203.175': detailWrap(DCREF_ISP.GENERAL, '티브로드, KFTC'),
+  '203.190': detailWrap(DCREF_ISP.GENERAL, '금융보안원, 교육청'),
+  '203.207': detailWrap(DCREF_ISP.GENERAL, '대구대'),
+  '203.210': detailWrap(DCREF_ISP.GENERAL, '티브로드, 닷네임코리아'),
+  '203.212': detailWrap(DCREF_ISP.GENERAL, '남인천방송'),
+  '203.215': detailWrap(DCREF_ISP.GENERAL, 'NeoWiz'),
+  '203.216': DCREF_ISP.DREAMMARK1,
+  '203.217': detailWrap(DCREF_ISP.GENERAL, '다우기술, Kakao'),
+  '203.223': detailWrap(DCREF_ISP.GENERAL, 'LG 헬로비전, KT'),
+  '203.224': detailWrap(DCREF_ISP.GENERAL, '쌍용'),
+  '203.225': DCREF_ISP.KT,
+  '203.226': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, DAELIM DAELIM Corporation, 두산중공업, 두산정보통신, SK communications'
+  ),
+  '203.227': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, 세종텔레콤, KEPCO, HMC SECURITIES CO., LTD., 진남케이블네트워크, HCN, 부산케이블, Industrial Bank of Korea'
+  ),
+  '203.228': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 신비넷IDC, HCN, 롯데정보통신, 수협은행, 네트콤, 티머니, JTNet, KR Futures Inc'
+  ),
+  '203.229': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, KT, SNUH, flexnetworks, 가톨릭대, 유한대, 그리스도대, 케이엘넷'
+  ),
+  '203.230': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, LG, 선문대, 한국과학기술정보연구원, 한국원자력안전기술원, K-JIST, 한밭대, 협성대, 단국대, 목원대, 교육청, 삼명대, 연성대, 계명대, 우송대, 한국해양대'
+  ),
+  '203.231': detailWrap(
+    DCREF_ISP.GENERAL,
+    '세종텔레콤, Korea VAn Service Co.LTD, 한국농어촌공사, AS23593, 한화정보서비스부서, NHN KCP Corp., 신비넷IDC, 포스코ICT, KEPCO, 우리은행, INET'
+  ),
+  '203.232': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, 안양대, 충청대, DST, 경민대, 한국방송통신대, 전북대, 부산가톨릭대, 한국외국어대, 부산대, 목포해양대'
+  ),
+  '203.233': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 국민은행, OCI정보통신, ABL Life Insurance Co., Ltd., 국가정보자원관리원, 한국정보통신, 한화정보서비스부서, 교보생명보험, KFTC, 한국과학기술정보연구원, 한국무역정보통신'
+  ),
+  '203.234': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 우송대, 목포대, 서울대, 유한대, 군산대, 한서대, 충청대, 한국해양대, 교육정보연구원, CNUE, 하나은행, 연합뉴스, 신한금융투자, HANNET Co.,Ltd., namyang, NICE, 나이스평가정보'
+  ),
+  '203.235': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 한국거래소, 세종텔레콤, KOSCOM, 티머니, BSITC, 하나은행, KONAI, Industrial Bank of Korea, 진남케이블네트워크, INET, SK Co.'
+  ),
+  '203.236': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, KT, LG 헬로비전, KINX, Oscar Enterprise, KCTC, 한진정보통신, 신한금융투자, 케이엘넷, 세종텔레콤, 부산케이블'
+  ),
+  '203.237': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 한국수자원공사, K-JIST, 대진대, 조선대, 대전대, 삼명대, 금강대, 영남이공대, 제주대, 한국대학교육협의회, 청주교육대'
+  ),
+  '203.238': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KINX, 세종텔레콤, NHN KCP Corp., INICIS Co., Ltd, FDIK, 부산케이블, 매일경제신문, BSITC, Nowcom, 국가정보자원관리원, 코리아센터, Kakao, 포스코ICT, MBC'
+  ),
+  '203.239': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG 헬로비전, 세종텔레콤, KSCFC, 티머니, 교보증권, 부산은행, VP01-AS-KR VP, 엘림넷, 현대오토에버, 현대엔지니어링'
+  ),
+  '203.240': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 대법원, HI INVESTMENT FUTURES CORPORATION, 신비넷IDC, CANONKOREA BUSINESS SOLUTIONS, 롯데정보통신'
+  ),
+  '203.241': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 포스코ICT, 한남대, 한국과학기술정보연구원, 국가정보자원관리원, 농촌진흥청, Hyundai Hicar Claims Service, 호서대, 삼성SDS, 동서대, 동의대, 대구대, 인제대'
+  ),
+  '203.242': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 국가정보자원관리원, Hyundai Movex, SK Co., 한국무역정보통신'
+  ),
+  '203.243': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, LG 헬로비전, 국가정보자원관리원, KoROAD, 부산케이블, 세종텔레콤, KEPCO'
+  ),
+  '203.244': detailWrap(DCREF_ISP.GENERAL, '쌍용, 포스코ICT, 삼성SDS, 대구대'),
+  '203.245': detailWrap(DCREF_ISP.GENERAL, 'KT, LG, GS네오텍, 포스코ICT'),
+  '203.246': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, LG, KINX, 서라벌대, 인덕대, 순천대, 국민대, 한국연구재단, 진주교육대, SM LINE CORPORATION, 코리아센터, Kakao, KOSCOM, GYEONGGIDO JOB FOUNDATION, 포스코ICT, 삼성SDS'
+  ),
+  '203.247': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG CNS, LG, KT, 계명대, 한남대, 한국과학기술정보연구원, 기상청, 부경대, 선문대, 원자력의학원, 한국뇌연구원, 배재대'
+  ),
+  '203.248': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 세종텔레콤, 부산케이블, Hostway IDC, KEPCO, 우리은행, 제일제당, MEMC Korea, 한국금융투자협회, 국가정보자원관리원, 국민은행, ottogi.co.kr'
+  ),
+  '203.249': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, LG, 경기대, 한국방송통신대, 전주비전대, 경민대, 안양대, 원광대, 홍익대, 서울시립대, 전주교육대, 목원대, 서경대, 중앙일보, NDS Coporation'
+  ),
+  '203.250': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한국과학기술정보연구원, 대구가톨릭대, 울산대, Korea Institute of Industrial Technology, 부경대, 배재대, 세종대, 한국원자력안전기술원, 한국자동차연구원'
+  ),
+  '203.251': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한진정보통신, 광주은행, DGB데이터시스템, 풍산, 롯데정보통신, 신비넷IDC, HCN'
+  ),
+  '203.252': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LGPUB, SKB, KT, 한국연구재단, 성균관대, 강원대, 건국대, 덕성여대, 청주대'
+  ),
+  '203.253': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, LG, 한국외국어대, 한국과학기술정보연구원, JUNGBU, 한국항공대, 제주대, Dongnam Institute of Radiologycal Sciences, 한국연구재단, 한국천문연구원, 단국대'
+  ),
+  '203.254': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, 대통령비서실, 한국과학기술정보연구원, KOCCA, 한국정보화진흥원, 국가정보자원관리원, Korea Post Information Center, 전북대, KRISS, 경남정보대, 삼성SDS, AS138380'
+  ),
+  '203.255': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, KT, SKB, LG, 경상대, 충북대, 조선일보, 세종텔레콤, 한국해양대, 강릉원주대, 한국기술교육대, 연암공대, 교육정보연구원, 한국농촌경제연구원, 쌍용, 한국정보화진흥원'
+  ),
+  '204.114': DCREF_ISP.KT,
+  '206.67': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '206.219': detailWrap(DCREF_ISP.GENERAL, 'SK Global co., Ltd'),
+  '207.140': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '208.248': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
+  '210.0': DCREF_ISP.LG_HELLO,
+  '210.2': DCREF_ISP.TBROAD,
+  '210.4': detailWrap(DCREF_ISP.GENERAL, 'flexnetworks, 퍼플스톤즈'),
+  '210.16': DCREF_ISP.PURPLESTONES,
+  '210.57': detailWrap(DCREF_ISP.GENERAL, 'HCN'),
+  '210.80': detailWrap(DCREF_ISP.GENERAL, '다우기술'),
+  '210.87': DCREF_ISP.DOTNAME,
+  '210.89': DCREF_ISP.NBP,
+  '210.90': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 서울교통공사, 국가정보자원관리원, 관세청, Cycle Racing Association, KORECO, 국립환경과학원'
+  ),
+  '210.91': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 인덕대, DAILY SPORTSWORLD, 안양대'
+  ),
+  '210.92': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 대우증권, 키움증권, 이호스트 IDC, AS23594, BCCARD, 조선일보, 연합뉴스, 신분당선, AS23591, 하나은행, 신한생명보험, 국민은행, 신세계 I & C, HANATI, PHIS, KB손해보험, 새마을금고, SMILESERV, JTNet'
+  ),
+  '210.93': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, LG, SKTelink, 서울대, 한국산업기술대, DST, 추계예술대, 부산가톨릭대, 전주비전대, 제주대, 전주교육대, 우송대, 고려대, CNUE, 롯데정보통신'
+  ),
+  '210.94': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, LG, 삼성SDS, 조선일보, 동국대, 삼육대'
+  ),
+  '210.95': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 과학기술정보통신부, 교육청, 청운대, 국가정보자원관리원, 서울교통공사, 한국고용정보원'
+  ),
+  '210.96': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, 농촌진흥청, 서울교통공사, KOCCA, 한국투자신탁운용, KOREA CREDIT GUARANTEE FUND, 하나금융투자, HALLAHOLDINGS'
+  ),
+  '210.97': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, LG, KINX, KCTC, 하나생명, 국가정보자원관리원, 국민연금공단, 청운대, 서울교통공사, 대구공업대, ABN-AS-KR ABN, VTOPIA'
+  ),
+  '210.98': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 한국과학기술정보연구원, KRISS, 한국천문연구원, 부경대, 한밭대, 세종텔레콤, KIS정보통신, 제일제당, NH투자증권, 신세계 I & C'
+  ),
+  '210.99': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 하나은행, 국가정보자원관리원, KORECO, 서울교통공사'
+  ),
+  '210.100': detailWrap(DCREF_ISP.GENERAL, 'KT, DST, 교육청'),
+  '210.101': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, KISA, INICIS Co., Ltd, DB그룹, TechnoMart Information & Communication Company'
+  ),
+  '210.102': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, SKB, 엘림넷, 한국무역정보통신, KERIS, AS23589, 충청대, 울산대, DAELIM, 인덕대, 청주교육대'
+  ),
+  '210.103': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한국농수산식품유통공사, 분당서울대학교병원, 국가정보자원관리원, 세종텔레콤, AS23593, Kakao'
+  ),
+  '210.104': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKT, 국가정보자원관리원, 서울교통공사, KORECO, 분당제생병원, The Bank of Korea, 교육청'
+  ),
+  '210.105': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한진정보통신, INITECH, 마산대, 포스코ICT, 부천대'
+  ),
+  '210.106': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, KT, SKB, DLIVE, LG, 한국영상대, 연성대, DST, 국가정보자원관리원'
+  ),
+  '210.107': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, KT, AS23591, 광주은행, 하나금융투자, KDB산업은행, 한국투자신탁운용, 강원대, 제주한라대, KAIST, 한국과학기술정보연구원, K-JIST, 부경대, 세종대, 동의대, 나사렛대, 기상청'
+  ),
+  '210.108': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KOSCOM, 해외문화홍보원, 포스코ICT, SAMSUNG LIFE SERVICE, Samil PwC, DB그룹, NH투자증권, 국민은행, NICEPAYMENTS.CO, FDIK'
+  ),
+  '210.109': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, AS23588, 세종텔레콤, Hostway IDC, KEPCO, 포스코ICT'
+  ),
+  '210.110': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 대전보건대, 서경대, 영산대, 광주교육대, 고려대, 순천대, 한국과학기술정보연구원, 부경대, 선문대, 단국대, 경남정보대, 한국천문연구원, 호서대, DGIST, 한밭대'
+  ),
+  '210.111': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKTelink, 신비넷IDC, 롯데정보통신, 남인천방송, 한국무역정보통신, 교육청'
+  ),
+  '210.112': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 세종텔레콤, KIS정보통신, 원광대, 드림마크원, 신한카드, 안랩, 엘림넷'
+  ),
+  '210.113': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 연합뉴스, 마산대, 한국거래소, 한진정보통신, 포스코ICT, 대동대, DGIST'
+  ),
+  '210.114': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한국정보화진흥원, 한국과학기술정보연구원, 신비넷IDC, NCOM ltd.'
+  ),
+  '210.115': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKTelink, KT, 강원대, donga.com, 충북대, KBS'
+  ),
+  '210.116': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, LG, 세종텔레콤, INET, KIS정보통신'
+  ),
+  '210.117': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, KAIT, 전북대, 한국과학기술정보연구원, SNUH'
+  ),
+  '210.118': detailWrap(
+    DCREF_ISP.GENERAL,
+    '엘림넷, 삼성SDS, 신비넷IDC, 세종텔레콤'
+  ),
+  '210.119': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 부경대, 한국과학기술정보연구원, KISTI, 한국항공대, 선문대, DGIST, 호서대, 한밭대, 건국대, 용인대, 영남이공대, 한국기술교육대, 한국방송통신대'
+  ),
+  '210.120': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 분당제생병원, AS23591, 한화정보서비스부서, Samil PwC, 동화기업, 강원대, 하이투자증권, KDB산업은행, CCS-AS-KR CCS'
+  ),
+  '210.121': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, CCS-AS-KR CCS, 세종텔레콤, KIS정보통신, 동국여대, 국민대, 이호스트 IDC, NACUFOK, flexnetworks'
+  ),
+  '210.122': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, Hostway IDC, 세종텔레콤, 대우정보시스템, NHN KCP Corp., 제일제당, AITAS, 서울아산병원'
+  ),
+  '210.123': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, KOSCOM, 풍산, 국민대, Gyeonggi Technopark, 신한금융투자, 새마을금고'
+  ),
+  '210.124': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, KT, CCS-AS-KR CCS, NH투자증권, 하나은행, 한국가스공사, HCN, 신한생명보험, AS23591, GS네오텍, 국민은행, 한국농어촌공사, ottogi.co.kr, 하이투자증권, NHN, DB그룹, KYONGNAMBANK'
+  ),
+  '210.125': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, 한국과학기술정보연구원, 우송대, 나사렛대, 계명대, 경남정보대, 호서대, 단국대, 한남대, 부경대, 대전보건대, 충북대, 서울시립대, 전주비전대, 중부대, 안산대'
+  ),
+  '210.126': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, DB그룹, 가톨릭대, SEOUL DAIRY CO-OP., 세종텔레콤, 한국거래소, 신영증권'
+  ),
+  '210.127': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, DB그룹, 세종텔레콤, 신비넷IDC, NCOM ltd., HCN'
+  ),
+  '210.178': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, JEII, 국가정보자원관리원, 국민건강보험공단'
+  ),
+  '210.179': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 국가정보자원관리원, KHIDI, 국민은행'
+  ),
+  '210.180': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, SKB, 엘림넷, eyesvision, 한진정보통신, 교육정보연구원'
+  ),
+  '210.181': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG 헬로비전, SKB, KT, DREAMLINE, 드림마크원, flexnetworks, KSNET.Inc, 더존 비즈온, 한국기술교육대, 연성대, 충청대, 한국무역정보통신, 엘림넷'
+  ),
+  '210.182': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, LG 헬로비전, HCN, FDIK, 우리은행, KB손해보험, 신한캐피탈, 인천경제산업정보테크노파크, 미래에셋대우, KISA, 강원대'
+  ),
+  '210.183': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, KINX, 한국증권금융, 한국자산관리공사, 부산은행, 현대오토에버, DB그룹, 신한생명보험, NH FUTURES'
+  ),
+  '210.192': DCREF_ISP.LG_HELLO,
+  '210.204': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 경북대, 국가정보자원관리원, 교육청'
+  ),
+  '210.205': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, SKT, GS네오텍, 한진정보통신, 한국무역정보통신, 드림마크원, 건강보험심사평가원'
+  ),
+  '210.206': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, LG 헬로비전, KTBnetwork Co., Ltd., NHN, 한국거래소, KOSCOM, 강원대'
+  ),
+  '210.207': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, 하이자산운용, 강원대, AS23591, 한국부동산원, 신세계 I & C, SCI평가정보, SMBS, 계명대, 우송대, KOSCOM, HCN'
+  ),
+  '210.210': DCREF_ISP.TBROAD,
+  '210.211': detailWrap(DCREF_ISP.GENERAL, 'KT, SK Co., 미래에셋생명'),
+  '210.216': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, KT, LG CNS, 우리카드, HCN, AS23591, 목포대, 티머니, KOREALIFE, 계명대'
+  ),
+  '210.217': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, LG, KOTRA, 한국무역정보통신, 국민은행, 교육정보연구원'
+  ),
+  '210.218': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, LG, 교육정보연구원, 한국과학기술정보연구원, JUNGBU, 한국원자력안전기술원, 신영증권'
+  ),
+  '210.219': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, SKTelink, SKB, 한국과학기술정보연구원, 한국천문연구원, JUNGBU, 한국자동차연구원, 엘림넷'
+  ),
+  '210.220': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, SKB, LG, KT, 한국환경산업기술원, 한국투자공사, Kakao, 국민은행, YTN-AS-KR YTN, 나이스정보통신, AIA, SMARTRO, FAMOUS WORKER, 엘림넷'
+  ),
+  '210.221': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, SKT, LG, KISA, 한국국토정보공사, 푸본현대생명'
+  ),
+  '210.222': detailWrap(DCREF_ISP.GENERAL, 'KT, daewonpharm'),
+  '210.223': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 교원크리에이티브, 한국예탁결제원, CNUE, KOTRA, Toyo Engineering Korea'
+  ),
+  '211.32': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 티브로드, KT, 하나은행, HCN, 신세계 I & C, SMILESERV, 주택도시보증공사, AS23591, NHN, Standard Chartered, 포스코ICT, SEOUL DAIRY CO-OP., 한국무역보험공사'
+  ),
+  '211.33': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, 나이스정보통신, NICEPAYMENTS.CO, TaeguTec'
+  ),
+  '211.34': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, DST, 국가정보자원관리원, 서울교통공사, 정보통신정책연구원, 더존 비즈온, 하나은행'
+  ),
+  '211.35': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, LG, KT, KNOC, 서울교통공사, INET, KICA, KOTRA, 서울과기대 정보기술센터'
+  ),
+  '211.36': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, DLIVE, 엘림넷, 삼성SDS, 신세계 I & C, 세종텔레콤, NHN KCP Corp.'
+  ),
+  '211.37': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, LG, WOW-TV, 한국무역정보통신'
+  ),
+  '211.38': detailWrap(DCREF_ISP.GENERAL, 'KT, BCCARD, 기술보증기금'),
+  '211.39': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKTelink, KT, LG, SKB, KT POWERTEL, 국가정보자원관리원, 교육정보연구원, 영남이공대, netmarble, 세종텔레콤, DREAMLINE, 드림마크원'
+  ),
+  '211.40': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, LGPUB, 티브로드, KT, AS23591, HCN, 하나은행, 신한비엔피파리바자산운용, 율촌, 강원대'
+  ),
+  '211.41': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, 티브로드, 퍼플스톤즈, HCN, 강남 케이블TV'
+  ),
+  '211.42': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, KT, LG, 서울교통공사, KOCCA, 남서울대, 국가정보자원관리원, 홍익대, namyang, 신한생명보험, AS23591'
+  ),
+  '211.43': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKTelink, 교육정보연구원, 교육청, HCN, 삼성전자, 세종텔레콤, Hostway IDC, KUMHO TIRE'
+  ),
+  '211.44': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, LG홈쇼핑, AIA, JT친애저축은행, SK증권, 키움증권'
+  ),
+  '211.45': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, 삼성SDS, SK Co., DREAMLINE, Infraware Inc., flexnetworks, NexG Co., LTD, AS23591'
+  ),
+  '211.46': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온, 교육청'),
+  '211.47': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, SKT, GS네오텍, NICEPAYMENTS.CO, HCN, 퍼플스톤즈, eGIOS, NexG Co., LTD'
+  ),
+  '211.48': detailWrap(DCREF_ISP.GENERAL, 'KT, JTNet, 대구가톨릭대, 청주대'),
+  '211.49': detailWrap(DCREF_ISP.GENERAL, 'SKB, 인천경제산업정보테크노파크'),
+  '211.50': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 티브로드, NHN, namyang, 경민대, AS23591, 교보생명보험'
+  ),
+  '211.51': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Samil PwC, 전국24시콜화물, HANASK card, 포스텍, 교육청'
+  ),
+  '211.52': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SKB, SKT, 엘림넷, 현대홈쇼핑, 부천대'
+  ),
+  '211.53': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 티브로드, flexnetworks, 하나은행, 수협은행, 부산은행, DB그룹, KOCES, 강원대'
+  ),
+  '211.54': detailWrap(DCREF_ISP.GENERAL, 'KT, 서울교통공사, 연세의료원'),
+  '211.55': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, JTNet, SMBS, KAIT, KOTRA, KOREA CREDIT GUARANTEE FUND'
+  ),
+  '211.56': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, NHN, DREAMLINE, flexnetworks, 드림마크원, 세종텔레콤, NexG Co., LTD'
+  ),
+  '211.57': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 국가정보자원관리원, Korean Red Cross'
+  ),
+  '211.58': DCREF_ISP.SKB_INT,
+  '211.59': detailWrap(DCREF_ISP.GENERAL, 'SKB, ubase'),
+  '211.60': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, DLIVE, 포스코ICT, DB그룹, AS23591, 신한비엔피파리바자산운용, 율촌, 강원대, NH투자증권'
+  ),
+  '211.61': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, 조달청, 대법원, 교육청, 국가정보자원관리원, 대통령비서실, 신비넷IDC, 하나은행, DREAMLINE, 교보라이프플래닛, 율촌, flexnetworks, CCS-AS-KR CCS, 드림마크원'
+  ),
+  '211.62': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, LG 헬로비전, 케이엘넷, AS23591, 제일제당'
+  ),
+  '211.63': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, LG, KT, SFS-AS-KR SFS, 서울교통공사, 퍼플스톤즈, The Daegu Bank, Ltd, GS네오텍, DGIST, CNUE'
+  ),
+  '211.104': detailWrap(DCREF_ISP.GENERAL, 'KT, 서울대, viaweb, 이호스트 IDC'),
+  '211.105': detailWrap(DCREF_ISP.GENERAL, 'KT, 금산교육'),
+  '211.106': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한화정보서비스부서, 교원크리에이티브, GS네오텍, 교육청'
+  ),
+  '211.107': DCREF_ISP.KT,
+  '211.108': DCREF_ISP.SKB_INT,
+  '211.109': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 현대백화점, 대우증권, 서울아산병원, daewonpharm'
+  ),
+  '211.110': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, SKT, GS네오텍, 브로드밴드 IDC, BSITC'
+  ),
+  '211.111': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, SKT, DREAMLINE, KCN금강방송, 드림마크원, 현대홈쇼핑, 세종텔레콤, GORayNet, VTOPIA, KDDI KOREA, ABN-AS-KR ABN'
+  ),
+  '211.112': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, LG, 엘림넷, 남인천방송, ABN-AS-KR ABN, 국가정보자원관리원, 교육청, 한국농어촌공사'
+  ),
+  '211.113': detailWrap(DCREF_ISP.GENERAL, 'KT, 신비넷IDC'),
+  '211.114': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 국립환경과학원, 국가정보자원관리원, DST, 교육청'
+  ),
+  '211.115': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, SKB, LG, 티브로드, SK communications, GS네오텍, Teachiworld Auto Insurance, 세종텔레콤, Hostway IDC'
+  ),
+  '211.116': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 티브로드, SKT, SKB, VTOPIA, 세종텔레콤, 부산케이블, 퍼플스톤즈'
+  ),
+  '211.117': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, BNK투자증권, 조일 케이블 네트워크, 대우증권'
+  ),
+  '211.118': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 티브로드, KECA, Inc., HANATI, 군산금강방송, Gyeonggi Urban Innovation Corporation, 강원대, 포스코ICT, 닷네임코리아, FDIK, GYEONGGIDO JOB FOUNDATION'
+  ),
+  '211.119': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, HANA TI, 포스코ICT, 군산금강방송, VP01-AS-KR VP, SMILESERV, 강원대'
+  ),
+  '211.168': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, DLIVE, 신한카드, flexnetworks, DB그룹, AS23591, 국민은행, 교육청, 전국은행연합회, NHN, 강원대'
+  ),
+  '211.169': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 하나펀드서비스, NHN KCP Corp., 교육청, YTN-AS-KR YTN, 강원대, 케이엘넷, 포스코ICT, 신세계 I & C, 퍼플스톤즈, KOSCOM'
+  ),
+  '211.170': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, 티브로드, 공항철도, 우리은행, KB손해보험, NHN, DGB데이터시스템, 린나이, 퍼플스톤즈, 강원대'
+  ),
+  '211.171': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, 포스코ICT, AS23591, KDB산업은행, SEOUL DAIRY CO-OP.'
+  ),
+  '211.172': detailWrap(
+    DCREF_ISP.GENERAL,
+    'DLIVE, 티브로드, LG 헬로비전, SKB, LG, NHN, 교육정보연구원, 퍼플스톤즈, 강남 케이블TV'
+  ),
+  '211.173': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, LG, 티브로드, LG 헬로비전, SKTelink, KORAIL, 국가정보자원관리원, 관세청, KAIT'
+  ),
+  '211.174': detailWrap(DCREF_ISP.GENERAL, '티브로드, KT, LG, 엘림넷'),
+  '211.175': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG 헬로비전, DREAMLINE, 현대해상화재보험, KCN금강방송, KOSCOM, 드림마크원, 퍼플스톤즈'
+  ),
+  '211.176': detailWrap(DCREF_ISP.GENERAL, 'SKB, 우리은행'),
+  '211.177': DCREF_ISP.SKB_INT,
+  '211.178': DCREF_ISP.SKB_INT,
+  '211.179': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한국전력거래소'),
+  '211.180': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG CNS, 한국투자신탁운용, 강원대, 신한비엔피파리바자산운용, SMARTRO, KDB산업은행, NHN'
+  ),
+  '211.181': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, LG CNS, KT, KCTC, KDB산업은행, 한국농촌경제연구원, KCN금강방송, 현대백화점, 강원대, 국민은행, 우송대, 계명대, 우리카드, BCCARD'
+  ),
+  '211.182': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육정보연구원'),
+  '211.183': detailWrap(
+    DCREF_ISP.GENERAL,
+    'DREAMLINE, ec-bank, 율촌, 드림마크원, CCS-AS-KR CCS'
+  ),
+  '211.184': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, KNOC, 교육청, 국가정보자원관리원'
+  ),
+  '211.185': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '211.186': detailWrap(DCREF_ISP.GENERAL, 'SKB, 울산대'),
+  '211.187': detailWrap(DCREF_ISP.GENERAL, 'SKB, SKT'),
+  '211.188': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, KT POWERTEL, SKT, pearlabyss, NHN'
+  ),
+  '211.189': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, 티브로드, 삼성SDS, 전기공사공제조합, 다우기술, 퍼플스톤즈, 세종텔레콤, 진남케이블네트워크'
+  ),
+  '211.190': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, 신비넷IDC, 롯데정보통신, KISA, KHNP'
+  ),
+  '211.191': detailWrap(DCREF_ISP.GENERAL, '신비넷IDC, flexnetworks'),
+  '211.192': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 현대해상화재보험, SMARTRO, 국민대, KOCES, KECA, Inc.'
+  ),
+  '211.193': detailWrap(DCREF_ISP.GENERAL, 'KT, SMARTRO, 현대중공업'),
+  '211.194': detailWrap(DCREF_ISP.GENERAL, 'KT, DGB데이터시스템, 영남이공대'),
+  '211.195': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한국외국어대, 전국24시콜화물, 한화정보서비스부서'
+  ),
+  '211.196': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 한국주택금융공사, AJU Internet Technology, SMARTRONET SMARTRO'
+  ),
+  '211.197': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Standard Chartered, 한화정보서비스부서'
+  ),
+  '211.198': detailWrap(DCREF_ISP.GENERAL, 'KT, 하나은행'),
+  '211.199': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '211.200': detailWrap(DCREF_ISP.GENERAL, 'SKB, KOSCOM'),
+  '211.201': detailWrap(DCREF_ISP.GENERAL, 'SKB, KT, KOCCA, 가비아'),
+  '211.202': DCREF_ISP.SKB_INT,
+  '211.203': DCREF_ISP.SKB_INT,
+  '211.204': detailWrap(DCREF_ISP.GENERAL, 'SKB, 경인여대'),
+  '211.205': detailWrap(DCREF_ISP.GENERAL, 'SKB, SK증권'),
+  '211.206': detailWrap(DCREF_ISP.GENERAL, 'SKB, 한솔고등학교, 한진정보통신'),
+  '211.207': DCREF_ISP.SKB_INT,
+  '211.208': detailWrap(DCREF_ISP.GENERAL, 'SKB, NACUFOK'),
+  '211.209': DCREF_ISP.SKB_INT,
+  '211.210': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 대우증권, 교육정보연구원, 새마을금고, 한진정보통신, 주택도시보증공사, FAMOUS WORKER'
+  ),
+  '211.211': DCREF_ISP.SKB_INT,
+  '211.212': DCREF_ISP.SKB_INT,
+  '211.213': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 기술보증기금, 한국과학기술정보연구원'
+  ),
+  '211.214': detailWrap(DCREF_ISP.GENERAL, 'SKB, 하나은행'),
+  '211.215': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청'),
+  '211.216': detailWrap(DCREF_ISP.GENERAL, 'KT, GS네오텍'),
+  '211.217': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG CNS, LG, 대우정보시스템, 현대오토에버, 금융감독원, TRUSTONASSET, 하나은행'
+  ),
+  '211.218': detailWrap(DCREF_ISP.GENERAL, 'KT, 한진정보통신, 나이스평가정보'),
+  '211.219': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, KCTDI, Standard Chartered, INITECH, 그리스도대'
+  ),
+  '211.220': detailWrap(DCREF_ISP.GENERAL, 'KT, 영산대'),
+  '211.221': detailWrap(DCREF_ISP.GENERAL, 'KT, YABESK'),
+  '211.222': detailWrap(DCREF_ISP.GENERAL, 'KT, 부천대, 가톨릭대, 청운대'),
+  '211.223': detailWrap(DCREF_ISP.GENERAL, 'KT, 경주대, 수성대, 계명대'),
+  '211.224': DCREF_ISP.KT,
+  '211.225': detailWrap(DCREF_ISP.GENERAL, 'KT, 건양대, 남서울대'),
+  '211.226': detailWrap(DCREF_ISP.GENERAL, 'KT, 하나은행, 교육청'),
+  '211.227': detailWrap(DCREF_ISP.GENERAL, 'KT, 순천대, 포스코ICT'),
+  '211.228': DCREF_ISP.KT,
+  '211.229': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 포스코ICT, 나사렛대, 백석대, 삼명대'
+  ),
+  '211.230': detailWrap(DCREF_ISP.GENERAL, 'KT, 호서대, 교육청, 군산대'),
+  '211.231': detailWrap(DCREF_ISP.GENERAL, 'KT, Kakao, kakaogames'),
+  '211.232': detailWrap(DCREF_ISP.GENERAL, '티브로드, NexG Co., LTD'),
+  '211.233': detailWrap(DCREF_ISP.GENERAL, 'LG, KT, HANASK card, KISA'),
+  '211.234': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG U+, LG, SKT, SMILESERV, 강원대, 현대카드, 한국무역보험공사, 교보증권, 케이엘넷, VTOPIA, SK communications'
+  ),
+  '211.235': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKT, KT, KISA, 남인천방송, 유엘네트웍스, 퍼플스톤즈'
+  ),
+  '211.236': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, LG 헬로비전, KCN금강방송, AS23591, 주택도시보증공사, 한국교통안전공단, 교육정보연구원, 퍼플스톤즈, 세종텔레콤'
+  ),
+  '211.237': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, SKTelink, 티브로드, DLIVE, 퍼플스톤즈, KIC for Agriculture, CMB, 강남 케이블TV, HCN'
+  ),
+  '211.238': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, LG, 티브로드, 세종텔레콤, Hostway IDC, 부산케이블, GORayNet, 남인천방송, 퍼플스톤즈, CMB'
+  ),
+  '211.239': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, 세종텔레콤, 진남케이블네트워크, Hostway IDC, 신비넷IDC'
+  ),
+  '211.240': detailWrap(DCREF_ISP.GENERAL, 'SKT, 엘림넷'),
+  '211.241': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, KT, 서울교통공사, Cycle Racing Association, 한국농어촌공사, 남서울대, SCOURTFAMILY, Korea Shipping Association, QIA-AS-KR QIA, 교육청, 퍼플스톤즈'
+  ),
+  '211.242': DCREF_ISP.DREAMLINE,
+  '211.243': DCREF_ISP.SKB_INT,
+  '211.244': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KTE, KB DATA SYSTEMS, HANASK card, 하나펀드서비스, 가비아'
+  ),
+  '211.245': detailWrap(DCREF_ISP.GENERAL, 'SKB, 서울아산병원'),
+  '211.246': detailWrap(DCREF_ISP.GENERAL, 'KT, 서경방송'),
+  '211.247': detailWrap(DCREF_ISP.GENERAL, '티브로드, DREAMLINE, 현대홈쇼핑'),
+  '211.248': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, 우리카드'),
+  '211.249': detailWrap(
+    DCREF_ISP.GENERAL,
+    'DREAMLINE, 드림마크원, 네이버 비즈니스 플랫폼, 현대해상화재보험, 한국금융연수원, Kakao'
+  ),
+  '211.250': detailWrap(DCREF_ISP.GENERAL, 'KT, 국가정보자원관리원'),
+  '211.251': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육정보연구원, 교육청'),
+  '211.252': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 교육청, 국가정보자원관리원, 현대오토에버, KISA, 한국환경산업기술원, 서울교통공사'
+  ),
+  '211.253': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 서울교통공사, 국가정보자원관리원, 교육정보연구원, 백석대, 교육청, 한국가스공사, 가천대길병원, 분당서울대학교병원'
+  ),
+  '211.254': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, 퍼플스톤즈, 주택도시보증공사, 우리은행, IBKCapital'
+  ),
+  '211.255': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, DLIVE, 티브로드, LG 헬로비전, 퍼플스톤즈, NHN, KOSCOM, 세종텔레콤'
+  ),
+  '218.36': detailWrap(DCREF_ISP.GENERAL, 'SKT, 퍼플스톤즈'),
+  '218.37': DCREF_ISP.TBROAD,
+  '218.38': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, KT, 주택관리공단, 서울교통공사, 한국저작권보호원, 사학연금, 교육청, Gyeonggi Technopark'
+  ),
+  '218.39': detailWrap(DCREF_ISP.GENERAL, 'SKB, KOSAF'),
+  '218.48': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청'),
+  '218.49': detailWrap(DCREF_ISP.GENERAL, 'SKB, KT'),
+  '218.50': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 푸본현대생명, KAIT, 한솔고등학교'
+  ),
+  '218.51': DCREF_ISP.SKB_INT,
+  '218.52': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 조일 케이블 네트워크, 교보라이프플래닛, 교육청'
+  ),
+  '218.53': detailWrap(DCREF_ISP.GENERAL, 'SKB, 현대중공업'),
+  '218.54': detailWrap(DCREF_ISP.GENERAL, 'SKB, 교육청'),
+  '218.55': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 하나은행, 신한금융투자, 교육청, 국민은행'
+  ),
+  '218.101': DCREF_ISP.TBROAD,
+  '218.144': detailWrap(DCREF_ISP.GENERAL, 'KT, NICE TCM, 더존 비즈온'),
+  '218.145': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, netmarble, KOCES, 포스텍, Oscar Enterprise'
+  ),
+  '218.146': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 케이엘넷, 한화정보서비스부서, 부경대'
+  ),
+  '218.147': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 티브로드, 마산대, 울산대, S-OIL Corp., Ltd, 농협정보시스템, 교육청'
+  ),
+  '218.148': detailWrap(DCREF_ISP.GENERAL, 'KT, YABESK, 청운대'),
+  '218.149': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, KDB Life Insurance Co.,Ltd, NLCS Jeju'
+  ),
+  '218.150': detailWrap(DCREF_ISP.GENERAL, 'KT, 한국기술교육대'),
+  '218.151': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 전주비전대, 교육청, 충청대, 현대중공업'
+  ),
+  '218.152': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 조선일보, 국민은행, 서울교통공사, 강원대, CNUE'
+  ),
+  '218.153': detailWrap(DCREF_ISP.GENERAL, 'KT, 나이스평가정보, barofn'),
+  '218.154': detailWrap(DCREF_ISP.GENERAL, 'KT, 한진정보통신, 한국해양대'),
+  '218.155': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '218.156': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, KB손해보험'),
+  '218.157': detailWrap(DCREF_ISP.GENERAL, 'KT, DGB데이터시스템'),
+  '218.158': DCREF_ISP.KT,
+  '218.159': DCREF_ISP.KT,
+  '218.209': DCREF_ISP.TBROAD,
+  '218.232': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 나이스평가정보, KOCCA, AIG, 교육청'
+  ),
+  '218.233': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, Macquarie Telecom, 한국과학기술정보연구원, 교육청'
+  ),
+  '218.234': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 미래에셋대우, KPSAS-AS-KR KPS, GYEONGGIDO JOB FOUNDATION, 교육청, 한국과학기술정보연구원'
+  ),
+  '218.235': DCREF_ISP.SKB_INT,
+  '218.236': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, Ktoto, KEPCO, 한진정보통신, 교보증권, 한솔고등학교'
+  ),
+  '218.237': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, LG홈쇼핑, HMC SECURITIES CO., LTD.'
+  ),
+  '218.238': detailWrap(DCREF_ISP.GENERAL, 'SKB, 제일제당'),
+  '218.239': detailWrap(DCREF_ISP.GENERAL, 'SKB, AITAS'),
+  '219.240': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, HANASK card, KOCES, 대우정보시스템'
+  ),
+  '219.241': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 인천경제산업정보테크노파크, 가비아'
+  ),
+  '219.248': detailWrap(DCREF_ISP.GENERAL, 'SKB, HANATI'),
+  '219.249': detailWrap(DCREF_ISP.GENERAL, 'SKB, Kakao'),
+  '219.250': DCREF_ISP.SKB_INT,
+  '219.251': detailWrap(
+    DCREF_ISP.GENERAL,
+    'SKB, 엘림넷, 한진정보통신, KISA, KepcoNF'
+  ),
+  '219.252': detailWrap(DCREF_ISP.GENERAL, 'SKT, LG 헬로비전, 씨젠의료재단'),
+  '219.253': DCREF_ISP.SKT_INT,
+  '219.254': DCREF_ISP.SKB_INT,
+  '219.255': detailWrap(DCREF_ISP.GENERAL, 'SKB, 코리아크레딧뷰로'),
+  '220.64': detailWrap(
+    DCREF_ISP.GENERAL,
+    'DREAMLINE, 현대해상화재보험, Hanwha Investment Securities Co., Ltd., 아모레퍼시픽, Kakao, Truenetworks, 드림마크원'
+  ),
+  '220.65': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LGPUB, LG, KT, 교육청, 대법원, 한국투자공사, 한국부동산원, 서울교통공사'
+  ),
+  '220.66': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 유한대, 한서대, 한경대, 협성대, 안양대, 용인대, DAELIM, 한국사학진흥재단, 연암공대, 전주비전대, 한밭대, 그리스도대, 경주대, 서라벌대, 대구공업대, 경북대, 부경대'
+  ),
+  '220.67': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 영남이공대, 순천대, CNUE, 목포대, 충청대, 한국외국어대, 한국항공대, 한경대, 삼명대, 강릉원주대, 인덕대, 안산대, 조선대'
+  ),
+  '220.68': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, KT, SKB, 제주대, 동의대, 고려대, 군산대, 가톨릭대, 호서대, 마산대, 서라벌대, 한국기술교육대, 수성대, 대진대, 목포해양대, 남서울대, 경인여대, 목원대, 우송대, 한경대'
+  ),
+  '220.69': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 금강대, 호서대, 계명대, 전북대, 선문대, 제주대, 순천향대, 강릉원주대, 한국해양대'
+  ),
+  '220.70': DCREF_ISP.KT,
+  '220.71': DCREF_ISP.KT,
+  '220.72': detailWrap(DCREF_ISP.GENERAL, 'KT, 매일경제신문, 서울여대'),
+  '220.73': detailWrap(DCREF_ISP.GENERAL, 'KT, LG CNS, GS네오텍, 동의대'),
+  '220.74': DCREF_ISP.KT,
+  '220.75': detailWrap(DCREF_ISP.GENERAL, 'KT, 나이스평가정보'),
+  '220.76': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, NICE, Oscar Enterprise, 하나은행, Daum Direct Auto Insurance Co., LTD, 서울교통공사, 한진정보통신, 새마을금고'
+  ),
+  '220.77': detailWrap(DCREF_ISP.GENERAL, 'KT, 한국주택금융공사, 영산대'),
+  '220.78': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 교보증권, 교육청, 신한비엔피파리바자산운용'
+  ),
+  '220.79': detailWrap(DCREF_ISP.GENERAL, 'KT, KB손해보험'),
+  '220.80': DCREF_ISP.KT,
+  '220.81': detailWrap(DCREF_ISP.GENERAL, 'KT, 목원대'),
+  '220.82': detailWrap(DCREF_ISP.GENERAL, 'KT, 한서대'),
+  '220.83': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온, 건양대'),
+  '220.84': DCREF_ISP.KT,
+  '220.85': detailWrap(DCREF_ISP.GENERAL, 'KT, 순천향대, 대진대'),
+  '220.86': DCREF_ISP.KT,
+  '220.87': DCREF_ISP.KT,
+  '220.88': detailWrap(DCREF_ISP.GENERAL, 'KT, 한국예탁결제원'),
+  '220.89': DCREF_ISP.KT,
+  '220.90': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 대진대, 부천대, 우송대, netmarble, 호서대'
+  ),
+  '220.91': DCREF_ISP.KT,
+  '220.92': detailWrap(DCREF_ISP.GENERAL, 'KT, 부경대, KNOC'),
+  '220.93': DCREF_ISP.KT,
+  '220.94': detailWrap(DCREF_ISP.GENERAL, 'KT, 한경대'),
+  '220.95': detailWrap(DCREF_ISP.GENERAL, 'KT, 홍익대'),
+  '220.103': DCREF_ISP.SKT_INT,
+  '220.116': detailWrap(DCREF_ISP.GENERAL, 'KT, KUMC, 서울여대'),
+  '220.117': DCREF_ISP.KT,
+  '220.118': detailWrap(DCREF_ISP.GENERAL, 'KT, NICE TCM, INITECH'),
+  '220.119': detailWrap(DCREF_ISP.GENERAL, 'KT, 동의대, 영산대'),
+  '220.120': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, 한국외국어대'),
+  '220.121': detailWrap(DCREF_ISP.GENERAL, 'KT, 서정대'),
+  '220.122': detailWrap(DCREF_ISP.GENERAL, 'KT, 포스코ICT'),
+  '220.123': detailWrap(DCREF_ISP.GENERAL, 'KT, 건양대, 나사렛대'),
+  '220.124': DCREF_ISP.KT,
+  '220.125': DCREF_ISP.KT,
+  '220.126': detailWrap(DCREF_ISP.GENERAL, 'KT, 전국24시콜화물'),
+  '220.127': DCREF_ISP.KT,
+  '220.149': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 대구대, 순천대, 삼명대, 유한대, 제주대, 강원대, DST, 목포대, 건국대학병원, 호서대, 경주대, 한국해양대, 중부대, 청주교육대, 한국산업기술대, 한국항공대, 안산대'
+  ),
+  '220.230': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG 헬로비전, DREAMLINE, flexnetworks, 드림마크원, Truenetworks, 네이버 비즈니스 플랫폼'
+  ),
+  '220.242': DCREF_ISP.CDNETWORKS,
+  '220.243': DCREF_ISP.CDNETWORKS,
+  '221.132': detailWrap(DCREF_ISP.GENERAL, 'NexG Co., LTD'),
+  '221.133': detailWrap(DCREF_ISP.GENERAL, '티브로드, INET, 더존 비즈온'),
+  '221.138': DCREF_ISP.SKB_INT,
+  '221.139': detailWrap(DCREF_ISP.GENERAL, 'SKB, 우리카드, KISA, 그리스도대'),
+  '221.140': detailWrap(DCREF_ISP.GENERAL, 'SKB, 우리은행, 부천대'),
+  '221.141': DCREF_ISP.SKB_INT,
+  '221.142': DCREF_ISP.SKB_INT,
+  '221.143': DCREF_ISP.SKB_INT,
+  '221.144': detailWrap(DCREF_ISP.GENERAL, 'KT, CNUE'),
+  '221.145': DCREF_ISP.KT,
+  '221.146': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, NH투자증권, 아이엔티매니지먼트'
+  ),
+  '221.147': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, IBK투자증권, 한진정보통신, KOSCOM'
+  ),
+  '221.148': DCREF_ISP.KT,
+  '221.149': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 하나은행, KISA, 쌍용, 한국무역보험공사'
+  ),
+  '221.150': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 새마을금고, KPETRO, 신한캐피탈, 한경대'
+  ),
+  '221.151': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '221.152': detailWrap(DCREF_ISP.GENERAL, 'KT, 현대중공업'),
+  '221.153': DCREF_ISP.KT,
+  '221.154': DCREF_ISP.KT,
+  '221.155': DCREF_ISP.KT,
+  '221.156': DCREF_ISP.KT,
+  '221.157': DCREF_ISP.KT,
+  '221.158': detailWrap(DCREF_ISP.GENERAL, 'KT, 남서울대, 한국연구재단'),
+  '221.159': detailWrap(DCREF_ISP.GENERAL, 'KT, CNUE'),
+  '221.160': DCREF_ISP.KT,
+  '221.161': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Busan Cycle Racing Corporation, 인제대'
+  ),
+  '221.162': DCREF_ISP.KT,
+  '221.163': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 분당서울대학교병원, 분당제생병원'
+  ),
+  '221.164': detailWrap(DCREF_ISP.GENERAL, 'KT, 영산대'),
+  '221.165': detailWrap(DCREF_ISP.GENERAL, 'KT, KPETRO, 금융감독원'),
+  '221.166': DCREF_ISP.KT,
+  '221.167': DCREF_ISP.KT,
+  '221.168': detailWrap(DCREF_ISP.GENERAL, 'KT, KOSCOM'),
+  '222.96': DCREF_ISP.KT,
+  '222.97': DCREF_ISP.KT,
+  '222.98': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청'),
+  '222.99': DCREF_ISP.KT,
+  '222.100': detailWrap(DCREF_ISP.GENERAL, 'KT, 하나은행'),
+  '222.101': detailWrap(DCREF_ISP.GENERAL, 'KT, 신한은행, 중부대, 교육청'),
+  '222.102': DCREF_ISP.KT,
+  '222.103': DCREF_ISP.KT,
+  '222.104': detailWrap(DCREF_ISP.GENERAL, 'KT, 포스코ICT'),
+  '222.105': DCREF_ISP.KT,
+  '222.106': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, Toyo Engineering Korea, STARVANKOREA, PHIS, OCI정보통신'
+  ),
+  '222.107': detailWrap(DCREF_ISP.GENERAL, 'KT, Ktoto'),
+  '222.108': detailWrap(DCREF_ISP.GENERAL, 'KT, SBS, WOW-TV, 코레일유통'),
+  '222.109': detailWrap(DCREF_ISP.GENERAL, 'KT, LG, 씨젠의료재단'),
+  '222.110': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, SFS-AS-KR SFS, BNK투자증권, S-OIL Corp., Ltd, 미래에셋, FDIK, 금융감독원, KISPricing, 키움증권'
+  ),
+  '222.111': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 국민대, 국가정보자원관리원, OCI정보통신, NICE'
+  ),
+  '222.112': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, barofn, INICIS Co., Ltd, 신세계 I & C'
+  ),
+  '222.113': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온'),
+  '222.114': DCREF_ISP.KT,
+  '222.115': DCREF_ISP.KT,
+  '222.116': detailWrap(DCREF_ISP.GENERAL, 'KT, 고려대'),
+  '222.117': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, FACT'),
+  '222.118': detailWrap(DCREF_ISP.GENERAL, 'KT, 호서대, 건양대'),
+  '222.119': DCREF_ISP.KT,
+  '222.120': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, 서정대'),
+  '222.121': detailWrap(DCREF_ISP.GENERAL, 'KT, 더존 비즈온, KOSCOM'),
+  '222.122': detailWrap(DCREF_ISP.GENERAL, 'KT, 우리은행, netmarble, GS네오텍'),
+  '222.231': detailWrap(
+    DCREF_ISP.GENERAL,
+    'LG, LG CNS, HMC SECURITIES CO., LTD.'
+  ),
+  '222.232': detailWrap(DCREF_ISP.GENERAL, 'SKB, postopia'),
+  '222.233': DCREF_ISP.SKB_INT,
+  '222.234': DCREF_ISP.SKB_INT,
+  '222.235': detailWrap(DCREF_ISP.GENERAL, 'SKB, 분당서울대학교병원'),
+  '222.236': detailWrap(DCREF_ISP.GENERAL, 'SKB, 가비아'),
+  '222.237': DCREF_ISP.SKB_INT,
+  '222.238': DCREF_ISP.SKB_INT,
+  '222.239': detailWrap(DCREF_ISP.GENERAL, 'SKB, SKT, 브로드밴드 IDC'),
+  '222.251': DCREF_ISP.TBROAD,
+  '223.26': detailWrap(DCREF_ISP.GENERAL, '효성ITX'),
+  '223.28': DCREF_ISP.TBROAD,
+  '223.32': DCREF_ISP.SKT_INT,
+  '223.33': DCREF_ISP.SKT_INT,
+  '223.34': DCREF_ISP.SKT_INT,
+  '223.35': DCREF_ISP.SKT_INT,
+  '223.36': DCREF_ISP.SKT_INT,
+  '223.37': DCREF_ISP.SKT_INT,
+  '223.38': DCREF_ISP.SKT_INT,
+  '223.39': DCREF_ISP.SKT_INT,
+  '223.40': DCREF_ISP.SKT_INT,
+  '223.41': DCREF_ISP.SKT_INT,
+  '223.42': DCREF_ISP.SKT_INT,
+  '223.43': DCREF_ISP.SKT_INT,
+  '223.44': DCREF_ISP.SKT_INT,
+  '223.45': DCREF_ISP.SKT_INT,
+  '223.46': DCREF_ISP.SKT_INT,
+  '223.47': DCREF_ISP.SKT_INT,
+  '223.48': DCREF_ISP.SKT_INT,
+  '223.49': DCREF_ISP.SKT_INT,
+  '223.50': DCREF_ISP.SKT_INT,
+  '223.51': DCREF_ISP.SKT_INT,
+  '223.52': DCREF_ISP.SKT_INT,
+  '223.53': DCREF_ISP.SKT_INT,
+  '223.54': DCREF_ISP.SKT_INT,
+  '223.55': DCREF_ISP.SKT_INT,
+  '223.56': DCREF_ISP.SKT_INT,
+  '223.57': DCREF_ISP.SKT_INT,
+  '223.58': DCREF_ISP.SKT_INT,
+  '223.59': DCREF_ISP.SKT_INT,
+  '223.60': DCREF_ISP.SKT_INT,
+  '223.61': DCREF_ISP.SKT_INT,
+  '223.62': DCREF_ISP.SKT_INT,
+  '223.63': DCREF_ISP.SKT_INT,
+  '223.130': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, 삼정데이터서비스, 네이버 비즈니스 플랫폼'
+  ),
+  '223.131': DCREF_ISP.TBROAD,
+  '223.165': DCREF_ISP.PURPLESTONES,
+  '223.171': DCREF_ISP.UPLUS,
+  '223.172': DCREF_ISP.UPLUS,
+  '223.174': DCREF_ISP.UPLUS,
+  '223.175': DCREF_ISP.UPLUS,
+  '223.194': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, SKB, 강원대, 홍익대, 한밭대, 인천경제자유구역, 제주대'
+  ),
+  '223.195': detailWrap(
+    DCREF_ISP.GENERAL,
+    'KT, LG, 세종대, 안산대, 홍익대, 청운대, 서경대, 안양대, 부산외대, 동국대'
+  ),
+  '223.222': DCREF_ISP.TBROAD,
+  '223.253': detailWrap(DCREF_ISP.GENERAL, '롯데정보통신'),
+  '223.255': detailWrap(DCREF_ISP.GENERAL, 'KT, NHN')
 }
 
 export const ISPData = (ip: number | string, replace: any) =>
