@@ -1,6 +1,6 @@
 import * as strings from '../utils/string'
 
-let lists = {}
+let lists: { [index: string]: any[] } = {}
 
 export const eventBus = {
   /**
@@ -29,6 +29,8 @@ export const eventBus = {
     remove_queue.map((v, i) => {
       lists[event].splice(v - i, 1)
     })
+
+    // TODO : 왜 이상하게 짬?
   },
 
   emitNextTick: (event: string, ...params: any[]) => {
@@ -50,7 +52,7 @@ export const eventBus = {
     return new Promise(async (resolve, reject) => {
       let results = []
 
-      let remove_queue = []
+      let remove_queue: number[] = []
 
       let iter = lists[event].length
       while (iter--) {
@@ -102,7 +104,7 @@ export const eventBus = {
   /**
    * lists 에 있는 이벤트 콜백을 제거합니다.
    */
-  remove: (event: string, uuid: string, skip) => {
+  remove: (event: string, uuid: string, skip?: boolean) => {
     if (skip && typeof lists[event] === 'undefined') {
       return
     }
