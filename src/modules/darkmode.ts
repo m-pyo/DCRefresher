@@ -51,7 +51,7 @@ export default {
     uuid2: null,
     contentViewUUID: null
   },
-  enable: true,
+  enable: false,
   default_enable: false,
   require: ['filter', 'eventBus'],
   func (filter: RefresherFilter, eventBus: RefresherEventBus) {
@@ -64,13 +64,13 @@ export default {
 
     if (
       document &&
-      document.body &&
-      document.body.className.indexOf('refresherDark') < 0
+      document.documentElement &&
+      document.documentElement.className.indexOf('refresherDark') < 0
     ) {
-      document.body.className += ' refresherDark'
+      document.documentElement.className += ' refresherDark'
     }
 
-    this.memory.uuid = filter.add('body', (elem: HTMLElement) => {
+    this.memory.uuid = filter.add('html', (elem: HTMLElement) => {
       if (elem.className.indexOf('refresherDark') == -1) {
         elem.className += ' refresherDark'
       }
@@ -93,7 +93,7 @@ export default {
   },
 
   revoke (filter: RefresherFilter, eventBus: RefresherEventBus) {
-    document.body.classList.remove('refresherDark')
+    document.documentElement.classList.remove('refresherDark')
 
     let style = document.querySelector('#refresherDarkStyle')
     if (style) {

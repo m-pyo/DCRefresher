@@ -9,7 +9,22 @@ export const urls = {
   vote: 'https://gall.dcinside.com/board/recommend/vote',
   manage: {
     delete:
-      'https://gall.dcinside.com/ajax/minor_manager_board_ajax/delete_list'
+      'https://gall.dcinside.com/ajax/minor_manager_board_ajax/delete_list',
+    deleteMini:
+      'https://gall.dcinside.com/ajax/mini_manager_board_ajax/delete_list',
+    deleteUser: 'https://gall.dcinside.com/board/forms/delete_submit',
+    setNotice:
+      'https://gall.dcinside.com/ajax/minor_manager_board_ajax/set_notice',
+    setNoticeMini:
+      'https://gall.dcinside.com/ajax/mini_manager_board_ajax/set_notice',
+    block:
+      'https://gall.dcinside.com/ajax/minor_manager_board_ajax/update_avoid_list',
+    blockMini:
+      'https://gall.dcinside.com/ajax/mini_manager_board_ajax/update_avoid_list',
+    setRecommend:
+      'https://gall.dcinside.com/ajax/minor_manager_board_ajax/set_recommend',
+    setRecommendMini:
+      'https://gall.dcinside.com/ajax/mini_manager_board_ajax/set_recommend'
   },
   comments: 'https://gall.dcinside.com/board/comment/',
   dccon: {
@@ -25,7 +40,7 @@ export const types = {
   MINI: 'mini'
 }
 
-export const commentGallTypes = {
+export const commentGallTypes: { [index: string]: string } = {
   '': 'G',
   mgallery: 'M',
   mini: 'MI'

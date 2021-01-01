@@ -129,6 +129,10 @@ export default class {
           }, 300)
         },
 
+        close () {
+          this.outerClick()
+        },
+
         fadeIn () {
           this.fade = true
         },
