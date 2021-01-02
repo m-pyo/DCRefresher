@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>Refresh</title>
+    <link rel="stylesheet" href="opts.css" />
+    <script src="opts.js"></script>
+  </head>
+  <body>
+    <div class="ctr_blck">
+      <h1>설정 (페이지 새로고침 필요)</h1>
+      <br />
+      <p>2020년 12월 초까지는 1.0 업데이트가 없습니다.</p>
+      <p>12월 이후 나올 완전히 새로운 2.0 버전을 기대해주세요.</p>
+      <br>
+      <div class="opts_wrap">
+        <label for="dark_mode">다크 모드 사용</label>
+        <input type="checkbox" id="dark_mode" checked="false" />
+      </div>
+      <div class="opts_wrap">
+        <label for="dark_mode">유동 차단</label>
+        <input type="checkbox" id="block_notlogin" checked="false" />
+      </div>
+      <div class="opts_wrap">
+        <label for="refresh_rate">
+          페이지 새로고침 주기 (최소 2000ms 이상)
+        </label>
+        <input
+          type="number"
+          id="refresh_rate"
+          value="5000"
+          style="width: 70px"
+        />
+      </div>
+      <div class="opts_wrap">
+        <label for="manage_blocked">
+          차단된 디시콘 관리
+        </label>
+        <div class="blocked_lists" id="manage_blocked"></div>
+      </div>
+    </div>
+  </body>
+</html>
