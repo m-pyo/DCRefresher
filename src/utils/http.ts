@@ -59,17 +59,6 @@ export const query = (str: string, query: string) => {
 export const viewRegex = /\/board\/view\//g
 export const mgall = /dcinside\.com\/mgallery/g
 
-const queryDraw = (lis: string[], url: string) => {
-  let str = ''
-  let len = lis.length
-  for (var i = 0; i < len; i++) {
-    if (url.indexOf(lis[i] + '=') < 0) continue
-    str += (i ? '&' : '?') + lis[i] + '=' + query(url, lis[i])
-  }
-
-  return str
-}
-
 export const view = (url: string) => {
   let type = galleryType(url)
 

@@ -34,7 +34,6 @@ interface RefresherHTTP {
   viewRegex: RegExp
   mgall: RegExp
   query: Function
-  queryDraw: Function
   view: Function
   make: Function
   checkMinor: Function
