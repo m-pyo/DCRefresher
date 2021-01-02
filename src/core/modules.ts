@@ -21,7 +21,7 @@ let UTILS: { [index: string]: object } = {
 
 let module_store: { [index: string]: any } = {}
 
-const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
+const runtime = browser && browser.runtime
 
 const runModule = (mod: RefresherModule) => {
   let plugins = []
@@ -99,12 +99,12 @@ export const modules = {
 
     module_store[mod.name] = mod
 
-    if (runtime) {
-      runtime.sendMessage('', {
-        module_store,
-        settings_store: settings.dump()
-      })
-    }
+    let stringify = JSON.stringify({
+      module_store,
+      settings_store: settings.dump()
+    })
+
+    runtime.sendMessage(stringify)
 
     if (!mod.enable) {
       log(`📁 ignoring ${mod.name}. The module is disabled.`)
@@ -120,7 +120,11 @@ export const modules = {
 
     runModule(mod)
 
-    log(`📁 ${mod.name} module loaded. took ${(performance.now() - start).toFixed(2)}ms.`)
+    log(
+      `📁 ${mod.name} module loaded. took ${(performance.now() - start).toFixed(
+        2
+      )}ms.`
+    )
   }
 }
 
@@ -130,9 +134,11 @@ if (runtime.onMessage) {
       module_store[msg.name].enable = msg.value
       store.set(`${msg.name}.enable`, msg.value)
 
-      runtime.sendMessage('', {
-        module_store
-      })
+      runtime.sendMessage(
+        JSON.stringify({
+          module_store
+        })
+      )
 
       if (!msg.value) {
         revokeModule(module_store[msg.name])

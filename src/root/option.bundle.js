@@ -5,6 +5,8 @@ const ImageLists = {
 const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
 const stor = (window.chrome && window.chrome.storage) || storage
 
+let port = runtime.connect({ name: 'refresherInternal' })
+
 document.addEventListener('DOMContentLoaded', () => {
   let app = new Vue({
     el: '#refresher-app',
@@ -58,25 +60,23 @@ document.addEventListener('DOMContentLoaded', () => {
     v.src = chrome.extension.getURL(ImageLists[v.dataset.image])
   })
 
-  runtime.sendMessage(
-    {
-      requestRefresherModules: true
-    },
-    null,
-    res => {
-      app.$data.modules = res || {}
-    }
-  )
+  port.postMessage({
+    requestRefresherModules: true
+  })
 
-  runtime.sendMessage(
-    {
-      requestRefresherSettings: true
-    },
-    null,
-    res => {
-      app.$data.settings = res || {}
+  port.postMessage({
+    requestRefresherSettings: true
+  })
+
+  port.onMessage.addListener(msg => {
+    if (msg.responseRefresherModules) {
+      app.$data.modules = msg.modules || {}
     }
-  )
+
+    if (msg.responseRefresherSettings) {
+      app.$data.settings = msg.settings || {}
+    }
+  })
 })
 
 Vue.component('refresher-module', {
@@ -125,16 +125,18 @@ Vue.component('refresher-module', {
       stor.sync.set(obj)
 
       if (this.name === '광고 차단') {
-        runtime.sendMessage({
+        port.postMessage({
           toggleAdBlock: value
         })
       }
 
       chrome.tabs.query({ active: true }, tabs => {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          updateModuleSettings: true,
-          name: this.name,
-          value: value
+        tabs.forEach(v => {
+          chrome.tabs.sendMessage(v.id, {
+            updateModuleSettings: true,
+            name: this.name,
+            value: value
+          })
         })
       })
     },

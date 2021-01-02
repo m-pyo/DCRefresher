@@ -14,9 +14,11 @@ export const set = async (module: string, key: string, value: any) => {
   let s = await store.set(`${module}.${key}`, value)
 
   if (runtime) {
-    runtime.sendMessage('', {
-      settings_store
-    })
+    runtime.sendMessage(
+      JSON.stringify({
+        settings_store
+      })
+    )
   }
 
   return s
