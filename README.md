@@ -9,8 +9,6 @@
 [![forthebadge](https://forthebadge.com/images/badges/designed-in-ms-paint.svg)](https://forthebadge.com)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/gpipaoeekcphlmilndfdbfdgijjjiklh.svg?style=for-the-badge)](https://chrome.google.com/webstore/detail/dc-refresher/gpipaoeekcphlmilndfdbfdgijjjiklh)
 
-> **Note : 개인적 사정으로 인해 2020년 12월까지는 업데이트가 없습니다. 이 점 양해 부탁드립니다.**
-
 Chrome 확장 프로그램 : https://chrome.google.com/webstore/detail/dc-refresher/gpipaoeekcphlmilndfdbfdgijjjiklh
 
 Firefox 확장 프로그램 : https://addons.mozilla.org/addon/dc-refresher/
