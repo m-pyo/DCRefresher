@@ -39,6 +39,7 @@ interface RefresherHTTP {
   make: Function
   checkMinor: Function
   checkMini: Function
+  mergeParamURL: Function
   galleryType: Function
   galleryTypeName: Function
 }

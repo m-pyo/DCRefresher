@@ -3,6 +3,8 @@ import { filter } from '../core/filtering'
 
 const AVERAGE_COUNTS_SIZE = 7
 
+let lastAccess = 0
+
 export default {
   name: '글 목록 새로고침',
   description: '글 목록을 자동으로 새로고침합니다.',
@@ -65,11 +67,9 @@ export default {
     }
   },
   func (http: RefresherHTTP, eventBus: RefresherEventBus) {
-    let listsURL = http.view(location.href)
-
-    const body = () => {
+    const body = (url: string) => {
       return new Promise<Element | null>(async (resolve, reject) => {
-        let body = await http.make(listsURL)
+        let body = await http.make(url)
 
         try {
           let bodyParse = new DOMParser().parseFromString(body, 'text/html')
@@ -96,10 +96,16 @@ export default {
       this.memory.refresh = window.setTimeout(load, this.memory.delay)
     }
 
-    let load = async () => {
+    let load = async (skipRun?: boolean) => {
+      // 도배 방지용
+      if (Date.now() - lastAccess < 500) {
+        return false
+      }
+
       if (document.hidden) {
         return false
       }
+      lastAccess = Date.now()
 
       let isAdmin = document.querySelector('.useradmin_btnbox button') !== null
 
@@ -115,7 +121,8 @@ export default {
 
       this.memory.new_counts = 0
 
-      let newList = await body()
+      let url = http.view(location.href)
+      let newList = await body(url)
 
       let oldList = document.querySelector('.gall_list tbody')
       if (!oldList || !newList) return
@@ -139,9 +146,8 @@ export default {
           this.memory.new_counts++
         }
       })
-      this.memory.calledByPageTurn = false
 
-      if (this.memory.average_counts) {
+      if (this.memory.average_counts && !this.memory.calledByPageTurn) {
         this.memory.average_counts.push(this.memory.new_counts)
 
         if (this.memory.average_counts.length > AVERAGE_COUNTS_SIZE) {
@@ -159,6 +165,8 @@ export default {
           )
         }
       }
+
+      this.memory.calledByPageTurn = false
 
       // 미니 갤, 마이너 갤 관리자일 경우 체크박스를 생성합니다.
       if (isAdmin) {
@@ -202,7 +210,9 @@ export default {
 
       eventBus.emit('refresh', newList)
 
-      run()
+      if (!skipRun) {
+        run()
+      }
     }
 
     document.addEventListener('visibilitychange', () => {
@@ -239,17 +249,23 @@ export default {
         (a: HTMLAnchorElement) => {
           a.onclick = () => false
           a.addEventListener('click', async (ev: MouseEvent) => {
-            history.pushState(null, document.title, a.href)
+            let isPageView = location.href.indexOf('/board/view') > -1
+
+            if (isPageView) {
+              history.pushState(
+                null,
+                document.title,
+                http.mergeParamURL(location.href, a.href)
+              )
+            } else {
+              history.pushState(null, document.title, a.href)
+            }
             this.memory.calledByPageTurn = true
 
-            if (this.memory.refresh) {
-              clearTimeout(this.memory.refresh)
-            }
-
-            await load()
+            await load(true)
 
             document
-              .querySelector('.page_head')!
+              .querySelector(isPageView ? '.view_bottom_btnbox' : '.page_head')!
               .scrollIntoView({ block: 'start', behavior: 'smooth' })
           })
         }
@@ -272,17 +288,27 @@ export default {
               ;(a as HTMLAnchorElement).addEventListener(
                 'click',
                 async (ev: MouseEvent) => {
-                  this.memory.calledByPageTurn = true
-                  history.pushState(null, document.title, a.href)
+                  let isPageView = location.href.indexOf('/board/view') > -1
 
-                  if (this.memory.refresh) {
-                    clearTimeout(this.memory.refresh)
+                  if (isPageView) {
+                    history.pushState(
+                      null,
+                      document.title,
+                      http.mergeParamURL(location.href, a.href)
+                    )
+                  } else {
+                    history.pushState(null, document.title, a.href)
                   }
+                  this.memory.calledByPageTurn = true
 
-                  await load()
+                  await load(true)
 
                   document
-                    .querySelector('.page_head')!
+                    .querySelector(
+                      location.href.indexOf('/board/view') > -1
+                        ? '.view_bottom_btnbox'
+                        : '.page_head'
+                    )!
                     .scrollIntoView({ block: 'start', behavior: 'smooth' })
                 }
               )

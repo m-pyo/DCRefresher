@@ -6,6 +6,11 @@ interface RefresherFilteringLists {
   scope: string
   status: { [index: string]: any }
   events: { [index: string]: any }
+  options?: RefresherFilteringOptions
+}
+
+interface RefresherFilteringOptions {
+  neverExpire?: boolean
 }
 
 let lists: { [index: string]: RefresherFilteringLists } = {}
@@ -33,13 +38,21 @@ export const filter = {
 
       let observer
 
-      if (non_blocking) {
-        observer = observe.find(filterObj.scope, document.documentElement)
+      if (filterObj.options && filterObj.options.neverExpire) {
+        // TODO : neverExpire 옵션 구현
+        throw new Error('neverExpire option is not implemented yet.')
       } else {
-        observer = await observe.find(filterObj.scope, document.documentElement)
-      }
+        if (non_blocking) {
+          observer = observe.find(filterObj.scope, document.documentElement)
+        } else {
+          observer = await observe.find(
+            filterObj.scope,
+            document.documentElement
+          )
+        }
 
-      Promise.resolve(observer).then(e => filter.__run(filterObj, e))
+        Promise.resolve(observer).then(e => filter.__run(filterObj, e))
+      }
     }
   },
 
@@ -54,16 +67,19 @@ export const filter = {
   /**
    * 필터 lists 에 필터 함수를 등록합니다.
    */
-  add: (scope: string, cb: Function) => {
+  add: (scope: string, cb: Function, options?: RefresherFilteringOptions) => {
     let uuid = strings.uuid()
 
     if (typeof lists[uuid] === 'undefined') {
-      lists[uuid] = {
+      let obj = {
         func: cb,
         scope,
         status: {},
-        events: {}
+        events: {},
+        options
       }
+
+      lists[uuid] = obj
     }
 
     return uuid
