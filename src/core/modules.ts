@@ -11,7 +11,7 @@ import { browser } from 'webextension-polyfill-ts'
 
 import * as settings from './settings'
 
-let ACCESSIBLE_UTILS: { [index: string]: object } = {
+let UTILS: { [index: string]: object } = {
   filter,
   Frame,
   eventBus,
@@ -21,25 +21,7 @@ let ACCESSIBLE_UTILS: { [index: string]: object } = {
 
 let module_store: { [index: string]: any } = {}
 
-let PERMISSION_REVOKE = {
-  fetch: fetch
-}
-
 const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
-
-const blockFeature = () => {
-  window.fetch = blockFeatureMsg
-}
-
-const enableFeature = () => {
-  window.fetch = PERMISSION_REVOKE.fetch
-}
-
-const blockFeatureMsg = () => {
-  throw new Error(
-    'This function can\'t be used directly in the module script. To use it, please define "require" property in your module object.'
-  )
-}
 
 const runModule = (mod: RefresherModule) => {
   let plugins = []
@@ -47,7 +29,7 @@ const runModule = (mod: RefresherModule) => {
   if (mod.require && mod.require.length) {
     let len = mod.require.length
     for (let mi = 0; mi < len; mi++) {
-      plugins.push(ACCESSIBLE_UTILS[mod.require[mi]])
+      plugins.push(UTILS[mod.require[mi]])
     }
   }
 
@@ -63,7 +45,7 @@ const revokeModule = (mod: RefresherModule) => {
     if (mod.require && mod.require.length) {
       let len = mod.require.length
       for (let mi = 0; mi < len; mi++) {
-        plugins.push(ACCESSIBLE_UTILS[mod.require[mi]])
+        plugins.push(UTILS[mod.require[mi]])
       }
     }
 
@@ -91,6 +73,8 @@ export const modules = {
     }),
 
   register: async (mod: RefresherModule) => {
+    let start = performance.now()
+
     if (typeof module_store[mod.name] !== 'undefined') {
       throw new Error(`${mod.name} is already registered.`)
     }
@@ -134,11 +118,9 @@ export const modules = {
       return
     }
 
-    blockFeature()
     runModule(mod)
-    enableFeature()
 
-    log(`📁 ${mod.name} module loaded.`)
+    log(`📁 ${mod.name} module loaded. took ${(performance.now() - start).toFixed(2)}ms.`)
   }
 }
 

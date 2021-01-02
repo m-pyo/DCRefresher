@@ -25,6 +25,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "vue": "^2.6.12"
+    "vue": "^2.6.12",
+    "webpack-bundle-analyzer": "^4.3.0"
   }
 }

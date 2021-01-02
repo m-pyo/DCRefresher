@@ -5,14 +5,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
+
 const dev = process.env.NODE_ENV !== 'production'
 const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
-module.exports = {
-  mode: dev ? 'development' : 'production',
+const options = {
   entry: {
-    refresher: ['babel-polyfill', path.resolve('src', 'index.ts')],
-    refresherTest: [path.resolve('src', 'test.ts')]
+    refresher: ['babel-polyfill', path.resolve('src', 'index.ts')]
   },
   output: {
     filename: '[name].bundle.js',
@@ -23,7 +24,6 @@ module.exports = {
     compress: true,
     port: 9000
   },
-  devtool: dev ? 'eval-source-map' : '',
   module: {
     rules: [
       {
@@ -109,15 +109,8 @@ module.exports = {
       templateParameters: {
         RefresherVersion: pkg.version || '1.0.0'
       }
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/views/test.pug',
-      filename: 'refresherTest.html',
-      inject: true,
-      templateParameters: {
-        RefresherVersion: pkg.version || '1.0.0'
-      }
     })
+    // new BundleAnalyzerPlugin()
   ],
   resolve: {
     extensions: ['.js', '.ts', '.css'],
@@ -126,4 +119,20 @@ module.exports = {
       vue: 'vue/dist/vue.js'
     }
   }
+}
+
+module.exports = (env, argv) => {
+  options.mode = argv.mode
+
+  if (argv.mode === 'development') {
+    options.devtool = 'eval-source-map'
+  }
+
+  if (argv.mode === 'production') {
+    options.resolve.alias['vue'] = 'vue/dist/vue.min.js'
+
+    delete options.devServer
+  }
+
+  return options
 }

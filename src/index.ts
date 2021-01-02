@@ -10,9 +10,7 @@ let loadStart = performance.now()
 import { modules } from './core/modules'
 import { filter } from './core/filtering'
 
-if (location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') {
-  settings.load()
-}
+settings.load()
 
 import Preview from './modules/preview'
 import DarkMode from './modules/darkmode'
@@ -22,29 +20,20 @@ import UserInfo from './modules/userinfo'
 import AutoRefresh from './modules/refresh'
 import Layout from './modules/layout'
 
-if (location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') {
-  modules
-    .load(DarkMode, Fonts, AdBlock, AutoRefresh, Preview, UserInfo, Layout)
-    .then(() => {
-      log(
-        `🍊👟 DCRefresher Module Loaded. took ${(
-          performance.now() - loadStart
-        ).toFixed(2)}ms.`
-      )
+modules
+  .load(DarkMode, Fonts, AdBlock, AutoRefresh, Preview, UserInfo, Layout)
+  .then(() => {
+    log(
+      `🍊✔️ DCRefresher Module Loaded. took ${(
+        performance.now() - loadStart
+      ).toFixed(2)}ms.`
+    )
 
-      loadStart = performance.now()
+    loadStart = performance.now()
 
-      filter.run(true)
-    })
-}
+    filter.run(true)
+  })
 
-const refresherMain = async () => {
+window.addEventListener('load', async () => {
   await filter.run(true)
-
-  log(
-    `🍊✔️ DCRefresher + Page Loaded. took ${(
-      performance.now() - loadStart
-    ).toFixed(2)}ms.`
-  )
-}
-window.addEventListener('load', refresherMain)
+})

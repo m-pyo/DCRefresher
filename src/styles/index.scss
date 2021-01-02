@@ -256,7 +256,7 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
 // DC Layout Module
 
 .refresherResponsive {
-  @media screen and (max-width: 1900px) {
+  @media screen and (max-width: 900px) {
     min-width: unset;
 
     .wrap_inner {
@@ -613,6 +613,10 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
 
 .refresher-preview-contents {
   content-visibility: auto;
+}
+
+.refresher-preview-contents-actual {
+  display: block;
 }
 
 .refresher-loader {

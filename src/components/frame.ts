@@ -56,7 +56,7 @@ export const Frame = Vue.component('refresher-frame', {
       <div class="refresher-preview-contents" v-if="!frame.error">
         <refresher-loader v-show="frame.data.load"></refresher-loader>
         <transition name="refresher-opacity">
-          <div v-html="frame.contents" :key="frame.contents"></div>
+          <div class="refresher-preview-contents-actual" v-html="frame.contents" :key="frame.contents"></div>
         </transition>
 
         <div class="refresher-preview-comments" v-if="frame.data.comments && frame.data.comments.comments">
