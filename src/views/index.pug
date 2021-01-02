@@ -1,0 +1,63 @@
+- var version = RefresherVersion
+html.refresher-popup
+  head
+    title DC Refresher
+    meta(http-equiv="Content-Type" content="text/html;charset=UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="../refresher.bundle.css")
+    script(src="../vue.min.js")
+    script(src="../vue.js")
+    script(src="../option.bundle.js")
+  body
+    div#refresher-app
+      div.refresher-title-zone
+        h1 설정
+        .float-right
+          p(:class="{active: tab == 0}" v-on:click="() => tab = 0") 일반
+          p(:class="{active: tab == 1}" v-on:click="() => tab = 1") 고급
+          p(:class="{active: tab == 2}" v-on:click="() => tab = 2") 차단
+          p(:class="{active: tab == 3}" v-on:click="() => tab = 3") 모듈
+      transition-group(name="refresher-slide-left" mode="in-out")
+        div.tab.tab1(v-show="tab == 0" key="tab1")
+          .info
+            img(class="icon" data-image="icon")
+            .text
+              h3 DCRefresher
+              p <span class="version">v#{RefresherVersion}</span>  <a v-for="(link, i) in links" v-on:click="open(link.url)">{{link.text}}</a>
+          .settings
+            div(v-if="!Object.keys(settings).length")
+              h3.need-refresh 우선 디시 페이지를 열고 설정 해주세요.
+            div(v-else class="refresher-setting-category" v-for="(module, i) in Object.keys(settings)")
+              h3 {{module}}
+              div.refresher-setting(v-for="(setting, i) in Object.keys(settings[module])" v-if="!settings[module][setting].advanced")
+                .info
+                  h4 {{settings[module][setting].name}}
+                  p {{settings[module][setting].desc}} <span class="mute">(기본 값 : {{settings[module][setting].default}})</span>
+                .control
+                  refresher-checkbox(v-if="settings[module][setting].type === 'check'" :checked="settings[module][setting].value" :change="updateUserSetting" :modname="module" :id="setting")
+                  refresher-input(v-if="settings[module][setting].type === 'text'" :placeholder="settings[module][setting].default" :value="settings[module][setting].value" :id="setting" :modname="module" :change="updateUserSetting")
+                  refresher-range(v-if="settings[module][setting].type === 'range'" :placeholder="settings[module][setting].default" :value="Number(settings[module][setting].value)" :id="setting" :modname="module" :change="updateUserSetting" :min="settings[module][setting].min" :max="settings[module][setting].max" :step="settings[module][setting].step" :unit="settings[module][setting].unit")
+                  refresher-options(v-if="settings[module][setting].type === 'option'" :options="settings[module][setting].items" :change="updateUserSetting" :modname="module")
+
+        div.tab.tab2(v-show="tab == 1" key="tab2")
+          div(v-if="!Object.keys(settings).length")
+            h3.need-refresh 우선 디시 페이지를 열고 설정 해주세요.
+          div(v-for="(module, i) in Object.keys(settings)" v-if="settings[module] && advancedSettingsCount(settings[module])" class="refresher-setting-category")
+            h3 {{module}}
+            div.refresher-setting(v-for="(setting, i) in Object.keys(settings[module])" v-if="settings[module][setting].advanced")
+              .info
+                h4 {{settings[module][setting].name}}
+                p {{settings[module][setting].desc}} <span class="mute">(기본 값 : {{settings[module][setting].default}})</span>
+              .control
+                refresher-checkbox(v-if="settings[module][setting].type === 'check'" :checked="settings[module][setting].value" :change="updateUserSetting" :modname="module" :id="setting")
+                refresher-input(v-if="settings[module][setting].type === 'text'" :placeholder="settings[module][setting].default" :value="settings[module][setting].value" :id="setting" :modname="module" :change="updateUserSetting")
+                refresher-range(v-if="settings[module][setting].type === 'range'" :placeholder="settings[module][setting].default" :value="Number(settings[module][setting].value)" :id="setting" :modname="module" :change="updateUserSetting" :min="settings[module][setting].min" :max="settings[module][setting].max" :step="settings[module][setting].step" :unit="settings[module][setting].unit")
+        div.tab.tab2(v-show="tab == 2" key="tab3")
+          h3 차단 설정
+          p 차단 기능은 여러 기능과 함께 곧 추가 예정입니다.
+        div.tab.tab3(v-show="tab == 3" key="tab4")
+          div.refresher-no-modules(v-if="!Object.keys(modules).length")
+            h3 로드된 모듈 없음
+            p 우선 디시 페이지를 열어주세요.
+          div(v-else)
+            refresher-module(v-for="(module, i) in modules" :key="module.name" :name="module.name" :desc="module.description" :enabled="module.enable" :author="module.author" :require="module.require")

@@ -1,0 +1,28 @@
+.refresherAdBlock {
+  .stickyunit,
+  ins.kakao_ad_area,
+  article .power_link,
+  #wif_adx_banner_wrap,
+  .rightbanner,
+  .trc_rbox,
+  .trc_related_container,
+  .trc_rbox_container,
+  #zzbang_ad,
+  .trc_rbox_container,
+  #ad_floating,
+  #admaru,
+  .ad-layer,
+  .kakao_ad_area,
+  .ad_bottom_list,
+  .adop-rb,
+  #adop-video-total,
+  .ad_left_wing_list_top,
+  a[href*='addc.dcinside.com/'],
+  .gnb_bar > nav > ul > li.linebox,
+  a[href="#pandalive"],
+  .con_banner {
+    display: none !important;
+    width: 0px;
+    height: 0px;
+  }
+}

@@ -1,0 +1,292 @@
+.refresher-popup {
+  height: 395px;
+  width: 600px;
+}
+
+.refresher-popup {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK KR',
+    Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  body {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    font-size: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  p,
+  span {
+    letter-spacing: -0.66px;
+    margin: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-weight: bold;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .settings {
+    margin-top: 20px;
+
+    .need-refresh {
+      letter-spacing: -1.66px;
+    }
+  }
+
+  .refresher-setting-category {
+    border-radius: 13.3px;
+    position: relative;
+    z-index: 3;
+    margin-bottom: 5%;
+
+    & > h3 {
+      font-size: 18px;
+      z-index: 5;
+
+      border-radius: 13.3px;
+      margin-bottom: 10px;
+    }
+
+    .refresher-setting {
+      &::before {
+        content: ' ';
+        position: absolute;
+        width: 1px;
+        height: 100%;
+        left: -10px;
+        background-color: #333;
+      }
+
+      position: relative;
+      display: flex;
+      width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 15px;
+
+      .info {
+        flex: 8;
+        display: block;
+
+        h4 {
+          font-size: 16px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 12px;
+          color: rgb(177, 177, 177);
+        }
+      }
+
+      .control {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+
+        .refresher-input {
+          margin-left: 10px;
+        }
+
+        * {
+          margin: auto;
+        }
+      }
+    }
+  }
+
+  .refresher-range {
+    display: flex;
+    input {
+      margin-right: 10px !important;
+    }
+
+    .indicator {
+      color: #a0a0a0;
+      font-size: 12px;
+    }
+  }
+
+  .tab {
+    overflow: auto;
+    position: absolute;
+    width: 90%;
+    height: 280px;
+  }
+
+  .refresher-title-zone {
+    margin-left: 2.5vw;
+    margin-bottom: 4vh;
+    height: 55px;
+    display: flex;
+
+    h1 {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .float-right {
+      margin-left: auto;
+      margin-right: 2.5vw;
+
+      display: flex;
+
+      p {
+        margin: auto;
+        padding: 5px 10px;
+        font-weight: bold;
+        font-size: 16px;
+        color: #a0a0a0;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+
+        &:hover {
+          color: rgb(177, 177, 177);
+        }
+
+        &:active {
+          color: rgb(197, 197, 197);
+        }
+
+        &.active {
+          color: #333;
+        }
+      }
+    }
+  }
+
+  .icon {
+    width: 64px;
+    height: 64px;
+    margin-right: 10px;
+  }
+
+  .tab1 .info {
+    display: flex;
+  }
+
+  .tab1 .text {
+    font-size: 16px;
+
+    .version {
+      color: #333;
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  }
+
+  .tab3 {
+    hr {
+      border: 0;
+      border-bottom: 1px solid #eaeaea;
+    }
+  }
+
+  a {
+    margin-right: 5px;
+    color: #2475ee;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  a:hover {
+    color: #33a3ee;
+  }
+
+  a:active {
+    color: #33b9ee;
+  }
+
+  a::after {
+    content: '•';
+    margin-left: 5px;
+    border-radius: 50%;
+  }
+
+  a:last-child::after {
+    display: none;
+  }
+}
+
+.refresher-module {
+  position: relative;
+  display: flex;
+
+  // capsule style
+  background-color: #f8f8f8;
+  border-radius: 13.3px;
+  padding: 13px 23px;
+
+  .left {
+    letter-spacing: -0.66px;
+
+    .title {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .desc {
+      font-size: 14px;
+    }
+
+    .mute {
+      color: #a0a0a0;
+      font-size: 12px;
+
+      letter-spacing: -0.66px;
+
+      .link {
+        border-bottom: 1px solid #a0a0a0;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .right {
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  margin-bottom: 5px;
+}
+
+.refresher-no-modules {
+  margin-top: 160px;
+  margin-left: 15px;
+
+  h3 {
+    font-size: 28px;
+    letter-spacing: -2.66px;
+    color: #a0a0a0;
+    line-height: 1;
+  }
+
+  p {
+    font-size: 16px;
+    font-weight: bold;
+  }
+}

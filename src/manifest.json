@@ -1,0 +1,52 @@
+{
+  "name": "DC Refresher",
+  "short_name": "디씨 Refresher",
+  "manifest_version": 2,
+  "permissions": [
+    "https://dccon.dcinside.com/*",
+    "https://gall.dcinside.com/*",
+    "https://gallog.dcinside.com/*",
+    "https://addc.dcinside.com/*",
+    "*://*/*",
+    "webRequest",
+    "webRequestBlocking",
+    "storage"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "js": ["refresher.bundle.js"],
+      "css": ["refresher.bundle.css"],
+      "matches": ["https://gall.dcinside.com/*", "https://gallog.dcinside.com/*"],
+      "run_at": "document_start"
+    }
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; object-src 'self'",
+  "icons": {
+    "120": "assets/icons/logo/icon_40pt@3x.png",
+    "180": "assets/icons/logo/icon_60pt@3x.png",
+    "1024": "assets/icons/logo/Icon.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "128": "assets/icons/logo/icon_40pt@3x.png",
+      "180": "assets/icons/logo/icon_60pt@3x.png",
+      "1024": "assets/icons/logo/Icon.png"
+    },
+    "default_popup": "views/index.html",
+    "default_title": "DC Refresher"
+  },
+  "options_ui": {
+    "chrome_style": false,
+    "page": "views/index.html"
+  },
+  "web_accessible_resources": ["assets/*", "popup/*"],
+  "applications": {
+    "gecko": {
+      "id": "dcrefresher@sochiru.pw"
+    }
+  }
+}
