@@ -6,8 +6,9 @@
     "https://dccon.dcinside.com/*",
     "https://gall.dcinside.com/*",
     "https://gallog.dcinside.com/*",
+    "https://nstatic.dcinside.com/*",
     "https://addc.dcinside.com/*",
-    "*://*/*",
+    "activeTab",
     "webRequest",
     "webRequestBlocking",
     "storage"
@@ -20,7 +21,10 @@
     {
       "js": ["refresher.bundle.js"],
       "css": ["refresher.bundle.css"],
-      "matches": ["https://gall.dcinside.com/*", "https://gallog.dcinside.com/*"],
+      "matches": [
+        "https://gall.dcinside.com/*",
+        "https://gallog.dcinside.com/*"
+      ],
       "run_at": "document_start"
     }
   ],

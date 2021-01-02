@@ -4,12 +4,13 @@ let settings = {}
 
 const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
 
-;((window.chrome && window.chrome.storage) || storage).sync.get(
-  '광고 차단.enable',
-  v => {
-    blockAds = v && v['광고 차단.enable']
-  }
-)
+;(
+  (window.chrome && window.chrome.storage) ||
+  (browser && browser.storage) ||
+  storage
+).sync.get('광고 차단.enable', v => {
+  blockAds = v && v['광고 차단.enable']
+})
 
 const checkBlockTarget = str =>
   !![
@@ -22,8 +23,7 @@ const checkBlockTarget = str =>
     '://cdn.taboola.com',
     '://securepubads.g.doubleclick.net'
   ].filter(v => str.indexOf(v) > -1).length
-
-chrome.webRequest.onBeforeRequest.addListener(
+;(chrome || browser).webRequest.onBeforeRequest.addListener(
   details => {
     return { cancel: blockAds && checkBlockTarget(details.url) }
   },
@@ -31,7 +31,7 @@ chrome.webRequest.onBeforeRequest.addListener(
   ['blocking']
 )
 
-runtime.onMessage.addListener((msg, sender, sendResponse) => {
+const messageHandler = (port, msg) => {
   if (typeof msg !== 'object') {
     return
   }
@@ -49,12 +49,26 @@ runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.requestRefresherModules) {
-    sendResponse(modules)
+    port.postMessage({ responseRefresherModules: true, modules })
   }
 
   if (msg.requestRefresherSettings) {
-    sendResponse(settings)
+    port.postMessage({ responseRefresherSettings: true, settings })
   }
+}
+
+runtime.onConnect.addListener(p => {
+  p.onMessage.addListener(msg => messageHandler(p, msg))
+})
+
+runtime.onMessage.addListener(msg => {
+  let toSend = msg
+
+  if (typeof msg === 'string') {
+    toSend = JSON.parse(msg)
+  }
+
+  messageHandler(null, toSend)
 })
 
 runtime.onInstalled.addListener(details => {

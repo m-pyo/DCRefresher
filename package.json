@@ -1,6 +1,6 @@
 {
   "name": "dcrefresher",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "DC 페이지를 자동으로 고치고, 미리 보기를 생성합니다.",
   "devDependencies": {
     "@babel/core": "^7.12.10",

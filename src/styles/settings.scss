@@ -1,17 +1,20 @@
 .refresher-popup {
-  height: 395px;
-  width: 600px;
-}
-
-.refresher-popup {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK KR',
     Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+
+  #refresher-app {
+    height: 395px;
+    width: 600px;
+  }
 
   body {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
     font-size: 100%;
+
+    overflow: hidden;
   }
 
   h1,
@@ -142,6 +145,7 @@
     margin-bottom: 4vh;
     height: 55px;
     display: flex;
+    width: 90%;
 
     h1 {
       margin-top: auto;
