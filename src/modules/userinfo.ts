@@ -1,3 +1,5 @@
+let observer
+
 export default {
   name: '유저 정보',
   description: '유동, 반고닉 사용자의 IP, 아이디 정보를 표시합니다.',
@@ -5,7 +7,8 @@ export default {
   status: false,
   memory: {
     uuid: '',
-    uuid2: ''
+    uuid2: '',
+    always: ''
   },
   enable: true,
   default_enable: true,
@@ -42,7 +45,7 @@ export default {
       let iter = list.length
 
       while (iter--) {
-        ipInfoAdd(list[iter])
+        ipInfoAdd(list[iter] as HTMLElement)
       }
 
       // TODO : 글목록 반고닉 사용자 ID 표시하기
@@ -53,6 +56,32 @@ export default {
     })
     this.memory.uuid2 = eventBus.on('refresh', elemAdd)
 
+    // observer = new MutationObserver(mutations => {
+    //   mutations.forEach(mutation => {
+    //     if (!mutation.addedNodes) {
+    //       return
+    //     }
+    //     console.log(mutation)
+    //   })
+    // })
+
+    // observer.observe(document.documentElement, {
+    //   attributes: true,
+    //   childList: true,
+    //   characterData: true
+    // })
+
+    // this.memory.always = filter.add(
+    //   '.ub-writer',
+    //   (elem: HTMLElement) => {
+    //     console.log(elem)
+    //     ipInfoAdd(elem)
+    //   },
+    //   {
+    //     neverExpire: true
+    //   }
+    // )
+
     elemAdd(document)
   },
   revoke (filter: RefresherFilter, ip, eventBus: RefresherEventBus) {
@@ -60,8 +89,12 @@ export default {
       filter.remove(this.memory.uuid)
     }
 
-    if (this.memory.uuid2) {
-      eventBus.remove('refresh', this.memory.uuid2)
+    // if (this.memory.uuid2) {
+    //   eventBus.remove('refresh', this.memory.uuid2)
+    // }
+
+    if (this.memory.always) {
+      filter.remove(this.memory.always)
     }
 
     let lists = document.querySelectorAll('.refresherIP')

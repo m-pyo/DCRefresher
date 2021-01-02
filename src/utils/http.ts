@@ -71,8 +71,6 @@ const queryDraw = (lis: string[], url: string) => {
 }
 
 export const view = (url: string) => {
-  if (!viewRegex.test(url)) return url
-
   let type = galleryType(url)
 
   if (type === types.MINI) {
@@ -121,6 +119,32 @@ export const galleryType = (url: string, extra?: string) => {
   }
 
   return types.MAJOR
+}
+
+export const mergeParamURL = (origin: string, getFrom: string) => {
+  let add: { [index: string]: any } = {}
+
+  let url = new URL(origin)
+  let fromURL = new URL(getFrom)
+
+  let originParams = new URLSearchParams(
+    origin.replace(url.origin + url.pathname, '')
+  )
+
+  let iter = Array.from(originParams.keys())
+  iter.forEach(key => {
+    add[key] = originParams.get(key)
+  })
+
+  let params = new URLSearchParams(
+    getFrom.replace(fromURL.origin + fromURL.pathname, '')
+  )
+  let paramIter = Array.from(params.keys())
+  paramIter.forEach(key => {
+    add[key] = params.get(key)
+  })
+
+  return '?' + new URLSearchParams(add).toString()
 }
 
 /**
