@@ -23,7 +23,6 @@ export default {
     average_counts: new Array(AVERAGE_COUNTS_SIZE).fill(1),
     delay: 2500,
     refresh: 0,
-    lastAccess: 0,
     calledByPageTurn: false,
     refreshRequest: ''
   },
@@ -217,8 +216,6 @@ export default {
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        this.memory.lastAccess = Date.now()
-
         if (this.memory.refresh) {
           clearTimeout(this.memory.refresh)
         }
@@ -226,11 +223,7 @@ export default {
         return
       }
 
-      if (Date.now() - (this.memory.lastAccess || 0) > this.memory.delay) {
-        load()
-      } else {
-        run()
-      }
+      load()
     })
 
     run()
