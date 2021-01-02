@@ -54,7 +54,7 @@ html.refresher-popup
                 refresher-range(v-if="settings[module][setting].type === 'range'" :placeholder="settings[module][setting].default" :value="Number(settings[module][setting].value)" :id="setting" :modname="module" :change="updateUserSetting" :min="settings[module][setting].min" :max="settings[module][setting].max" :step="settings[module][setting].step" :unit="settings[module][setting].unit")
         div.tab.tab2(v-show="tab == 2" key="tab3")
           h3 차단 설정
-          p 차단 기능은 아직 개발 중입니다.
+          p 차단 기능은 여러 기능과 함께 곧 추가 예정입니다.
         div.tab.tab3(v-show="tab == 3" key="tab4")
           div.refresher-no-modules(v-if="!Object.keys(modules).length")
             h3 로드된 모듈 없음

@@ -94,7 +94,7 @@ const makeBlockAsPopup = (callback: Function, closeCallback: Function) => {
           <label><input type='radio' name='reason' value='6'/>명예훼손</label>
           <label><input type='radio' name='reason' value='0'/>직접 입력</label>
         </div>
-        <input type='text' name='reason_text' placeholder="차단 사유 직접 입력 (한글 20자 이내)"></input>
+        <input type='text' name='reason_text' style='display: none;' placeholder="차단 사유 직접 입력 (한글 20자 이내)"></input>
       </div>
       <div class="block">
         <h3>선택한 글 삭제</h3>
@@ -196,7 +196,7 @@ const makeAdminPanel = (
     </div>
     <div class="button delete">
       <img src="${getURL('/assets/icons/delete.png')}"></img>
-      <p>삭제</p>
+      <p>삭제 (D)</p>
     </div>
   `
 
@@ -218,6 +218,10 @@ const makeAdminPanel = (
 
       alert(response)
     })
+  })
+
+  window.addEventListener('keydown', () => {
+
   })
 
   element.querySelector('.block')?.addEventListener('click', _ => {
@@ -774,7 +778,7 @@ export default {
     toggleAdminPanel: {
       name: '관리 패널 활성화',
       desc:
-        '해당 갤러리에 관리 권한이 있는 경우 창 옆에 관리 패널을 표시합니다.',
+        '갤러리에 관리 권한이 있는 경우 창 옆에 관리 패널을 표시합니다.',
       default: true,
       type: 'check'
     },
