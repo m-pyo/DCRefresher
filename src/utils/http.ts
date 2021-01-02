@@ -81,7 +81,16 @@ export const view = (url: string) => {
     type = urls.gall.major
   }
 
-  return type + 'board/lists' + queryDraw(['id', 'exception_mode', 'page'], url)
+  let urlParse = new URL(url)
+  let queries = new URLSearchParams(
+    url.replace(urlParse.origin + urlParse.pathname, '')
+  )
+
+  if (queries.has('no')) {
+    queries.delete('no')
+  }
+
+  return type + 'board/lists?' + queries.toString()
 }
 
 export const make = (url: string, options: object) =>
