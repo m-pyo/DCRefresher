@@ -880,6 +880,10 @@ tr .gall_writer {
   display: flex;
   padding: 2px 4px;
 
+  &.cursor {
+    cursor: pointer;
+  }
+
   &[data-me='true'] {
     background-color: rgb(20, 109, 243);
     border-radius: 5px;
@@ -956,6 +960,10 @@ tr .gall_writer {
   .refresher-timestamp {
     margin-left: 2vw;
   }
+}
+
+.refresher-timestamp {
+  cursor: pointer;
 }
 
 .refresher-preview-comments .refresher-comment {
