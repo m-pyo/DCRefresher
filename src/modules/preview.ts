@@ -220,9 +220,7 @@ const makeAdminPanel = (
     })
   })
 
-  window.addEventListener('keydown', () => {
-
-  })
+  window.addEventListener('keydown', () => {})
 
   element.querySelector('.block')?.addEventListener('click', _ => {
     makeBlockAsPopup(
@@ -739,7 +737,8 @@ export default {
     scrollToSkip: true,
     noCacheHeader: false,
     toggleBlur: true,
-    toggleAdminPanel: true
+    toggleAdminPanel: true,
+    expandRecognizeRange: false
   },
   memory: {
     preventOpen: false,
@@ -777,9 +776,14 @@ export default {
     },
     toggleAdminPanel: {
       name: '관리 패널 활성화',
-      desc:
-        '갤러리에 관리 권한이 있는 경우 창 옆에 관리 패널을 표시합니다.',
+      desc: '갤러리에 관리 권한이 있는 경우 창 옆에 관리 패널을 표시합니다.',
       default: true,
+      type: 'check'
+    },
+    expandRecognizeRange: {
+      name: '게시글 목록 인식 범위 확장',
+      desc: '게시글의 오른쪽 클릭을 인식하는 범위를 칸 전체로 확장합니다.',
+      default: false,
       type: 'check'
     },
     noCacheHeader: {
@@ -1196,10 +1200,19 @@ export default {
       e.addEventListener('contextmenu', previewFrame)
     }
 
-    this.memory.uuid = filter.add('.gall_list .us-post .ub-word', addHandler)
+    this.memory.uuid = filter.add(
+      `.gall_list .us-post${
+        this.status.expandRecognizeRange ? '' : ' .ub-word'
+      }`,
+      addHandler
+    )
     this.memory.uuid2 = filter.add('#right_issuezoom', addHandler)
     this.memory.refreshId = eventBus.on('refresh', (e: HTMLElement) => {
-      let elems = e.querySelectorAll('.gall_list .us-post .ub-word')
+      let elems = e.querySelectorAll(
+        `.gall_list .us-post${
+          this.status.expandRecognizeRange ? '' : ' .ub-word'
+        }`
+      )
 
       let iter = elems.length
       while (iter--) {
