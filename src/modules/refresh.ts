@@ -96,6 +96,8 @@ export default {
     }
 
     let isPostView = location.href.indexOf('/board/view') > -1
+    let currentPostNo = new URLSearchParams(location.href).get('no')
+
     let load = async (skipRun?: boolean) => {
       // 도배 방지용
       if (Date.now() - lastAccess < 500) {
@@ -127,17 +129,26 @@ export default {
       let oldList = document.querySelector('.gall_list tbody')
       if (!oldList || !newList) return
 
-      oldList.parentElement!.appendChild(newList)
-      oldList.parentElement!.removeChild(oldList)
-
-      var cached = Array.from(oldList.querySelectorAll('td.gall_num'))
+      let cached = Array.from(oldList.querySelectorAll('td.gall_num'))
         .map(v => v.innerHTML)
         .join('|')
 
+      oldList.parentElement!.appendChild(newList)
+      oldList.parentElement!.removeChild(oldList)
       oldList = null
 
-      let currentPostNo = new URLSearchParams(location.href).get('no')
-      newList.querySelectorAll('td.gall_num').forEach(v => {
+      let postNoIter = newList.querySelectorAll('td.gall_num')
+
+      let containsEmpty = newList.parentElement!.classList.contains('empty')
+      if (postNoIter.length) {
+        if (containsEmpty) {
+          newList.parentElement!.classList.remove('empty')
+        }
+      } else if (!containsEmpty) {
+        newList!.parentElement!.classList.add('empty')
+      }
+
+      postNoIter.forEach(v => {
         let value = v.innerHTML
 
         if (cached.indexOf(value) == -1 && value != currentPostNo) {
