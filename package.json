@@ -4,6 +4,7 @@
   "description": "DC 페이지를 자동으로 고치고, 미리 보기를 생성합니다.",
   "devDependencies": {
     "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/preset-env": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
     "@babel/register": "^7.12.10",

@@ -32,10 +32,7 @@ module.exports = (env, argv) => {
           exclude: /(node_modules|_old_src|(sa|sc|c)ss|background)/,
           test: /\.js|\.ts$/,
           use: {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-typescript']
-            }
+            loader: 'babel-loader'
           }
         },
         {
