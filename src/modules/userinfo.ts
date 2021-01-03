@@ -23,7 +23,9 @@ export default {
       let text = document.createElement('span')
       text.className = 'ip refresherIP'
       let format = ip.format(ip_data)
-      text.innerHTML = `<span>${format}</span>`
+      text.innerHTML = `<span>${
+        format.length > 100 ? format.substring(0, 97) + '...' : format
+      }</span>`
       text.title = format
 
       let fl = elem.querySelector('.fl')
