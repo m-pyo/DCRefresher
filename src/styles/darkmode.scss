@@ -144,7 +144,8 @@ $dark-red: #e21919;
     border-top-color: $dark-dc-color;
   }
 
-  .miniwrap .sogaeimg_tit, .gallview_head .gall_comment a {
+  .miniwrap .sogaeimg_tit,
+  .gallview_head .gall_comment a {
     background: $dark-tint2;
   }
 
@@ -715,6 +716,10 @@ $dark-red: #e21919;
 
   .cont_head .tit {
     color: #e21919;
+  }
+
+  .crt {
+    background: #151515;
   }
 
   .gallog_wrap {

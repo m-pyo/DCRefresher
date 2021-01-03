@@ -95,6 +95,7 @@ export default {
       this.memory.refresh = window.setTimeout(load, this.memory.delay)
     }
 
+    let isPostView = location.href.indexOf('/board/view') > -1
     let load = async (skipRun?: boolean) => {
       // 도배 방지용
       if (Date.now() - lastAccess < 500) {
@@ -135,14 +136,24 @@ export default {
 
       oldList = null
 
+      let currentPostNo = new URLSearchParams(location.href).get('no')
       newList.querySelectorAll('td.gall_num').forEach(v => {
-        if (cached.indexOf(v.innerHTML) == -1) {
+        let value = v.innerHTML
+
+        if (cached.indexOf(value) == -1 && value != currentPostNo) {
           if (this.status.fadeIn && !this.memory.calledByPageTurn) {
             v.parentElement!.className += ' refresherNewPost'
             v.parentElement!.style.animationDelay =
               this.memory.new_counts * 23 + 'ms'
           }
           this.memory.new_counts++
+        }
+
+        if (isPostView) {
+          if (value === currentPostNo) {
+            v.innerHTML = `<span class="sp_img crt_icon"></span>`
+            v.parentElement?.classList.add('crt')
+          }
         }
       })
 
@@ -238,7 +249,7 @@ export default {
 
     if (this.status.useBetterBrowse) {
       this.memory.uuid = filter.add(
-        '.bottom_paging_box a',
+        '.left_content .bottom_paging_box a',
         (a: HTMLAnchorElement) => {
           a.onclick = () => false
           a.addEventListener('click', async (ev: MouseEvent) => {
@@ -263,6 +274,11 @@ export default {
           })
         }
       )
+
+      window.addEventListener('popstate', async _ => {
+        this.memory.calledByPageTurn = true
+        await load(true)
+      })
 
       this.memory.uuid2 = eventBus.on(
         'refresherGetPost',
