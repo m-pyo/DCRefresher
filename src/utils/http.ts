@@ -50,12 +50,6 @@ export const heads = {
   'X-Requested-With': 'XMLHttpRequest'
 }
 
-// from https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-export const query = (str: string, query: string) => {
-  var match = RegExp('[?&]' + query + '=([^&]*)').exec(str)
-  return match && decodeURIComponent(match[1].replace(/\+/g, ' '))
-}
-
 export const viewRegex = /\/board\/view\//g
 export const mgall = /dcinside\.com\/mgallery/g
 
