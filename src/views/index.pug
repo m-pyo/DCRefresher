@@ -1,11 +1,10 @@
-- var version = RefresherVersion
 html.refresher-popup
   head
     title DC Refresher
     meta(http-equiv="Content-Type" content="text/html;charset=UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet" href="../refresher.bundle.css")
-    script(src="../vue.min.js")
+    script(src=RefresherDevMode ? "../vue.js" : "../vue.min.js")
     script(src="../option.bundle.js")
     style.
       html,body {
@@ -27,7 +26,7 @@ html.refresher-popup
             img(class="icon" data-image="icon")
             .text
               h3 DCRefresher
-              p <span class="version">v#{RefresherVersion}</span>  <a v-for="(link, i) in links" v-on:click="open(link.url)">{{link.text}}</a>
+              p <span class="version">v#{RefresherVersion}#{RefresherDevMode ? ' (dev mode)' : ''}</span>  <a v-for="(link, i) in links" v-on:click="open(link.url)">{{link.text}}</a>
           .settings
             div(v-if="!Object.keys(settings).length")
               h3.need-refresh 우선 디시 페이지를 열고 설정 해주세요.
