@@ -47,6 +47,7 @@ export default {
   },
   methods: {
     date (str: string) {
+      str = str.replace(/\./g, '-')
       return str.substring(0, 4).match(/\./)
         ? `${new Date().getFullYear()}.${str}`
         : str

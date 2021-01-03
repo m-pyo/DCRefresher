@@ -931,7 +931,7 @@ export default {
             }
 
             frame.data.user = obj.user
-            frame.data.date = new Date(obj.date)
+            frame.data.date = new Date(obj.date.replace(/\./g, '-'))
             frame.data.expire = obj.expire
             frame.data.buttons = true
 
