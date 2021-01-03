@@ -125,12 +125,6 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   }
 }
 
-.refresherDark .refresher-frame {
-  &.blur {
-    background-color: rgba(41, 41, 41, 0.85);
-  }
-}
-
 .refresher-frame {
   position: absolute;
   display: block;
@@ -564,32 +558,6 @@ tr .gall_writer {
       p {
         color: #f00;
       }
-    }
-  }
-}
-
-.refresherDark {
-  .refresher-management-panel {
-    background: rgba(32, 32, 32, 0.4);
-    border: 1px solid #505050;
-
-    &.blur {
-      backdrop-filter: blur(5px) saturate(150%);
-      background-color: rgba(41, 41, 41, 0.85);
-    }
-
-    .button {
-      p {
-        color: $dark-text-color;
-      }
-
-      &:hover {
-        background: rgba(110, 110, 110, 0.5);
-      }
-    }
-
-    img {
-      filter: invert(1);
     }
   }
 }

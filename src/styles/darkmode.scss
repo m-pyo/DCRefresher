@@ -1,6 +1,6 @@
 $dark-background: #222;
 $dark-tint-light: #292929;
-$dark-tint-light-opacity: rgba(41, 41, 41, 0.855);
+$dark-tint-light-opacity: rgba(41, 41, 41, 1);
 $dark-tint2: #3d3d3d;
 $dark-tint3: #555;
 $dark-text-color: #ccc;
@@ -18,11 +18,39 @@ $dark-red: #e21919;
   .refresher-frame {
     background-color: $dark-tint-light-opacity;
     color: $dark-text-color-bright;
+
+    &.blur {
+      background-color: rgba(41, 41, 41, 0.85);
+    }
   }
 
   .refresher-frame-outer {
     &.background {
       background-color: rgba(82, 82, 82, 0.6);
+    }
+  }
+
+  .refresher-management-panel {
+    background: rgba(32, 32, 32, 0.4);
+    border: 1px solid #505050;
+
+    &.blur {
+      backdrop-filter: blur(5px) saturate(150%);
+      background-color: rgba(41, 41, 41, 0.85);
+    }
+
+    .button {
+      p {
+        color: $dark-text-color;
+      }
+
+      &:hover {
+        background: rgba(110, 110, 110, 0.5);
+      }
+    }
+
+    img {
+      filter: invert(1);
     }
   }
 }
