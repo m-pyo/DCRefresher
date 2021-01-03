@@ -262,6 +262,10 @@ export default {
       this.memory.uuid = filter.add(
         '.left_content .bottom_paging_box a',
         (a: HTMLAnchorElement) => {
+          if (a.href.indexOf('javascript:') > -1) {
+            return
+          }
+
           a.onclick = () => false
           a.addEventListener('click', async (ev: MouseEvent) => {
             let isPageView = location.href.indexOf('/board/view') > -1
@@ -304,6 +308,11 @@ export default {
           document
             .querySelectorAll('.left_content .bottom_paging_box a')!
             .forEach(async a => {
+              let href = (a as HTMLAnchorElement).href
+              if (href.indexOf('javascript:') > -1) {
+                return
+              }
+
               ;(a as HTMLAnchorElement).onclick = () => false
               ;(a as HTMLAnchorElement).addEventListener(
                 'click',
@@ -314,10 +323,10 @@ export default {
                     history.pushState(
                       null,
                       document.title,
-                      http.mergeParamURL(location.href, a.href)
+                      http.mergeParamURL(location.href, href)
                     )
                   } else {
-                    history.pushState(null, document.title, a.href)
+                    history.pushState(null, document.title, href)
                   }
                   this.memory.calledByPageTurn = true
 
