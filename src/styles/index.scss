@@ -16,6 +16,7 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
 @import './darkmode.scss';
 
 @import './animations.scss';
+@import './toast.scss';
 
 // Frame core
 
@@ -523,12 +524,6 @@ tr .gall_writer {
   user-select: none;
   border-radius: 0px 13.3px 13.3px 0px;
   transition: 0.3 all cubic-bezier(0.19, 1, 0.22, 1);
-
-  transform: translateX(-101px);
-
-  &.load {
-    transform: translateX(0px);
-  }
 
   &.blur {
     background-color: rgba(245, 245, 245, 0.85);

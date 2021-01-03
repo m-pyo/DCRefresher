@@ -4,6 +4,8 @@ import { PostInfo } from '../structs/post'
 import { findNeighbor } from '../utils/dom'
 import * as http from '../utils/http'
 
+import * as Toast from '../components/toast'
+
 /**
  * dcinside.com set cookie function
  */
@@ -62,255 +64,303 @@ const getURL = (u: string) => {
   return !chrome || !chrome.extension ? u : chrome.extension.getURL(u)
 }
 
-const makeBlockAsPopup = (callback: Function, closeCallback: Function) => {
-  let element = document.createElement('div')
-  element.className = 'refresher-block-popup'
+let KEY_COUNTS: { [index: string]: any } = {}
+let adminKeyPress: any = null
 
-  element.innerHTML = `
-    <div class="close">
-      <div class="cross"></div>
-      <div class="cross"></div>
-    </div>
-    <div class="contents">
-      <div class="block">
-        <h3>차단 기간</h3>
-        <div class="block_duration">
-          <label><input type='radio' name='duration' value='1' checked='checked' />1시간</label>
-          <label><input type='radio' name='duration' value='6' />6시간</label>
-          <label><input type='radio' name='duration' value='24' />24시간</label>
-          <label><input type='radio' name='duration' value='168' />7일</label>
-          <label><input type='radio' name='duration' value='336' />14일</label>
-          <label><input type='radio' name='duration' value='720' />30일</label>
+const panel = {
+  block: (callback: Function, closeCallback: Function) => {
+    let element = document.createElement('div')
+    element.className = 'refresher-block-popup'
+
+    element.innerHTML = `
+      <div class="close">
+        <div class="cross"></div>
+        <div class="cross"></div>
+      </div>
+      <div class="contents">
+        <div class="block">
+          <h3>차단 기간</h3>
+          <div class="block_duration">
+            <label><input type='radio' name='duration' value='1' checked='checked' />1시간</label>
+            <label><input type='radio' name='duration' value='6' />6시간</label>
+            <label><input type='radio' name='duration' value='24' />24시간</label>
+            <label><input type='radio' name='duration' value='168' />7일</label>
+            <label><input type='radio' name='duration' value='336' />14일</label>
+            <label><input type='radio' name='duration' value='720' />30일</label>
+          </div>
+        </div>
+        <div class="block">
+          <h3>차단 사유</h3>
+          <div class="block_reason">
+            <label><input type='radio' name='reason' value='1' checked='checked' />음란성</label>
+            <label><input type='radio' name='reason' value='2'/>광고</label>
+            <label><input type='radio' name='reason' value='3'/>욕설</label>
+            <label><input type='radio' name='reason' value='4'/>도배</label>
+            <label><input type='radio' name='reason' value='5'/>저작권 침해</label>
+            <label><input type='radio' name='reason' value='6'/>명예훼손</label>
+            <label><input type='radio' name='reason' value='0'/>직접 입력</label>
+          </div>
+          <input type='text' name='reason_text' style='display: none;' placeholder="차단 사유 직접 입력 (한글 20자 이내)"></input>
+        </div>
+        <div class="block">
+          <h3>선택한 글 삭제</h3>
+          <input type='checkbox' name='remove'></input>
+          <button class="go-block">차단</button>
         </div>
       </div>
-      <div class="block">
-        <h3>차단 사유</h3>
-        <div class="block_reason">
-          <label><input type='radio' name='reason' value='1' checked='checked' />음란성</label>
-          <label><input type='radio' name='reason' value='2'/>광고</label>
-          <label><input type='radio' name='reason' value='3'/>욕설</label>
-          <label><input type='radio' name='reason' value='4'/>도배</label>
-          <label><input type='radio' name='reason' value='5'/>저작권 침해</label>
-          <label><input type='radio' name='reason' value='6'/>명예훼손</label>
-          <label><input type='radio' name='reason' value='0'/>직접 입력</label>
-        </div>
-        <input type='text' name='reason_text' style='display: none;' placeholder="차단 사유 직접 입력 (한글 20자 이내)"></input>
-      </div>
-      <div class="block">
-        <h3>선택한 글 삭제</h3>
-        <input type='checkbox' name='remove'></input>
-        <button class="go-block">차단</button>
-      </div>
-    </div>
-  `
+    `
 
-  let avoid_hour = 1
-  let avoid_reason = 1
+    let avoid_hour = 1
+    let avoid_reason = 1
 
-  element.querySelector('.close')?.addEventListener('click', _ => {
-    closeCallback()
-  })
+    element.querySelector('.close')?.addEventListener('click', _ => {
+      closeCallback()
+    })
 
-  element.querySelectorAll('input[type="radio"]').forEach(v => {
-    v.addEventListener('click', ev => {
-      let selected = ev.target as HTMLInputElement
+    element.querySelectorAll('input[type="radio"]').forEach(v => {
+      v.addEventListener('click', ev => {
+        let selected = ev.target as HTMLInputElement
 
-      if (selected!.getAttribute('name') === 'duration') {
-        avoid_hour = Number(selected!.value)
-      }
-
-      if (selected!.getAttribute('name') === 'reason') {
-        let value = Number(selected!.value)
-
-        let blockReasonInput = document.querySelector(
-          'input[name="reason_text"]'
-        ) as HTMLInputElement
-
-        if (!value) {
-          blockReasonInput!.style.display = 'block'
-        } else {
-          blockReasonInput!.style.display = 'none'
+        if (selected!.getAttribute('name') === 'duration') {
+          avoid_hour = Number(selected!.value)
         }
 
-        avoid_reason = value
-      }
+        if (selected!.getAttribute('name') === 'reason') {
+          let value = Number(selected!.value)
+
+          let blockReasonInput = document.querySelector(
+            'input[name="reason_text"]'
+          ) as HTMLInputElement
+
+          if (!value) {
+            blockReasonInput!.style.display = 'block'
+          } else {
+            blockReasonInput!.style.display = 'none'
+          }
+
+          avoid_reason = value
+        }
+      })
     })
-  })
 
-  element.querySelector('.go-block')?.addEventListener('click', () => {
-    let avoid_reason_txt = (element.querySelector(
-      'input[name="reason_text"]'
-    )! as HTMLInputElement).value
-    let del_chk = (element.querySelector(
-      'input[name="remove"]'
-    )! as HTMLInputElement).checked
+    element.querySelector('.go-block')?.addEventListener('click', () => {
+      let avoid_reason_txt = (element.querySelector(
+        'input[name="reason_text"]'
+      )! as HTMLInputElement).value
+      let del_chk = (element.querySelector(
+        'input[name="remove"]'
+      )! as HTMLInputElement).checked
 
-    callback(avoid_hour, avoid_reason, avoid_reason_txt, del_chk ? 1 : 0)
-  })
+      callback(avoid_hour, avoid_reason, avoid_reason_txt, del_chk ? 1 : 0)
+    })
 
-  document.querySelector('body')?.appendChild(element)
-}
+    document.querySelector('body')?.appendChild(element)
+  },
 
-const makeAdminPanel = (
-  preData: GalleryPredata,
-  frame: RefresherFrame,
-  toggleBlur: boolean,
-  eventBus: RefresherEventBus
-) => {
-  let preFoundBlockElement = document.querySelector('.refresher-block-popup')
-  if (preFoundBlockElement) {
-    preFoundBlockElement.parentElement?.removeChild(preFoundBlockElement)
-  }
+  admin: (
+    preData: GalleryPredata,
+    frame: RefresherFrame,
+    toggleBlur: boolean,
+    eventBus: RefresherEventBus,
+    useKeyPress: boolean
+  ) => {
+    let preFoundBlockElement = document.querySelector('.refresher-block-popup')
+    if (preFoundBlockElement) {
+      preFoundBlockElement.parentElement?.removeChild(preFoundBlockElement)
+    }
 
-  let preFoundElement = document.querySelector('.refresher-management-panel')
-  if (preFoundElement) {
-    preFoundElement.parentElement?.removeChild(preFoundElement)
-  }
+    let preFoundElement = document.querySelector('.refresher-management-panel')
+    if (preFoundElement) {
+      preFoundElement.parentElement?.removeChild(preFoundElement)
+    }
 
-  let setAsNotice = !preData.notice
-  let setAsRecommend = !preData.recommend
+    let setAsNotice = !preData.notice
+    let setAsRecommend = !preData.recommend
 
-  let element = document.createElement('div')
-  element.id = 'refresher-management-panel'
-  element.className = 'refresher-management-panel'
+    let element = document.createElement('div')
+    element.id = 'refresher-management-panel'
+    element.className = 'refresher-management-panel'
 
-  if (toggleBlur) {
-    element.className += ' blur'
-  }
+    if (toggleBlur) {
+      element.className += ' blur'
+    }
 
-  let upvoteImage = getURL('/assets/icons/upvote.png')
-  let downvoteImage = getURL('/assets/icons/downvote.png')
+    let upvoteImage = getURL('/assets/icons/upvote.png')
+    let downvoteImage = getURL('/assets/icons/downvote.png')
 
-  element.innerHTML = `
-    <div class="button pin">
-      <img src="${getURL('/assets/icons/pin.png')}"></img>
-      <p>${setAsNotice ? '공지로 등록' : '공지 등록 해제'}</p>
-    </div>
-    <div class="button recommend">
-      <img src="${setAsRecommend ? upvoteImage : downvoteImage}"></img>
-      <p>${setAsRecommend ? '개념글 등록' : '개념글 해제'}</p>
-    </div>
-    <div class="button block">
-      <img src="${getURL('/assets/icons/block.png')}"></img>
-      <p>차단</p>
-    </div>
-    <div class="button delete">
-      <img src="${getURL('/assets/icons/delete.png')}"></img>
-      <p>삭제 (D)</p>
-    </div>
-  `
+    element.innerHTML = `
+      <div class="button pin">
+        <img src="${getURL('/assets/icons/pin.png')}"></img>
+        <p>${setAsNotice ? '공지로 등록' : '공지 등록 해제'}</p>
+      </div>
+      <div class="button recommend">
+        <img src="${setAsRecommend ? upvoteImage : downvoteImage}"></img>
+        <p>${setAsRecommend ? '개념글 등록' : '개념글 해제'}</p>
+      </div>
+      <div class="button block">
+        <img src="${getURL('/assets/icons/block.png')}"></img>
+        <p>차단</p>
+      </div>
+      <div class="button delete">
+        <img src="${getURL('/assets/icons/delete.png')}"></img>
+        <p>삭제 (D)</p>
+      </div>
+    `
 
-  requestAnimationFrame(() => {
-    element.className += ' load'
-  })
+    let deleteFunction = () =>
+      request.delete(preData).then(response => {
+        if (typeof response === 'object') {
+          if (response.result === 'success') {
+            Toast.show('게시글을 삭제했습니다.', false, 600)
 
-  element.querySelector('.delete')?.addEventListener('click', _ => {
-    request.delete(preData).then(response => {
-      if (typeof response === 'object') {
-        if (response.result === 'success') {
-          frame.app.close()
-        } else {
-          alert(`${response.result}: ${response.message}`)
+            frame.app.close()
+          } else {
+            Toast.show(response.message, true, 600)
+            alert(`${response.result}: ${response.message}`)
+          }
+
+          return
         }
 
-        return
+        alert(response)
+      })
+
+    element.querySelector('.delete')?.addEventListener('click', deleteFunction)
+
+    if (adminKeyPress) {
+      document.removeEventListener('keypress', adminKeyPress)
+    }
+
+    if (useKeyPress) {
+      adminKeyPress = (ev: KeyboardEvent) => {
+        if (ev.code !== 'KeyB' && ev.code !== 'KeyD') {
+          return ev
+        }
+
+        if (KEY_COUNTS[ev.code]) {
+          if (Date.now() - KEY_COUNTS[ev.code][0] > 1000) {
+            KEY_COUNTS[ev.code] = [Date.now(), 0]
+          }
+        } else {
+          KEY_COUNTS[ev.code] = [Date.now(), 0]
+        }
+
+        KEY_COUNTS[ev.code][0] = Date.now()
+        KEY_COUNTS[ev.code][1]++
+
+        if (ev.code === 'KeyD') {
+          if (KEY_COUNTS[ev.code][1] >= 2) {
+            deleteFunction()
+            KEY_COUNTS[ev.code][1] = 0
+          } else {
+            Toast.show('한번 더 D키를 누르면 게시글을 삭제합니다.', true, 1000)
+          }
+        }
+
+        // TODO : 차단 프리셋이 지정된 경우 차단
+
+        // else if (ev.code === 'KeyB') {
+        //   if (KEY_COUNTS[ev.code][1] > 2) {
+        //     // deleteFunction()
+        //   } else {
+        //     Toast.show('한번 더 B키를 누르면 차단합니다.', true, 1000)
+        //   }
+        // }
       }
+    }
 
-      alert(response)
-    })
-  })
+    document.addEventListener('keypress', adminKeyPress)
 
-  window.addEventListener('keydown', () => {})
+    element.querySelector('.block')?.addEventListener('click', _ => {
+      panel.block(
+        (
+          avoid_hour: Number,
+          avoid_reason: Number,
+          avoid_reason_txt: string,
+          del_chk: Number
+        ) => {
+          request
+            .block(preData, avoid_hour, avoid_reason, avoid_reason_txt, del_chk)
+            .then(response => {
+              if (typeof response === 'object') {
+                if (response.result === 'success') {
+                  alert(response.msg || response.message)
 
-  element.querySelector('.block')?.addEventListener('click', _ => {
-    makeBlockAsPopup(
-      (
-        avoid_hour: Number,
-        avoid_reason: Number,
-        avoid_reason_txt: string,
-        del_chk: Number
-      ) => {
-        request
-          .block(preData, avoid_hour, avoid_reason, avoid_reason_txt, del_chk)
-          .then(response => {
-            if (typeof response === 'object') {
-              if (response.result === 'success') {
-                alert(response.msg || response.message)
-
-                if (del_chk) {
-                  frame.app.close()
+                  if (del_chk) {
+                    frame.app.close()
+                  }
+                } else {
+                  alert(`${response.result}: ${response.message}`)
                 }
-              } else {
-                alert(`${response.result}: ${response.message}`)
+
+                return
               }
 
-              return
-            }
+              alert(response)
+            })
+        },
+        () => {
+          let blockPopup = document.querySelector('.refresher-block-popup')
+          blockPopup!.parentElement?.removeChild(blockPopup!)
+        }
+      )
+    })
 
-            alert(response)
-          })
-      },
-      () => {
-        let blockPopup = document.querySelector('.refresher-block-popup')
-        blockPopup!.parentElement?.removeChild(blockPopup!)
-      }
-    )
-  })
+    let pin = element.querySelector('.pin')
+    pin!.addEventListener('click', _ => {
+      request.setNotice(preData, setAsNotice).then(response => {
+        eventBus.emit('refreshRequest')
 
-  let pin = element.querySelector('.pin')
-  pin!.addEventListener('click', _ => {
-    request.setNotice(preData, setAsNotice).then(response => {
-      eventBus.emit('refreshRequest')
+        if (typeof response === 'object') {
+          if (response.result === 'success') {
+            alert(response.message || response.msg)
 
-      if (typeof response === 'object') {
-        if (response.result === 'success') {
-          alert(response.message || response.msg)
+            setAsNotice = !setAsNotice
+            pin!.querySelector('p')!.innerHTML = setAsNotice
+              ? '공지로 등록'
+              : '공지 등록 해제'
+          } else {
+            alert(`${response.result}: ${response.message || response.msg}`)
+          }
 
-          setAsNotice = !setAsNotice
-          pin!.querySelector('p')!.innerHTML = setAsNotice
-            ? '공지로 등록'
-            : '공지 등록 해제'
-        } else {
-          alert(`${response.result}: ${response.message || response.msg}`)
+          return
         }
 
-        return
-      }
-
-      alert(response)
+        alert(response)
+      })
     })
-  })
 
-  let recommend = element.querySelector('.recommend')
-  recommend!.addEventListener('click', _ => {
-    request.setRecommend(preData, setAsRecommend).then(response => {
-      eventBus.emit('refreshRequest')
+    let recommend = element.querySelector('.recommend')
+    recommend!.addEventListener('click', _ => {
+      request.setRecommend(preData, setAsRecommend).then(response => {
+        eventBus.emit('refreshRequest')
 
-      if (typeof response === 'object') {
-        if (response.result === 'success') {
-          alert(response.message || response.msg)
+        if (typeof response === 'object') {
+          if (response.result === 'success') {
+            alert(response.message || response.msg)
 
-          setAsRecommend = !setAsRecommend
-          recommend!.querySelector('img')!.src = setAsRecommend
-            ? upvoteImage
-            : downvoteImage
-          recommend!.querySelector('p')!.innerHTML = setAsRecommend
-            ? '개념글 등록'
-            : '개념글 해제'
-        } else {
-          alert(`${response.result}: ${response.message || response.msg}`)
+            setAsRecommend = !setAsRecommend
+            recommend!.querySelector('img')!.src = setAsRecommend
+              ? upvoteImage
+              : downvoteImage
+            recommend!.querySelector('p')!.innerHTML = setAsRecommend
+              ? '개념글 등록'
+              : '개념글 해제'
+          } else {
+            alert(`${response.result}: ${response.message || response.msg}`)
+          }
+
+          return
         }
 
-        return
-      }
-
-      alert(response)
+        alert(response)
+      })
     })
-  })
 
-  document.querySelector('body')?.appendChild(element)
+    document.querySelector('body')?.appendChild(element)
 
-  return element
+    return element
+  }
 }
 
 const getRelevantData = (ev: MouseEvent) => {
@@ -738,7 +788,8 @@ export default {
     noCacheHeader: false,
     toggleBlur: true,
     toggleAdminPanel: true,
-    expandRecognizeRange: false
+    expandRecognizeRange: false,
+    tooltipMode: true
   },
   memory: {
     preventOpen: false,
@@ -750,6 +801,12 @@ export default {
   enable: true,
   default_enable: true,
   settings: {
+    tooltipMode: {
+      name: '툴팁 미리보기 표시',
+      desc: '마우스를 올려두면 글 내용만 빠르게 볼 수 있는 툴팁을 추가합니다.',
+      default: true,
+      type: 'check'
+    },
     longPressDelay: {
       name: '기본 마우스 오른쪽 클릭 딜레이',
       desc:
@@ -1138,7 +1195,7 @@ export default {
           this.status.toggleAdminPanel &&
           document.querySelector('.useradmin_btnbox button') !== null
         ) {
-          makeAdminPanel(preData, frame, this.status.toggleBlur, eventBus)
+          panel.admin(preData, frame, this.status.toggleBlur, eventBus)
         }
       }
 
@@ -1154,6 +1211,10 @@ export default {
         if (adminPanel) {
           adminPanel.parentElement?.removeChild(adminPanel)
         }
+
+        if (adminKeyPress) {
+          document.removeEventListener('keypress', adminKeyPress)
+        }
       })
 
       makeFirstFrame(frame.app.first(), preData, signal)
@@ -1163,7 +1224,7 @@ export default {
         this.status.toggleAdminPanel &&
         document.querySelector('.useradmin_btnbox button') !== null
       ) {
-        makeAdminPanel(preData, frame, this.status.toggleBlur, eventBus)
+        panel.admin(preData, frame, this.status.toggleBlur, eventBus)
       }
 
       setTimeout(() => {
