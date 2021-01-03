@@ -37,6 +37,7 @@
   },
   "scripts": {
     "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch",
     "compile": "babel src --extensions '.ts,.tsx'",
     "test": "mocha"
   }

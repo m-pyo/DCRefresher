@@ -789,7 +789,8 @@ export default {
     toggleBlur: true,
     toggleAdminPanel: true,
     expandRecognizeRange: false,
-    tooltipMode: true
+    tooltipMode: true,
+    useKeyPress: true
   },
   memory: {
     preventOpen: false,
@@ -801,12 +802,12 @@ export default {
   enable: true,
   default_enable: true,
   settings: {
-    tooltipMode: {
-      name: '툴팁 미리보기 표시',
-      desc: '마우스를 올려두면 글 내용만 빠르게 볼 수 있는 툴팁을 추가합니다.',
-      default: true,
-      type: 'check'
-    },
+    // tooltipMode: {
+    //   name: '툴팁 미리보기 표시',
+    //   desc: '마우스를 올려두면 글 내용만 빠르게 볼 수 있는 툴팁을 추가합니다.',
+    //   default: true,
+    //   type: 'check'
+    // },
     longPressDelay: {
       name: '기본 마우스 오른쪽 클릭 딜레이',
       desc:
@@ -834,6 +835,13 @@ export default {
     toggleAdminPanel: {
       name: '관리 패널 활성화',
       desc: '갤러리에 관리 권한이 있는 경우 창 옆에 관리 패널을 표시합니다.',
+      default: true,
+      type: 'check'
+    },
+    useKeyPress: {
+      name: '관리 패널 > 키 제어',
+      desc:
+        '관리 패널이 활성화된 경우 단축키를 눌러 빠르게 관리할 수 있습니다.',
       default: true,
       type: 'check'
     },
@@ -1195,7 +1203,13 @@ export default {
           this.status.toggleAdminPanel &&
           document.querySelector('.useradmin_btnbox button') !== null
         ) {
-          panel.admin(preData, frame, this.status.toggleBlur, eventBus)
+          panel.admin(
+            preData,
+            frame,
+            this.status.toggleBlur,
+            eventBus,
+            this.status.useKeyPress
+          )
         }
       }
 
@@ -1224,7 +1238,13 @@ export default {
         this.status.toggleAdminPanel &&
         document.querySelector('.useradmin_btnbox button') !== null
       ) {
-        panel.admin(preData, frame, this.status.toggleBlur, eventBus)
+        panel.admin(
+          preData,
+          frame,
+          this.status.toggleBlur,
+          eventBus,
+          this.status.useKeyPress
+        )
       }
 
       setTimeout(() => {
