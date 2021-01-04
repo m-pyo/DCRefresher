@@ -7,10 +7,12 @@ interface RefresherFilteringLists {
   status: { [index: string]: any }
   events: { [index: string]: any }
   options?: RefresherFilteringOptions
+  expire?: Function
 }
 
 interface RefresherFilteringOptions {
   neverExpire?: boolean
+  expireFunc?: Function
 }
 
 let lists: { [index: string]: RefresherFilteringLists } = {}
@@ -36,11 +38,27 @@ export const filter = {
     while (len--) {
       let filterObj = lists[listsKeys[len]]
 
-      let observer
+      let observer: any
 
       if (filterObj.options && filterObj.options.neverExpire) {
-        // TODO : neverExpire 옵션 구현
-        throw new Error('neverExpire option is not implemented yet.')
+        if (lists[listsKeys[len]].expire) {
+          lists[listsKeys[len]].expire!()
+        }
+
+        observer = observe.listen(
+          filterObj.scope,
+          document.documentElement,
+          (e: NodeListOf<Element>) => {
+            filter.__run(filterObj, e)
+          }
+        )
+
+        lists[listsKeys[len]].expire = () => {
+          if (observer) {
+            ;(observer as MutationObserver).disconnect()
+            observer = null
+          }
+        }
       } else {
         if (non_blocking) {
           observer = observe.find(filterObj.scope, document.documentElement)
@@ -109,6 +127,10 @@ export const filter = {
     }
 
     filter.events(uuid, `remove`)
+
+    if (lists[uuid].options && lists[uuid].options?.neverExpire) {
+      lists[uuid].expire!()
+    }
 
     delete lists[uuid]
   },

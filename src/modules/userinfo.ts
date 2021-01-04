@@ -1,19 +1,15 @@
-let observer
-
 export default {
   name: '유저 정보',
   description: '유동, 반고닉 사용자의 IP, 아이디 정보를 표시합니다.',
   author: { name: 'Sochiru', url: 'https://sochiru.pw' },
   status: false,
   memory: {
-    uuid: '',
-    uuid2: '',
     always: ''
   },
   enable: true,
   default_enable: true,
-  require: ['filter', 'ip', 'eventBus'],
-  func (filter: RefresherFilter, ip, eventBus: RefresherEventBus) {
+  require: ['filter', 'ip'],
+  func (filter: RefresherFilter, ip) {
     let ipInfoAdd = (elem: HTMLElement) => {
       if (!elem || !elem.dataset.ip || elem.dataset.refresherIp) return false
       let ip_data = ip.ISPData(elem.dataset.ip, '')
@@ -77,55 +73,25 @@ export default {
         ipInfoAdd(list[iter] as HTMLElement)
         IdInfoAdd(list[iter] as HTMLElement)
       }
-
-      // TODO : 글목록 반고닉 사용자 ID 표시하기
     }
 
-    this.memory.uuid = filter.add('.ub-writer', (elem: HTMLElement) => {
-      ipInfoAdd(elem)
-      IdInfoAdd(elem)
-    })
-    this.memory.uuid2 = eventBus.on('refresh', elemAdd)
-
-    // observer = new MutationObserver(mutations => {
-    //   mutations.forEach(mutation => {
-    //     if (!mutation.addedNodes) {
-    //       return
-    //     }
-    //     console.log(mutation)
-    //   })
-    // })
-
-    // observer.observe(document.documentElement, {
-    //   attributes: true,
-    //   childList: true,
-    //   characterData: true
-    // })
-
-    // this.memory.always = filter.add(
-    //   '.ub-writer',
-    //   (elem: HTMLElement) => {
-    //     console.log(elem)
-    //     ipInfoAdd(elem)
-    //   },
-    //   {
-    //     neverExpire: true
-    //   }
-    // )
+    this.memory.always = filter.add(
+      '.ub-writer',
+      (elem: HTMLElement) => {
+        ipInfoAdd(elem)
+        IdInfoAdd(elem)
+      },
+      {
+        neverExpire: true
+      }
+    )
+    filter.runSpecific(this.memory.always)
 
     elemAdd(document)
   },
-  revoke (filter: RefresherFilter, ip, eventBus: RefresherEventBus) {
-    if (this.memory.uuid) {
-      filter.remove(this.memory.uuid)
-    }
-
-    // if (this.memory.uuid2) {
-    //   eventBus.remove('refresh', this.memory.uuid2)
-    // }
-
+  revoke (filter: RefresherFilter, ip) {
     if (this.memory.always) {
-      filter.remove(this.memory.always)
+      filter.remove(this.memory.always, true)
     }
 
     let lists = document.querySelectorAll('.refresherIP')

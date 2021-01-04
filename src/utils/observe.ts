@@ -29,7 +29,8 @@ export const find = (elem: string, parent: HTMLElement) =>
     })
 
     observer.observe(parent || document.documentElement, {
-      childList: true
+      childList: true,
+      subtree: true
     })
 
     tout = setTimeout(() => {
@@ -62,6 +63,9 @@ export const listen = (elem: string, parent: HTMLElement, cb: Function) => {
   })
 
   observer.observe(parent || document.documentElement, {
-    childList: true
+    childList: true,
+    subtree: true
   })
+
+  return observer
 }
