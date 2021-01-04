@@ -1,5 +1,6 @@
 import User from './user'
 import TimeStamp from './timestamp'
+import { eventBus } from '../core/eventbus'
 
 const NRegex = /(ㄴ)(\s)?([^ ]+)/g
 
@@ -8,9 +9,9 @@ export default {
     TimeStamp,
     User
   },
-  template: `<div class="refresher-comment" :data-depth="comment.depth" :data-rereply="checkReReply()" :data-deleted="comment.del_yn === 'Y'">
+  template: `<div class="refresher-comment" :data-depth="comment.depth" :data-rereply="rereply" :data-deleted="comment.del_yn === 'Y'">
     <div class="meta">
-      <User :user="comment.user" :me="checkParticipant(comment.user.id)"></User>
+      <User :user="comment.user" :me="me"></User>
       <div class="float-right">
         <TimeStamp :date="new Date(date(comment.reg_date))"></TimeStamp>
       </div>
@@ -21,6 +22,13 @@ export default {
     </div>
     <p v-else class="refresher-comment-content" v-html="comment.memo"></p>
   </div>`,
+  data () {
+    return {
+      currentId: '',
+      me: false,
+      rereply: false
+    }
+  },
   props: {
     comment: {
       type: Object,
@@ -31,8 +39,46 @@ export default {
       type: Number
     },
 
-    parentUser: {
-      type: Object
+    postUser: {
+      type: String
+    }
+  },
+  mounted () {
+    this.rereply = this.checkReReply()
+
+    if (!this.comment.user.id) {
+      return
+    }
+
+    let gallogImageElement = document.querySelector(
+      '#login_box .user_info .writer_nikcon > img'
+    ) as HTMLImageElement
+
+    let click = gallogImageElement && gallogImageElement.getAttribute('onclick')
+
+    if (click) {
+      this.currentId = click
+        .replace(/window\.open\(\'\/\/gallog\.dcinside\.com\//g, '')
+        .replace(/\'\)\;/g, '')
+
+      this.me = this.currentId === this.comment.user.id
+    }
+
+    if (!this.me && this.postUser) {
+      this.me = this.postUser === this.comment.user.id
+    }
+
+    if (!this.me && !this.postUser) {
+      eventBus.on(
+        'RefresherPostDataLoaded',
+        (obj: PostInfo) => {
+          console.log(obj.user)
+          this.me = (obj.user && obj.user.id) === this.comment.user.id
+        },
+        {
+          once: true
+        }
+      )
     }
   },
   computed: {
@@ -55,38 +101,6 @@ export default {
     extractID (str: string) {
       let match = str.match(/gallog\.dcinside.com\/.+\'/g)
       return match ? match[0].replace(/gallog\.dcinside.com\/|\'/g, '') : null
-    },
-
-    checkParticipant (id: string): boolean {
-      let same = false
-
-      if (!id) {
-        return false
-      }
-
-      let loginid = document.querySelector('#login_box .user_option a')
-      if (loginid) {
-        same = this.extractID(loginid.getAttribute('onclick') || '') === id
-      }
-
-      let post = document.querySelector(
-        '.gallview_head .gall_writer'
-      ) as HTMLElement
-      if (!same && post && post.dataset) {
-        same =
-          post.dataset.uid &&
-          post.dataset.uid.length > 0 &&
-          post.dataset.uid === id
-      }
-
-      if (!same && this.parentUser) {
-        same =
-          this.parentUser.id &&
-          this.parentUser.id.length > 0 &&
-          this.parentUser.id === id
-      }
-
-      return same
     },
 
     checkReReply (): boolean {

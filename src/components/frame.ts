@@ -61,7 +61,7 @@ export const Frame = Vue.component('refresher-frame', {
 
         <div class="refresher-preview-comments" v-if="frame.data.comments && frame.data.comments.comments">
           <transition-group name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-            <Comment v-for="(comment, i) in frame.data.comments.comments" :index="i + 1" :parentUser="frame.data.user" :comment="comment" :key="'cmt_' + comment.no"></Comment>
+            <Comment v-for="(comment, i) in frame.data.comments.comments" :index="i + 1" :postUser="frame.data.postUserId" :comment="comment" :key="'cmt_' + comment.no"></Comment>
           </transition-group>
         </div>
         <div v-if="frame.data.comments && !frame.data.comments.comments">

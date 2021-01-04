@@ -868,6 +868,7 @@ export default {
     Frame: RefresherFrame,
     http: RefresherHTTP
   ) {
+    let postFetchedData: PostInfo
     let makeFirstFrame = (
       frame: RefresherFrame,
       preData: GalleryPredata,
@@ -927,26 +928,27 @@ export default {
             signal,
             this.status.noCacheHeader
           )
-          .then((obj: any) => {
+          .then((obj: PostInfo) => {
             if (!obj) {
               return
             }
+
+            postFetchedData = obj
 
             frame.contents = obj.contents
             frame.upvotes = obj.upvotes
             frame.downvotes = obj.downvotes
 
             if (frame.title !== obj.title) {
-              frame.title = obj.title
+              frame.title = obj.title || ''
             }
 
             frame.data.user = obj.user
-            frame.data.date = new Date(obj.date.replace(/\./g, '-'))
+            frame.data.date = new Date(obj.date!.replace(/\./g, '-'))
             frame.data.expire = obj.expire
             frame.data.buttons = true
 
             eventBus.emit('RefresherPostDataLoaded', obj)
-
             eventBus.emit(
               'RefresherPostCommentIDLoaded',
               obj.commentId,
@@ -1000,6 +1002,20 @@ export default {
             once: true
           }
         )
+
+        if (postFetchedData) {
+          frame.data.postUserId = postFetchedData.user?.id
+        } else {
+          eventBus.on(
+            'RefresherPostDataLoaded',
+            (obj: PostInfo) => {
+              frame.data.postUserId = obj.user?.id
+            },
+            {
+              once: true
+            }
+          )
+        }
       }).then(postData => {
         frame.functions.load = () => {
           frame.error = false
