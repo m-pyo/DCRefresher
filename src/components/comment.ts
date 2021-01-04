@@ -48,7 +48,7 @@ export default {
   methods: {
     date (str: string) {
       return str.substring(0, 4).match(/\./)
-        ? `${new Date().getFullYear()}.${str.replace(/\./g, '-')}`
+        ? `${new Date().getFullYear()}-${str.replace(/\./g, '-')}`
         : str.replace(/\./g, '-')
     },
 
