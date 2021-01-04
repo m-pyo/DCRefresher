@@ -6,6 +6,8 @@ import * as http from '../utils/http'
 
 import * as Toast from '../components/toast'
 
+import { ScrollDetection } from '../utils/scrollDetection'
+
 /**
  * dcinside.com set cookie function
  */
@@ -1084,8 +1086,71 @@ export default {
       let controller = new AbortController()
       let { signal } = controller
 
+      let appStore: any
+      let groupStore: HTMLElement
+
+      let detector = new ScrollDetection()
       let scrolledCount = 0
-      let blockTo = 0
+
+      detector.listen('scroll', (ev: WheelEvent) => {
+        let scrolledTop = groupStore.scrollTop === 0
+        let scrolledToBottom =
+          groupStore.scrollHeight - groupStore.scrollTop ===
+          groupStore.clientHeight
+
+        if (ev.deltaY < 0) {
+          appStore.$data.scrollModeBottom = false
+          appStore.$data.scrollModeTop = true
+
+          if (!scrolledTop) {
+            appStore.$data.scrollModeTop = false
+            appStore.$data.scrollModeBottom = false
+          }
+
+          if (!scrolledTop || !preData) {
+            return
+          }
+
+          if (scrolledCount < 1) {
+            scrolledCount++
+            return
+          }
+          scrolledCount = 0
+
+          preData.id = (Number(preData.id) - 1).toString()
+
+          newPostWithData(preData)
+          groupStore.scrollTop = 0
+          appStore.clearScrollMode()
+        } else {
+          appStore.$data.scrollModeTop = false
+          appStore.$data.scrollModeBottom = true
+
+          if (!scrolledToBottom) {
+            appStore.$data.scrollModeTop = false
+            appStore.$data.scrollModeBottom = false
+          }
+
+          if (!scrolledToBottom || !preData) {
+            return
+          }
+
+          if (scrolledCount < 1) {
+            scrolledCount++
+            return
+          }
+          scrolledCount = 0
+
+          if (!frame.app.first().error) {
+            preData.id = (Number(preData.id) + 1).toString()
+          }
+
+          newPostWithData(preData)
+
+          groupStore.scrollTop = 0
+          appStore.clearScrollMode()
+        }
+      })
 
       let frame = new Frame(
         [
@@ -1106,81 +1171,15 @@ export default {
           background: true,
           stack: true,
           groupOnce: true,
-          onScroll: (ev: any, app: any, group: HTMLElement) => {
+          onScroll: (ev: WheelEvent, app: any, group: HTMLElement) => {
             if (!this.status.scrollToSkip) {
               return
             }
 
-            let scrolledTop = group.scrollTop === 0
-            let scrolledToBottom =
-              group.scrollHeight - group.scrollTop === group.clientHeight
+            appStore = app
+            groupStore = group
 
-            if (Date.now() < blockTo) {
-              return
-            }
-            blockTo = 0
-
-            if (ev.deltaY < 0) {
-              app.$data.scrollModeBottom = false
-              app.$data.scrollModeTop = true
-
-              if (!scrolledTop) {
-                scrolledCount = 0
-                app.$data.scrollModeTop = false
-                app.$data.scrollModeBottom = false
-
-                return
-              }
-
-              if (scrolledCount < 6) {
-                scrolledCount++
-                return
-              }
-              scrolledCount = 0
-
-              if (!preData) {
-                return
-              }
-
-              preData.id = (Number(preData.id) - 1).toString()
-
-              newPostWithData(preData)
-              group.scrollTop = 0
-              app.$data.scrollModeTop = false
-
-              blockTo = Date.now() + 100
-            } else {
-              app.$data.scrollModeTop = false
-              app.$data.scrollModeBottom = true
-
-              if (!scrolledToBottom) {
-                scrolledCount = 0
-                app.$data.scrollModeTop = false
-                app.$data.scrollModeBottom = false
-
-                return
-              }
-
-              if (scrolledCount < 6) {
-                scrolledCount++
-                return
-              }
-              scrolledCount = 0
-
-              if (!preData) {
-                return
-              }
-
-              if (!frame.app.first().error) {
-                preData.id = (Number(preData.id) + 1).toString()
-              }
-
-              newPostWithData(preData)
-              group.scrollTop = 0
-              app.$data.scrollModeBottom = false
-
-              blockTo = Date.now() + 100
-            }
+            detector.addMouseEvent(ev)
           }
         }
       )

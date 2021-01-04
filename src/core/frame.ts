@@ -119,6 +119,11 @@ export default class {
           return this.frames[1]
         },
 
+        clearScrollMode () {
+          this.scrollModeTop = false
+          this.scrollModeBottom = false
+        },
+
         outerClick () {
           this.$emit('close')
           this.fadeOut()
