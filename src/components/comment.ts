@@ -72,7 +72,6 @@ export default {
       eventBus.on(
         'RefresherPostDataLoaded',
         (obj: PostInfo) => {
-          console.log(obj.user)
           this.me = (obj.user && obj.user.id) === this.comment.user.id
         },
         {
