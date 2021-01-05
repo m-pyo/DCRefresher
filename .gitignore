@@ -4,3 +4,10 @@ node_modules
 _old_src
 
 *.log
+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
