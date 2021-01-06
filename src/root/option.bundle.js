@@ -15,6 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
         tab: 0,
         modules: [],
         settings: {},
+        blocks: {},
+        blockModes: {},
+        blockKeyNames: {
+          NICK: '닉네임',
+          ID: '아이디',
+          IP: 'IP',
+          TEXT: '내용',
+          DCCON: '디시콘'
+        },
         links: [
           {
             text: 'GitHub',
@@ -44,6 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
       },
 
       updateUserSetting (module, key, value) {
+        this.settings[module][key].value = value
+
+        port.postMessage({
+          updateUserSetting: true,
+          name: module,
+          key,
+          value,
+          settings_store: this.settings
+        })
+
         chrome.tabs.query({ active: true }, tabs => {
           chrome.tabs.sendMessage(tabs[0].id, {
             updateUserSetting: true,
@@ -52,6 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
             value
           })
         })
+      },
+
+      removeBlockedUser (key, index) {
+        this.blocks[key].splice(index, 1)
       }
     }
   })
@@ -68,6 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
     requestRefresherSettings: true
   })
 
+  port.postMessage({
+    requestRefresherBlocks: true
+  })
+
   port.onMessage.addListener(msg => {
     if (msg.responseRefresherModules) {
       app.$data.modules = msg.modules || {}
@@ -75,6 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (msg.responseRefresherSettings) {
       app.$data.settings = msg.settings || {}
+    }
+
+    if (msg.responseRefresherBlocks) {
+      app.$data.blocks = msg.blocks.BLOCK_CACHE || {}
+      app.$data.blockModes = msg.blocks.BLOCK_MODE_CACHE || {}
     }
   })
 })
@@ -384,5 +416,43 @@ Vue.component('refresher-range', {
 
   mounted () {
     this.$data.__temp = this.value
+  }
+})
+
+Vue.component('refresher-bubble', {
+  template: `<div class="refresher-bubble">
+    <span class="text">{{text}}<span class="gallery" v-if="gallery">({{gallery}})</span></span>
+    <span class="remove" v-on:click="safeClick"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/></svg></span>
+</div>`,
+
+  props: {
+    id: {
+      type: String
+    },
+
+    text: {
+      type: String,
+      required: true
+    },
+
+    isRegex: {
+      type: Boolean
+    },
+
+    gallery: {
+      type: String
+    },
+
+    remove: {
+      type: Function
+    }
+  },
+
+  methods: {
+    safeClick () {
+      if (this.remove) {
+        this.remove(this.id)
+      }
+    }
   }
 })

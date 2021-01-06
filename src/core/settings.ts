@@ -24,6 +24,11 @@ export const set = async (module: string, key: string, value: any) => {
   return s
 }
 
+export const setStore = async (module: string, key: string, value: any) => {
+  eventBus.emit('RefresherUpdateSetting', module, key, value)
+  settings_store[module][key].value = value
+}
+
 export const get = async (module: string, key: string) => {
   return store.get(`${module}.${key}`)
 }

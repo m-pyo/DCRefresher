@@ -25,5 +25,3 @@ export const get = (key: any) => {
     })
   )
 }
-
-export const load = () => {}

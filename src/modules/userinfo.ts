@@ -14,8 +14,6 @@ export default {
       if (!elem || !elem.dataset.ip || elem.dataset.refresherIp) return false
       let ip_data = ip.ISPData(elem.dataset.ip, '')
 
-      // TODO : VPN 가르기
-
       let text = document.createElement('span')
       text.className = 'ip refresherIP'
       let format = ip.format(ip_data)

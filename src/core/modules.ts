@@ -147,7 +147,7 @@ if (runtime.onMessage) {
 
       runModule(module_store[msg.name])
     } else if (typeof msg === 'object' && msg.updateUserSetting) {
-      settings.set(msg.name, msg.key, msg.value)
+      settings.setStore(msg.name, msg.key, msg.value)
     }
   })
 }

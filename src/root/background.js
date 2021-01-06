@@ -1,8 +1,36 @@
 let blockAds = true
 let modules = {}
 let settings = {}
+let blocks = {}
+let blocksMode = {}
 
 const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
+
+const str =
+  (window.chrome && window.chrome.storage) || (browser && browser.storage)
+
+const set = (key, value) => {
+  if (!str) {
+    throw new Error("This browser doesn't support storage API.")
+  }
+
+  let obj = {}
+  obj[key] = value
+
+  return (str.sync || str.local).set(obj)
+}
+
+const get = key => {
+  if (!str) {
+    throw new Error("This browser doesn't support storage API.")
+  }
+
+  return new Promise()((resolve, reject) =>
+    (str.sync || str.local).get(key, v => {
+      resolve(v[key])
+    })
+  )
+}
 
 ;(
   (window.chrome && window.chrome.storage) ||
@@ -31,9 +59,13 @@ const checkBlockTarget = str =>
   ['blocking']
 )
 
-const messageHandler = (port, msg) => {
+const messageHandler = async (port, msg) => {
   if (typeof msg !== 'object') {
     return
+  }
+
+  if (msg.updateUserSetting) {
+    await set(`${msg.name}.${msg.key}`, msg.value)
   }
 
   if (msg.module_store) {
@@ -42,6 +74,10 @@ const messageHandler = (port, msg) => {
 
   if (msg.settings_store) {
     settings = msg.settings_store
+  }
+
+  if (msg.blocks_store) {
+    blocks = msg.blocks_store
   }
 
   if (typeof msg.toggleAdBlock !== 'undefined') {
@@ -54,6 +90,10 @@ const messageHandler = (port, msg) => {
 
   if (msg.requestRefresherSettings) {
     port.postMessage({ responseRefresherSettings: true, settings })
+  }
+
+  if (msg.requestRefresherBlocks) {
+    port.postMessage({ responseRefresherBlocks: true, blocks })
   }
 }
 
