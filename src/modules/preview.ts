@@ -209,13 +209,13 @@ const panel = {
       </div>
     `
 
-    let deleteFunction = () =>
+    let deleteFunction = () => {
+      frame.app.close()
+
       request.delete(preData).then(response => {
         if (typeof response === 'object') {
           if (response.result === 'success') {
             Toast.show('게시글을 삭제했습니다.', false, 600)
-
-            frame.app.close()
           } else {
             Toast.show(response.message, true, 600)
             alert(`${response.result}: ${response.message}`)
@@ -226,6 +226,7 @@ const panel = {
 
         alert(response)
       })
+    }
 
     element.querySelector('.delete')?.addEventListener('click', deleteFunction)
 
