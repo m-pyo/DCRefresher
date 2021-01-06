@@ -23,14 +23,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install -g yarn
     - name: Install dependencies
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: install
+      run: yarn install --ignore-engines
     - name: Webpack build
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: build
+      run: yarn build
     - name: mocha test
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: test
+      run: yarn test
