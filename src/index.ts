@@ -30,16 +30,14 @@ modules
     UserInfo,
     Layout
   )
-  .then(() => {
+  .then(async () => {
     log(
       `🍊✔️ DCRefresher Module Loaded. took ${(
         performance.now() - loadStart
       ).toFixed(2)}ms.`
     )
 
-    loadStart = performance.now()
-
-    filter.run(true)
+    await filter.run(false)
   })
 
 window.addEventListener('load', async () => {

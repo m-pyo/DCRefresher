@@ -11,7 +11,10 @@ export default {
       nick: '',
       uid: '',
       ip: ''
-    }
+    },
+    lastSelect: 0,
+    addBlock: '',
+    requestBlock: ''
   },
   enable: true,
   default_enable: true,
@@ -42,6 +45,7 @@ export default {
               uid,
               ip
             }
+            this.memory.lastSelect = Date.now()
           }
         }
 
@@ -69,7 +73,23 @@ export default {
       }
     )
 
-    eventBus.on('RefresherRequestBlock', () => {
+    this.memory.addBlock = eventBus.on(
+      'RefresherAddToBlock',
+      (nick: string, uid: string, ip: string) => {
+        this.memory.selected = {
+          nick,
+          uid,
+          ip
+        }
+        this.memory.lastSelect = Date.now()
+      }
+    )
+
+    this.memory.requestBlock = eventBus.on('RefresherRequestBlock', () => {
+      if (Date.now() - this.memory.lastSelect > 10000) {
+        return
+      }
+
       let type = 'NICK'
       let value = this.memory.selected.nick
       let extra = this.memory.selected.nick
@@ -99,6 +119,14 @@ export default {
   ) {
     if (this.memory.uuid) {
       filter.remove(this.memory.uuid)
+    }
+
+    if (this.memory.addBlock) {
+      filter.remove(this.memory.addBlock)
+    }
+
+    if (this.memory.requestBlock) {
+      filter.remove(this.memory.requestBlock)
     }
   }
 }

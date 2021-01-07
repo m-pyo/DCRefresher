@@ -136,7 +136,7 @@ runtime.onInstalled.addListener(details => {
 })
 
 chrome.contextMenus.create({
-  title: '차단',
+  title: '오른쪽 클릭한 유저 차단',
   contexts: ['all'],
   documentUrlPatterns: ['*://gall.dcinside.com/*'],
   onclick: (info, tab) => {
