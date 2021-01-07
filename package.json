@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "vue": "^2.6.12",
-    "webpack-bundle-analyzer": "^4.3.0"
+    "webpack-bundle-analyzer": "^4.3.0",
+    "zip-webpack-plugin": "^4.0.1"
   },
   "scripts": {
     "build": "webpack --mode=production",

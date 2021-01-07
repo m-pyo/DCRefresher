@@ -6,17 +6,21 @@ import { filter } from './filtering'
 import Frame from './frame'
 import * as ip from '../utils/ip'
 import * as http from '../utils/http'
+import * as dom from '../utils/dom'
 
 import { browser } from 'webextension-polyfill-ts'
 
 import * as settings from './settings'
+import * as block from './block'
 
 let UTILS: { [index: string]: object } = {
   filter,
   Frame,
   eventBus,
   http,
-  ip
+  ip,
+  block,
+  dom
 }
 
 let module_store: { [index: string]: any } = {}

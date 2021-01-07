@@ -55,10 +55,14 @@ html.refresher-popup
                 refresher-checkbox(v-if="settings[module][setting].type === 'check'" :checked="settings[module][setting].value" :change="updateUserSetting" :modname="module" :id="setting")
                 refresher-input(v-if="settings[module][setting].type === 'text'" :placeholder="settings[module][setting].default" :value="settings[module][setting].value" :id="setting" :modname="module" :change="updateUserSetting")
                 refresher-range(v-if="settings[module][setting].type === 'range'" :placeholder="settings[module][setting].default" :value="Number(settings[module][setting].value)" :id="setting" :modname="module" :change="updateUserSetting" :min="settings[module][setting].min" :max="settings[module][setting].max" :step="settings[module][setting].step" :unit="settings[module][setting].unit")
-        div.tab.tab2(v-show="tab == 2" key="tab3")
-          h3 차단 설정
-          p 차단 기능은 여러 기능과 함께 곧 추가 예정입니다.
-        div.tab.tab3(v-show="tab == 3" key="tab4")
+        div.tab.tab3(v-show="tab == 2" key="tab3")
+          .block-divide(v-for="(key, index) in Object.keys(blocks)")
+            h3 {{blockKeyNames[key]}} <span class="plus" v-on:click="() => addEmptyBlockedUser(key)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></span>
+            .lists
+              p(v-if="!blocks[key].length") 차단된 {{blockKeyNames[key]}} 없음
+              refresher-bubble(v-for="(blocked, i) in blocks[key]" :key="'block:' + i" :text="blocked.content" :regex="blocked.isRegex" :gallery="blocked.gallery" :extra="blocked.extra" :removable="true" :remove="() => removeBlockedUser(key, i)" :textclick="() => editBlockedUser(key, i)")
+
+        div.tab.tab4(v-show="tab == 3" key="tab4")
           div.refresher-no-modules(v-if="!Object.keys(modules).length")
             h3 로드된 모듈 없음
             p 우선 디시 페이지를 열어주세요.

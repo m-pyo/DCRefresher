@@ -2411,6 +2411,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"buffer-crc32@npm:~0.2.3":
+  version: 0.2.13
+  resolution: "buffer-crc32@npm:0.2.13"
+  checksum: 0340e848d6fd87e49ef6f1067f31b2a8d2e71b433e9bb62ff3d9bc2499146f0be586b5b80b0d099c7110a226161b21cb6cd80162dd5a51d9ebdb03da58b99637
+  languageName: node
+  linkType: hard
+
 "buffer-from@npm:^1.0.0":
   version: 1.1.1
   resolution: "buffer-from@npm:1.1.1"
@@ -3063,6 +3070,7 @@ __metadata:
     webpack-bundle-analyzer: ^4.3.0
     webpack-cli: ^4.2.0
     webpack-dev-server: ^3.11.0
+    zip-webpack-plugin: ^4.0.1
   languageName: unknown
   linkType: soft
 
@@ -9111,9 +9119,30 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"yazl@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "yazl@npm:2.5.1"
+  dependencies:
+    buffer-crc32: ~0.2.3
+  checksum: ee9bd2f57dfe1bdca333749bbb42b5a9e68a39871a31d8eed93b5606b8dfa1a1dda89af5cfd274a455c0f5f5790d743538067f2468d3bc8cd4227cdc94bc6ec3
+  languageName: node
+  linkType: hard
+
 "yocto-queue@npm:^0.1.0":
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 096c3b40beb2804659539be1605a35c58eb0c85285f94b77b3e924f42ee265c1a40bf9f4153770039517146b469a964d51742395f35ca8135fc9f7e4982b785d
+  languageName: node
+  linkType: hard
+
+"zip-webpack-plugin@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "zip-webpack-plugin@npm:4.0.1"
+  dependencies:
+    yazl: ^2.5.1
+  peerDependencies:
+    webpack: ^4.0.0 || ^5.0.0
+    webpack-sources: "*"
+  checksum: 54b922a89761388d95e551eca72a352f260774781dc12c073f1756b05e2518885e8ffa95c4dd37a916f026d445a06f55cddb115335965fcaa348356bd8b10b5a
   languageName: node
   linkType: hard

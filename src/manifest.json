@@ -11,7 +11,8 @@
     "activeTab",
     "webRequest",
     "webRequestBlocking",
-    "storage"
+    "storage",
+    "contextMenus"
   ],
   "background": {
     "scripts": ["background.js"],

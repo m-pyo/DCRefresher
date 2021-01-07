@@ -138,3 +138,6 @@ export const mergeParamURL = (origin: string, getFrom: string) => {
 export const galleryTypeName = (url: string) => {
   return commentGallTypes[galleryType(url)]
 }
+
+export const queryString = (name: string) =>
+  new URLSearchParams(window.location.search).get(name)

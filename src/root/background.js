@@ -2,7 +2,7 @@ let blockAds = true
 let modules = {}
 let settings = {}
 let blocks = {}
-let blocksMode = {}
+let blockModes = {}
 
 const runtime = (chrome && chrome.runtime) || (browser && browser.runtime)
 
@@ -68,6 +68,18 @@ const messageHandler = async (port, msg) => {
     await set(`${msg.name}.${msg.key}`, msg.value)
   }
 
+  if (msg.updateBlocks) {
+    Object.keys(msg.blocks_store).forEach(async (key, i) => {
+      await set(`__REFRESHER_BLOCK:${key}`, msg.blocks_store[key])
+    })
+    blocks = msg.blocks_store
+
+    Object.keys(msg.blockModes_store).forEach(async (key, i) => {
+      await set(`__REFRESHER_BLOCK:${key}:$MODE`, msg.blockModes_store[key])
+    })
+    blockModes = msg.blockModes_store
+  }
+
   if (msg.module_store) {
     modules = msg.module_store
   }
@@ -78,6 +90,10 @@ const messageHandler = async (port, msg) => {
 
   if (msg.blocks_store) {
     blocks = msg.blocks_store
+  }
+
+  if (msg.blockModes_store && Object.keys(msg.blockModes_store).length) {
+    blockModes = msg.blockModes_store
   }
 
   if (typeof msg.toggleAdBlock !== 'undefined') {
@@ -93,7 +109,7 @@ const messageHandler = async (port, msg) => {
   }
 
   if (msg.requestRefresherBlocks) {
-    port.postMessage({ responseRefresherBlocks: true, blocks })
+    port.postMessage({ responseRefresherBlocks: true, blocks, blockModes })
   }
 }
 
@@ -116,5 +132,16 @@ runtime.onInstalled.addListener(details => {
     // TODO : After Install
   } else if (details.reason === 'update') {
     // TODO : Update
+  }
+})
+
+chrome.contextMenus.create({
+  title: '차단',
+  contexts: ['all'],
+  documentUrlPatterns: ['*://gall.dcinside.com/*'],
+  onclick: (info, tab) => {
+    chrome.tabs.sendMessage(tab.id, {
+      blockSelected: true
+    })
   }
 })

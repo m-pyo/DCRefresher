@@ -28,7 +28,7 @@ export default {
   },
   enable: true,
   default_enable: true,
-  require: ['http', 'eventBus'],
+  require: ['http', 'eventBus', 'block'],
   settings: {
     refreshRate: {
       name: '새로고침 주기',
@@ -65,7 +65,11 @@ export default {
       advanced: false
     }
   },
-  func (http: RefresherHTTP, eventBus: RefresherEventBus) {
+  func (
+    http: RefresherHTTP,
+    eventBus: RefresherEventBus,
+    block: RefresherBlock
+  ) {
     const body = (url: string) => {
       return new Promise<Element | null>(async (resolve, reject) => {
         let body = await http.make(url)
@@ -136,6 +140,29 @@ export default {
       oldList.parentElement!.appendChild(newList)
       oldList.parentElement!.removeChild(oldList)
       oldList = null
+
+      let posts = newList.querySelectorAll('tr.us-post')
+      if (posts) {
+        posts.forEach(tr => {
+          let writter = (tr as HTMLElement).querySelector(
+            '.ub-writer'
+          ) as HTMLElement
+
+          if (!writter) {
+            return
+          }
+
+          if (
+            block.checkAll({
+              NICK: writter.dataset.nick || '',
+              ID: writter.dataset.uid || '',
+              IP: writter.dataset.ip || ''
+            })
+          ) {
+            tr.parentElement?.removeChild(tr)
+          }
+        })
+      }
 
       let postNoIter = newList.querySelectorAll('td.gall_num')
 

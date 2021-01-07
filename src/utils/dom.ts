@@ -41,7 +41,7 @@ export const findNeighbor = (
   current: number | null
 ): HTMLElement | null => {
   if (!find) {
-    return el
+    return null
   }
 
   if (current && current > max) {
@@ -53,6 +53,14 @@ export const findNeighbor = (
   }
 
   if (el.parentElement) {
+    if (el.parentElement && el.parentElement.parentElement) {
+      let qsa = el.parentElement.parentElement.querySelectorAll(find)
+
+      if (qsa && qsa.length && Array.from(qsa).includes(el.parentElement)) {
+        return el.parentElement
+      }
+    }
+
     let query = el.parentElement.querySelector(find) as HTMLElement
 
     if (!query) {

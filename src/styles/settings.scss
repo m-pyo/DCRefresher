@@ -203,6 +203,34 @@
   }
 
   .tab3 {
+    .block-divide {
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      margin-bottom: 5px;
+      font-size: 18px;
+    }
+
+    .gallery {
+      margin-left: 3px;
+      color: #7a7a7a;
+    }
+
+    .lists {
+      display: flex;
+
+      p {
+        color: #7a7a7a;
+      }
+
+      .refresher-bubble {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .tab4 {
     hr {
       border: 0;
       border-bottom: 1px solid #eaeaea;
@@ -292,5 +320,47 @@
   p {
     font-size: 16px;
     font-weight: bold;
+  }
+}
+
+.refresher-bubble {
+  display: flex;
+  border-radius: 13.3px;
+  background-color: #f9f9f9;
+  border: 1px solid #d6d6d6;
+  font-weight: normal;
+  font-size: 14px;
+  width: fit-content;
+  padding: 3px 16px;
+
+  .text {
+    width: fit-content;
+    height: 14px;
+  }
+
+  .remove {
+    margin-left: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #d6d6d6;
+    font-weight: bold;
+    text-align: center;
+
+    &:hover {
+      background-color: rgb(190, 190, 190);
+    }
+
+    &:active {
+      background-color: rgb(155, 155, 155);
+    }
+
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+
+    svg {
+      margin: auto;
+    }
   }
 }

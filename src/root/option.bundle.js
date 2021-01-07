@@ -73,8 +73,61 @@ document.addEventListener('DOMContentLoaded', () => {
         })
       },
 
+      syncBlock () {
+        port.postMessage({
+          updateBlocks: true,
+          blocks_store: this.blocks,
+          blockModes_store: this.blockModes
+        })
+
+        chrome.tabs.query({ active: true }, tabs => {
+          chrome.tabs.sendMessage(tabs[0].id, {
+            updateBlocks: true,
+            blocks_store: this.blocks,
+            blockModes_store: this.blockModes
+          })
+        })
+
+        debugger
+      },
+
+      addEmptyBlockedUser (key) {
+        let result = prompt(
+          `추가할 ${this.blockKeyNames[key]} 값을 입력하세요.`,
+          ''
+        )
+
+        if (!result || result.length < 1) {
+          return
+        }
+
+        this.blocks[key].push({
+          content: result
+        })
+        this.syncBlock()
+      },
+
       removeBlockedUser (key, index) {
         this.blocks[key].splice(index, 1)
+        this.syncBlock()
+      },
+
+      editBlockedUser (key, index) {
+        let result = prompt(
+          `바꿀 ${this.blockKeyNames[key]} 값을 입력하세요.`,
+          this.blocks[key][index].content
+        )
+
+        if (!result || result.length < 1) {
+          return
+        }
+
+        if (result !== this.blocks[key][index].content) {
+          this.blocks[key][index].extra = ''
+        }
+
+        this.blocks[key][index].content = result
+        this.syncBlock()
       }
     }
   })
@@ -105,8 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (msg.responseRefresherBlocks) {
-      app.$data.blocks = msg.blocks.BLOCK_CACHE || {}
-      app.$data.blockModes = msg.blocks.BLOCK_MODE_CACHE || {}
+      app.$data.blocks = msg.blocks || {}
+      app.$data.blockModes = msg.blockModes || {}
     }
   })
 })
@@ -421,15 +474,11 @@ Vue.component('refresher-range', {
 
 Vue.component('refresher-bubble', {
   template: `<div class="refresher-bubble">
-    <span class="text">{{text}}<span class="gallery" v-if="gallery">({{gallery}})</span></span>
-    <span class="remove" v-on:click="safeClick"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/></svg></span>
+    <span class="text" v-on:click="safeTextClick">{{text}}{{extra ? ' (' + extra + ')' : ''}}<span class="gallery" v-if="gallery">({{gallery}})</span></span>
+    <span class="remove" v-on:click="safeRemoveClick"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/></svg></span>
 </div>`,
 
   props: {
-    id: {
-      type: String
-    },
-
     text: {
       type: String,
       required: true
@@ -443,15 +492,29 @@ Vue.component('refresher-bubble', {
       type: String
     },
 
+    extra: {
+      type: String
+    },
+
     remove: {
+      type: Function
+    },
+
+    textclick: {
       type: Function
     }
   },
 
   methods: {
-    safeClick () {
+    safeTextClick () {
+      if (this.textclick) {
+        this.textclick()
+      }
+    },
+
+    safeRemoveClick () {
       if (this.remove) {
-        this.remove(this.id)
+        this.remove()
       }
     }
   }

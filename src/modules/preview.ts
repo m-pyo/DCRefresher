@@ -1,4 +1,3 @@
-import queryString from '../utils/query'
 import { User } from '../structs/user'
 import { PostInfo } from '../structs/post'
 import { findNeighbor } from '../utils/dom'
@@ -862,12 +861,13 @@ export default {
       advanced: true
     }
   },
-  require: ['filter', 'eventBus', 'Frame', 'http'],
+  require: ['filter', 'eventBus', 'Frame', 'http', 'block'],
   func (
     filter: RefresherFilter,
     eventBus: RefresherEventBus,
     Frame: RefresherFrame,
-    http: RefresherHTTP
+    http: RefresherHTTP,
+    block: RefresherBlock
   ) {
     let postFetchedData: PostInfo
     let makeFirstFrame = (
@@ -908,7 +908,7 @@ export default {
         window.navigator.clipboard.writeText(
           `https://gall.dcinside.com/${http.galleryType(
             preData.link
-          )}/board/view/?id=${preData.gallery || queryString('id')}&no=${
+          )}/board/view/?id=${preData.gallery || http.queryString('id')}&no=${
             preData.id
           }`
         )
@@ -924,7 +924,7 @@ export default {
         request
           .post(
             preData.link || '',
-            preData.gallery || queryString('id')!,
+            preData.gallery || http.queryString('id')!,
             preData.id,
             signal,
             this.status.noCacheHeader
@@ -1058,6 +1058,14 @@ export default {
                       .querySelector('a.writer_nikcon img') ||
                       {})! as HTMLImageElement).src
                   )
+                })
+
+                comments.comments = comments.comments.filter((comment: any) => {
+                  return !block.checkAll({
+                    NICK: comment.name,
+                    ID: comment.user_id,
+                    IP: comment.ip
+                  })
                 })
 
                 threadCounts = comments.comments
