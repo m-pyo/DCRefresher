@@ -13,7 +13,8 @@ export default {
     refreshRate: undefined,
     useBetterBrowse: undefined,
     fadeIn: undefined,
-    autoRate: undefined
+    autoRate: undefined,
+    doNotColorVisited: false
   },
   memory: {
     uuid: '',
@@ -63,6 +64,14 @@ export default {
       type: 'check',
       default: true,
       advanced: false
+    },
+    doNotColorVisited: {
+      name: '방문 링크 색상 지정 비활성화',
+      desc:
+        'Firefox와 같이 방문한 링크 색상 지정이 느린 브라우저에서 깜빡거리는 현상을 완화시킵니다.',
+      type: 'check',
+      default: false,
+      advanced: true
     }
   },
   func (
@@ -70,6 +79,10 @@ export default {
     eventBus: RefresherEventBus,
     block: RefresherBlock
   ) {
+    if (document && document.documentElement && this.status.doNotColorVisited) {
+      document.documentElement.classList.add('refresherDoNotColorVisited')
+    }
+
     const body = (url: string) => {
       return new Promise<Element | null>(async (resolve, reject) => {
         let body = await http.make(url)
@@ -375,6 +388,10 @@ export default {
   },
 
   revoke () {
+    if (document && document.body) {
+      document.body.classList.remove('refresherDoNotColorVisited')
+    }
+
     if (this.memory.refresh) {
       clearTimeout(this.memory.refresh)
     }
