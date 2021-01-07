@@ -6,6 +6,7 @@ const blockScripts = (elem: HTMLScriptElement) => {
         'ad.min.js',
         'addc',
         'ad.about.co.kr',
+        'cdn.taboola.com',
         'taboola',
         'netinsight'
       ].filter(v => elem.src.indexOf(v) > -1).length) ||
