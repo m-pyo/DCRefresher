@@ -38,7 +38,7 @@ interface RefresherHTTP {
    * @param url
    */
   view(url: string): string
-  make(url: string, options: object): Promise<string>
+  make(url: string, options?: object): Promise<string>
   /**
    * 마이너 갤러리인지를 확인하여 boolean을 반환합니다.
    * @param url 확인할 URL

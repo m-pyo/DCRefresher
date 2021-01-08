@@ -89,7 +89,7 @@ export default {
 
         try {
           let bodyParse = new DOMParser().parseFromString(body, 'text/html')
-          body = undefined
+          body = ''
 
           eventBus.emit('refresherGetPost', bodyParse)
 

@@ -106,7 +106,7 @@ export default {
         return
       }
 
-      block.add(type, value, false, null, extra)
+      block.add(type, value, false, undefined, extra)
       alert(`${block.TYPE_NAMES[type]} ${value}을(를) 차단했습니다.`)
     })
   },

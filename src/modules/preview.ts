@@ -472,7 +472,7 @@ const miniPreview: { [index: string]: any } = {
 
       setTimeout(() => {
         if (miniPreview.lastElement === ev.target) {
-          miniPreview.create(ev)
+          miniPreview.create(ev, use)
         }
       }, 150)
 
@@ -534,7 +534,7 @@ const miniPreview: { [index: string]: any } = {
 
   move (ev: MouseEvent, use: boolean) {
     if (use) {
-      miniPreview.element.style.transform = `translate(${ev.screenX}px, ${ev.screenY}px)`
+      miniPreview.element.style.transform = `translate(${ev.clientX + 20}px, ${ev.clientY}px)`
     }
   },
 
@@ -1006,7 +1006,7 @@ export default {
 
         window.navigator.clipboard.writeText(
           `https://gall.dcinside.com/${http.galleryType(
-            preData.link
+            preData.link || ''
           )}/board/view/?id=${preData.gallery || http.queryString('id')}&no=${
             preData.id
           }`
