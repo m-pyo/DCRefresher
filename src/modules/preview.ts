@@ -366,7 +366,12 @@ const panel = {
 }
 
 const getRelevantData = (ev: MouseEvent) => {
-  let listID = findNeighbor(ev.target as HTMLElement, '.gall_num', 5, null)
+  let target = ev.target as HTMLElement
+  let isTR = target!.tagName === 'TR'
+
+  let listID = (isTR
+    ? target!.querySelector('.gall_num')
+    : findNeighbor(target, '.gall_num', 5, null)) as HTMLElement
 
   let id = ''
   let gallery = ''
@@ -381,44 +386,43 @@ const getRelevantData = (ev: MouseEvent) => {
     if (listID.innerText === '공지') {
       id =
         new URLSearchParams(
-          findNeighbor(ev.target as HTMLElement, 'a', 5, null)?.getAttribute(
-            'href'
-          )!
+          (isTR
+            ? document.querySelector('a')
+            : findNeighbor(target, 'a', 5, null)
+          )?.getAttribute('href')!
         ).get('no') || ''
       notice = true
     } else {
       id = listID.innerText
     }
 
-    let emElement = findNeighbor(
-      ev.target as HTMLElement,
-      'em.icon_img',
-      5,
-      null
-    )
+    let emElement = isTR
+      ? target.querySelector('em.icon_img')
+      : findNeighbor(target, 'em.icon_img', 5, null)
     if (emElement) {
       recommend = emElement.className.indexOf('icon_recomimg') > -1
     }
 
-    linkElement = findNeighbor(
-      ev.target as HTMLElement,
-      'a:not(.reply_numbox)',
-      3,
-      null
-    ) as HTMLLinkElement
+    linkElement = (isTR
+      ? target.querySelector('a:not(.reply_numbox)')
+      : findNeighbor(
+          target,
+          'a:not(.reply_numbox)',
+          3,
+          null
+        )) as HTMLLinkElement
 
     if (typeof linkElement !== null) {
       title = linkElement.innerText
     }
   } else {
-    linkElement = findNeighbor(
-      ev.target as HTMLElement,
-      'a',
-      2,
-      null
-    ) as HTMLLinkElement
+    linkElement = (isTR
+      ? target.querySelector('a')
+      : findNeighbor(ev.target as HTMLElement, 'a', 2, null)) as HTMLLinkElement
 
-    let pt = findNeighbor(ev.target as HTMLElement, '.txt_box', 2, null)
+    let pt = isTR
+      ? target.querySelector('.txt_box')
+      : findNeighbor(ev.target as HTMLElement, '.txt_box', 2, null)
     if (pt) {
       title = pt.innerHTML
     }
@@ -451,6 +455,99 @@ const getRelevantData = (ev: MouseEvent) => {
   }
 }
 
+const miniPreview: { [index: string]: any } = {
+  element: document.createElement('div'),
+  init: false,
+  lastRequest: 0,
+  controller: new AbortController(),
+  lastElement: null,
+  create (ev: MouseEvent, use: boolean) {
+    if (!use) {
+      return
+    }
+
+    if (Date.now() - miniPreview.lastRequest < 150) {
+      miniPreview.lastRequest = Date.now()
+      miniPreview.lastElement = ev.target
+
+      setTimeout(() => {
+        if (miniPreview.lastElement === ev.target) {
+          miniPreview.create(ev)
+        }
+      }, 150)
+
+      return
+    }
+
+    miniPreview.lastRequest = Date.now()
+
+    let preData = getRelevantData(ev)
+
+    if (!preData) {
+      return
+    }
+
+    if (miniPreview.element.classList.contains('hide')) {
+      miniPreview.element.classList.remove('hide')
+    }
+
+    if (!miniPreview.element.classList.contains('refresher-mini-preview')) {
+      miniPreview.element.classList.add('refresher-mini-preview')
+    }
+
+    if (!miniPreview.init) {
+      miniPreview.element.innerHTML = `<h3>제목</h3><br><div class="refresher-mini-preview-contents"></div>`
+
+      document.body.appendChild(miniPreview.element)
+      miniPreview.init = true
+    }
+
+    let selector = miniPreview.element.querySelector(
+      '.refresher-mini-preview-contents'
+    )
+
+    request
+      .post(
+        preData.link,
+        preData.gallery,
+        preData.id,
+        miniPreview.controller.signal,
+        false
+      )
+      .then(v => {
+        selector!.innerHTML = v.contents
+
+        let writeDiv = selector.querySelector('.write_div')
+        if (writeDiv) {
+          writeDiv.setAttribute('style', null)
+        }
+      })
+      .catch(e => {
+        selector.innerHTML =
+          e.message.indexOf('aborted') > -1
+            ? ''
+            : '게시글을 새로 가져올 수 없습니다: ' + e.message
+      })
+
+    miniPreview.element.querySelector('h3')!.innerHTML = preData.title
+  },
+
+  move (ev: MouseEvent, use: boolean) {
+    if (use) {
+      miniPreview.element.style.transform = `translate(${ev.screenX}px, ${ev.screenY}px)`
+    }
+  },
+
+  close (_: MouseEvent, use: boolean) {
+    if (use) {
+      miniPreview.controller.abort()
+      miniPreview.controller = new AbortController()
+
+      miniPreview.element.classList.add('hide')
+    }
+  }
+}
+
 const request = {
   async vote (
     gall_id: string,
@@ -469,7 +566,9 @@ const request = {
     return http
       .make(http.urls.vote, {
         method: 'POST',
+        'Sec-Fetch-Site': 'same-origin',
         headers: {
+          Origin: 'https://gall.dcinside.com',
           'X-Requested-With': 'XMLHttpRequest',
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
         },
@@ -804,12 +903,12 @@ export default {
   enable: true,
   default_enable: true,
   settings: {
-    // tooltipMode: {
-    //   name: '툴팁 미리보기 표시',
-    //   desc: '마우스를 올려두면 글 내용만 빠르게 볼 수 있는 툴팁을 추가합니다.',
-    //   default: true,
-    //   type: 'check'
-    // },
+    tooltipMode: {
+      name: '툴팁 미리보기 표시',
+      desc: '마우스를 올려두면 글 내용만 빠르게 볼 수 있는 툴팁을 추가합니다.',
+      default: false,
+      type: 'check'
+    },
     longPressDelay: {
       name: '기본 마우스 오른쪽 클릭 딜레이',
       desc:
@@ -1303,6 +1402,15 @@ export default {
       e.addEventListener('mouseup', handleMousePress)
       e.addEventListener('mousedown', handleMousePress)
       e.addEventListener('contextmenu', previewFrame)
+      e.addEventListener('mouseenter', ev =>
+        miniPreview.create(ev, this.status.tooltipMode)
+      )
+      e.addEventListener('mousemove', ev =>
+        miniPreview.move(ev, this.status.tooltipMode)
+      )
+      e.addEventListener('mouseleave', ev =>
+        miniPreview.close(ev, this.status.tooltipMode)
+      )
     }
 
     this.memory.uuid = filter.add(

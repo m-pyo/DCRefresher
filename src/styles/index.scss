@@ -125,7 +125,7 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   }
 }
 
-.refresher-frame {
+.refresher-frame, .refresher-mini-preview {
   position: absolute;
   display: block;
   min-width: 100px;
@@ -863,6 +863,36 @@ tr .gall_writer {
 
 .refresher-timestamp {
   cursor: pointer;
+}
+
+.refresher-mini-preview {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow: hidden;
+
+  min-width: 300px;
+  min-height: 200px;
+  border-radius: 10px;
+  transition: 0.3s opacity cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 13px 20px;
+
+  max-height: 400px;
+  max-width: 800px;
+
+  img {
+    max-width: 300px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  &.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .refresher-preview-comments .refresher-comment {

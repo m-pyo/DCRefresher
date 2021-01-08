@@ -18,7 +18,8 @@ $dark-red: #e21919;
 // frame, etc.
 
 .refresherDark {
-  .refresher-frame {
+  .refresher-frame,
+  .refresher-mini-preview {
     background-color: $dark-tint-light;
     color: $dark-text-color-bright;
     border: 1px solid #505050;

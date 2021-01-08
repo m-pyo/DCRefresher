@@ -139,5 +139,10 @@ export const galleryTypeName = (url: string) => {
   return commentGallTypes[galleryType(url)]
 }
 
+/**
+ * 현재 URL의 query를 가져옵니다.
+ * 
+ * @param name Query 이름
+ */
 export const queryString = (name: string) =>
   new URLSearchParams(window.location.search).get(name)
