@@ -769,6 +769,15 @@ $dark-red: #e21919;
     //   filter: invert(1);
     // }
   }
+
+  .subject_list {
+    li:not(.not){
+      color:$dark-text-color-bright;
+    }
+    .not{
+      color:#666;
+    }
+  }
 }
 
 .refresherDoNotColorVisited {
