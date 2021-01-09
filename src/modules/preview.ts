@@ -534,7 +534,9 @@ const miniPreview: { [index: string]: any } = {
 
   move (ev: MouseEvent, use: boolean) {
     if (use) {
-      miniPreview.element.style.transform = `translate(${ev.clientX + 20}px, ${ev.clientY}px)`
+      miniPreview.element.style.transform = `translate(${ev.clientX + 20}px, ${
+        ev.clientY
+      }px)`
     }
   },
 
@@ -891,14 +893,14 @@ export default {
     toggleAdminPanel: true,
     expandRecognizeRange: false,
     tooltipMode: true,
-    useKeyPress: true
+    useKeyPress: true,
+    colorPreviewLink: true
   },
   memory: {
     preventOpen: false,
     lastPress: 0,
     uuid: null,
-    uuid2: null,
-    refreshId: null
+    uuid2: null
   },
   enable: true,
   default_enable: true,
@@ -923,6 +925,12 @@ export default {
     scrollToSkip: {
       name: '스크롤하여 게시글 이동',
       desc: '맨 위나 아래로 스크롤하여 다음 게시글로 이동할 수 있게 합니다.',
+      default: true,
+      type: 'check'
+    },
+    colorPreviewLink: {
+      name: '미리 본 게시글 읽음 처리',
+      desc: '오른쪽 클릭하여 읽은 게시글을 읽음 처리합니다.',
       default: true,
       type: 'check'
     },
@@ -977,6 +985,12 @@ export default {
       frame.data.load = true
       frame.title = preData.title || ''
       frame.data.buttons = true
+
+      if (this.status.colorPreviewLink) {
+        let currentURL = window.location.href
+        history.replaceState({}, '', preData.link)
+        history.replaceState({}, '', currentURL)
+      }
 
       frame.functions.vote = async (type: string) => {
         let res = await request.vote(
@@ -1417,21 +1431,12 @@ export default {
       `.gall_list .us-post${
         this.status.expandRecognizeRange ? '' : ' .ub-word'
       }`,
-      addHandler
+      addHandler,
+      {
+        neverExpire: true
+      }
     )
     this.memory.uuid2 = filter.add('#right_issuezoom', addHandler)
-    this.memory.refreshId = eventBus.on('refresh', (e: HTMLElement) => {
-      let elems = e.querySelectorAll(
-        `.gall_list .us-post${
-          this.status.expandRecognizeRange ? '' : ' .ub-word'
-        }`
-      )
-
-      let iter = elems.length
-      while (iter--) {
-        addHandler(elems[iter] as HTMLElement)
-      }
-    })
   },
 
   revoke (filter: RefresherFilter, eventBus: RefresherEventBus) {
@@ -1441,10 +1446,6 @@ export default {
 
     if (this.memory.uuid2) {
       filter.remove(this.memory.uuid2, true)
-    }
-
-    if (this.memory.refreshId) {
-      eventBus.remove('refresh', this.memory.refreshId)
     }
   }
 }
