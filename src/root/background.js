@@ -46,10 +46,10 @@ const checkBlockTarget = str =>
     '://ad.about.co.kr',
     '://neon.netinsight.co.kr',
     '://t1.daumcdn.net/kas/static/',
-    '://nstatic.dcinside.com/dgn/gallery/js/panda_tv.js',
     '://wcs.naver.net',
     '://cdn.taboola.com',
-    '://securepubads.g.doubleclick.net'
+    '://securepubads.g.doubleclick.net',
+    "://www.google-analytics.com/analytics.js"
   ].filter(v => str.indexOf(v) > -1).length
 ;(chrome || browser).webRequest.onBeforeRequest.addListener(
   details => {
