@@ -881,6 +881,10 @@ tr .gall_writer {
   max-height: 400px;
   max-width: 800px;
 
+  &:hover {
+    opacity: 0.4;
+  }
+
   img {
     max-width: 300px;
   }

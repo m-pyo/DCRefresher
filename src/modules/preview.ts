@@ -461,19 +461,30 @@ const miniPreview: { [index: string]: any } = {
   lastRequest: 0,
   controller: new AbortController(),
   lastElement: null,
+  lastTimeout: 0,
+  caches: {},
+  shouldOutHandle: false,
   create (ev: MouseEvent, use: boolean) {
     if (!use) {
       return
     }
 
+    miniPreview.cursorOut = false
+
     if (Date.now() - miniPreview.lastRequest < 150) {
       miniPreview.lastRequest = Date.now()
       miniPreview.lastElement = ev.target
 
-      setTimeout(() => {
-        if (miniPreview.lastElement === ev.target) {
+      if (miniPreview.lastTimeout) {
+        clearTimeout(miniPreview.lastTimeout)
+      }
+
+      miniPreview.lastTimeout = setTimeout(() => {
+        if (!miniPreview.cursorOut && miniPreview.lastElement === ev.target) {
           miniPreview.create(ev, use)
         }
+
+        miniPreview.cursorOut = false
       }, 150)
 
       return
@@ -506,14 +517,35 @@ const miniPreview: { [index: string]: any } = {
       '.refresher-mini-preview-contents'
     )
 
-    request
-      .post(
-        preData.link,
-        preData.gallery,
-        preData.id,
-        miniPreview.controller.signal,
-        false
-      )
+    new Promise<PostInfo>(async (resolve, reject) => {
+      if (!preData) {
+        return reject('preData is not defined.')
+      }
+
+      if (Object.keys(miniPreview.caches).length > 50) {
+        miniPreview.caches = {}
+      }
+
+      let cache = miniPreview.caches[preData.gallery + preData.id]
+      if (cache) {
+        return resolve(cache)
+      }
+
+      try {
+        let result = await request.post(
+          preData.link,
+          preData.gallery,
+          preData.id,
+          miniPreview.controller.signal,
+          false
+        )
+
+        miniPreview.caches[preData.gallery + preData.id] = result
+        resolve(result)
+      } catch (e) {
+        reject(e)
+      }
+    })
       .then(v => {
         selector!.innerHTML = v.contents
 
@@ -541,12 +573,14 @@ const miniPreview: { [index: string]: any } = {
   },
 
   close (_: MouseEvent, use: boolean) {
+    miniPreview.cursorOut = true
+
     if (use) {
       miniPreview.controller.abort()
       miniPreview.controller = new AbortController()
-
-      miniPreview.element.classList.add('hide')
     }
+
+    miniPreview.element.classList.add('hide')
   }
 }
 
@@ -885,6 +919,7 @@ export default {
   name: '미리보기',
   description: '글을 오른쪽 클릭 했을때 미리보기 창을 만들어줍니다.',
   author: { name: 'Sochiru', url: 'https://sochiru.pw' },
+  url: /gall\.dcinside\.com\/(mgallery\/|mini\/)?board\/(view|lists)/g,
   status: {
     longPressDelay: 300,
     scrollToSkip: true,
@@ -1215,6 +1250,8 @@ export default {
         return
       }
 
+      miniPreview.close(ev, this.status.tooltipMode)
+
       let preData = getRelevantData(ev)
 
       if (!preData) {
@@ -1403,7 +1440,6 @@ export default {
 
       if (
         ev.type === 'mouseup' &&
-        this.memory.lastPress &&
         Date.now() - this.status.longPressDelay > this.memory.lastPress
       ) {
         this.memory.preventOpen = true
