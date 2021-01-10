@@ -11,3 +11,5 @@ _old_src
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+src/modules/private-*.ts

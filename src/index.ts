@@ -1,3 +1,5 @@
+declare var require: any
+
 import './styles/index.scss'
 
 import log from './utils/logger'
@@ -10,26 +12,9 @@ import './core/block'
 import { modules } from './core/modules'
 import { filter } from './core/filtering'
 
-import Preview from './modules/preview'
-import DarkMode from './modules/darkmode'
-import ContentBlock from './modules/block'
-import AdBlock from './modules/adblock'
-import Fonts from './modules/fonts'
-import UserInfo from './modules/userinfo'
-import AutoRefresh from './modules/refresh'
-import Layout from './modules/layout'
-
-modules
-  .load(
-    DarkMode,
-    Fonts,
-    AdBlock,
-    ContentBlock,
-    AutoRefresh,
-    Preview,
-    UserInfo,
-    Layout
-  )
+let context = require.context('./modules/', true, /\.ts$/)
+Promise.all(context.keys().map((v: string) => context(v).default))
+  .then((v: any) => modules.load(...v))
   .then(async () => {
     log(
       `🍊✔️ DCRefresher Module Loaded. took ${(

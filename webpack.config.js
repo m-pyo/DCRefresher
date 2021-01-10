@@ -121,7 +121,7 @@ module.exports = (env, argv) => {
       }),
       // new BundleAnalyzerPlugin(),
       new ZipWebpackPlugin({
-        filename: (pkg.version || 'DCRefresher') + '.zip',
+        filename: (pkg.version || 'DCRefresher') + '.zip'
       })
     ],
     resolve: {

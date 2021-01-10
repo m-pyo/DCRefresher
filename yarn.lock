@@ -1334,7 +1334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^14.14.13":
+"@types/node@npm:*, @types/node@npm:^14.14.20":
   version: 14.14.20
   resolution: "@types/node@npm:14.14.20"
   checksum: 84a9fd73de978967723f951173ff4d07dca259941d3e37c7a3dbb236c09b3f2294bb2098678a806afe6fd6cac39a7d0a1d399f602378c951bd5d01ede535d570
@@ -3049,7 +3049,7 @@ __metadata:
     "@types/chai": ^4.2.14
     "@types/chrome": ^0.0.127
     "@types/mocha": ^8.2.0
-    "@types/node": ^14.14.13
+    "@types/node": ^14.14.20
     babel-cli: ^6.26.0
     babel-loader: ^8.2.2
     babel-polyfill: ^6.26.0
