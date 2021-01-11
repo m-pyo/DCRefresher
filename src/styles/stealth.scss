@@ -1,0 +1,178 @@
+$dark-dc-color-deep: #113475;
+$dark-dc-color-deep-hover: #113475c2;
+$dark-tint2: #3d3d3d;
+
+
+.refresherStealth{
+    &:not(.stlth){
+        .issue_contentbox,
+        .write_div,
+        .gallview_contents > .inner,
+        .dory_img
+        {
+            :not(.stealth_off){
+                img,
+                video,
+                .cover,
+                .img_box,
+                .mintro_imgbox,
+                #zzbang_div {
+                    visibility: hidden;    
+                    display: none;
+                }
+            }
+        
+            .stealth_off{
+                img,
+                video,
+                .cover,
+                .img_box,
+                .mintro_imgbox,
+                #zzbang_div {
+                    visibility: visible;    
+                    
+                }
+            }
+        }
+    
+        //comment dory
+        .ub-content.dory{
+            .dory_img{
+                img{
+                    height: 10pt;
+                }
+            }
+            .dory_rolling{
+                position: inherit;
+                margin-top: -17px;
+            }
+            .comment_dory{
+                display: none;
+            }
+            .dory_txt{
+                margin-top: 0px;
+                margin-left: 90px;
+            }
+        }
+      
+        //right content
+        .right_content > article{
+            .img_box{
+                display: none;
+            }
+            .rcont_issue{
+                margin-top: 44px;
+            }
+        }
+    
+        //dccon
+        .stealth_off {
+            :not(:hover).comment-dccon,
+            :not(:hover).written_dccon{
+                visibility: visible;
+            }
+        }
+        .comment-dccon,
+        .written_dccon{
+            visibility: hidden;
+        }
+    
+        .comment_box{
+            .reply_list .stealth_off_button{
+                margin-top: 3px;
+                margin-left: 16px;
+                margin-bottom: 5px;
+            }
+            :not(.reply_list) .stealth_off_button{
+                margin-top: 3px;
+            }
+        }
+    
+        //No Comment
+        div.refresher-nocomment-wrap {
+            & > img{
+                display: none;
+            }
+    
+            & > h3{
+                text-align: center;
+                width: 100%;
+            }
+        }
+    
+        //Video player - youtube
+        .writing_view_box > iframe{
+            visibility: hidden;
+        }
+    
+        //Video player - kakao
+        .refresher-preview-contents-actual iframe,
+        .write_div embed{
+            display: none;
+        }
+    
+        .stealth_off_button.off_button_work{
+            position: absolute;
+            border: 1px solid $dark-tint2;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            &:hover{
+                border: 1px solid $dark-dc-color-deep;
+            }
+            &::before{
+                content: '클릭시 컨텐츠표시';
+                text-align: center;
+                width: 100%;
+                margin: auto;
+                font-weight: bold;
+            }
+        }
+    
+        .stealth_off_button.off_cutton_work{
+            position: absolute;
+            border: 1px solid $dark-tint2;
+            display: flex;
+            align-items: center;
+            z-index: 1;
+            height:100px;
+            width: 10;
+            &:hover{
+                border: 1px solid $dark-dc-color-deep;
+            }
+            &:not(:hover){
+                &::before{
+                    z-index: 5;
+                    content: '디씨콘';
+                    text-align: center;
+                    width: 100%;
+                    margin: auto;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+    .stealth_control_button{
+        position: fixed;
+        text-align: center;
+        bottom: 20px;
+        left: 0px;
+        margin: 0px;
+        padding: 0px;;
+        height: 100px;
+        width: 100px;
+        background: rgba(0, 0, 0, 0.342);
+        content: 'test';
+        color: white;
+        z-index: 1;
+        border-radius: 0px 13.3px 13.3px 0px;
+    }
+    
+}
+
+:not(.refresherStealth){
+    .stealth_off_button{
+        display: none;
+    }
+}
+
