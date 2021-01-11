@@ -18,10 +18,12 @@ import Fonts from './modules/fonts'
 import UserInfo from './modules/userinfo'
 import AutoRefresh from './modules/refresh'
 import Layout from './modules/layout'
+import Stealth from './modules/Stealth'
 
 modules
   .load(
     DarkMode,
+    Stealth,
     Fonts,
     AdBlock,
     ContentBlock,
