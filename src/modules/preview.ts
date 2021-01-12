@@ -960,9 +960,17 @@ let parse = (id: string, body: string) => {
   let downvotes = dom.querySelector('div.btn_recommend_box.clear .down_num')
     ?.innerHTML
 
-  let contents = dom.querySelector(
+  let content_query = dom.querySelector(
     '.view_content_wrap > div > div.inner.clear > div.writing_view_box'
-  )?.innerHTML
+  )
+
+  let writeDiv = content_query?.querySelector('.write_div') as HTMLElement
+  if (writeDiv && writeDiv.style.width) {
+    let width = writeDiv.style.width
+    writeDiv.style.width = 'unset'
+    writeDiv.style.maxWidth = width
+  }
+  let contents = content_query?.innerHTML
 
   let commentId = body
     .match(ISSUE_ZOOM_ID)![0]
@@ -1066,7 +1074,8 @@ export default {
     },
     colorPreviewLink: {
       name: '게시글 URL 변경',
-      desc: '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
+      desc:
+        '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
       default: true,
       type: 'check'
     },
