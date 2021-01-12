@@ -381,6 +381,16 @@ const panel = {
     </button>
     `
 
+    element.querySelector('input')?.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter') {
+        let input = element.querySelector('input')!.value
+
+        callback(input)
+
+        element.parentElement?.removeChild(element)
+      }
+    })
+
     element.querySelector('.close')?.addEventListener('click', _ => {
       element.parentElement?.removeChild(element)
     })
