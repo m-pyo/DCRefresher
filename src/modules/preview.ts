@@ -1066,7 +1066,7 @@ export default {
     },
     colorPreviewLink: {
       name: '게시글 URL 변경',
-      desc: '미리보기를 열변 게시글의 URL을 변경하여 탐색할 수 있게 해줍니다.',
+      desc: '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
       default: true,
       type: 'check'
     },
