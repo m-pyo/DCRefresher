@@ -381,6 +381,10 @@ const panel = {
     </button>
     `
 
+    setTimeout(()=>{
+      element.querySelector('input')?.focus()
+    }, 0)
+
     element.querySelector('input')?.addEventListener('keydown', (e)=>{
       if(e.key==='Enter') {
         let input = element.querySelector('input')!.value
