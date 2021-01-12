@@ -541,7 +541,7 @@ Vue.component('refresher-bubble', {
 Vue.component('refresher-dccon', {
     template: `
       <div class="refresher-input">
-      <img v-bind:src="'https://dcimg5.dcinside.com/dccon.php?no='+value" alt="디시콘" style="width: 50px;position: relative;left: -70px;">
+      <img v-bind:src="'https://dcimg5.dcinside.com/dccon.php?no='+value.split('||')[2]" alt="디시콘" style="width: 50px;position: relative;left: -70px;">
       <button v-on:click="select" :data-id="id" :data-module="modname" :placeholder="placeholder" :value="value"
               :disabled="disabled" style="position: absolute;right: 10px;top: 13px;">선택하기
       </button>
@@ -576,7 +576,8 @@ Vue.component('refresher-dccon', {
 
     methods: {
         select(ev) {
-            alert(1)
+            chrome.windows.create({'url': 'views/dcconSel.html', 'type': 'popup', height: 800, width:400}, function(window) {});
+            window.close()
         }
     }
 })

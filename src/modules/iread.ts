@@ -7,7 +7,7 @@ export default {
     author: {name: 'Seo-Rii', url: 'https://github.com/Seo-Rii/'},
     url: /gall\.dcinside\.com\/(mgallery\/|mini\/)?board\/(view)/g,
     status: {
-        text: ''
+        dccon: ''
     },
     memory: {
         uuid: '',
@@ -17,11 +17,11 @@ export default {
     default_enable: true,
     require: ['filter'],
     settings: {
-        text: {
+        dccon: {
             name: '댓글 내용',
             desc:
                 '자동으로 달 댓글의 내용을 설정합니다.',
-            default: '안녕',
+            default: '없음',
             type: 'dccon'
         }
     },
@@ -32,6 +32,7 @@ export default {
             }).join('')+'&t_vch2=&g-recaptcha-response='
             if (!this.memory.sent) {
                 this.memory.sent = true
+                return
                 submitComment(secretKey, '안녕').then((res) => {
                     if (res.result === 'false') alert(res.message)
                 })
