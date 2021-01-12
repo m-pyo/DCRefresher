@@ -381,12 +381,12 @@ const panel = {
     </button>
     `
 
-    setTimeout(()=>{
+    setTimeout(() => {
       element.querySelector('input')?.focus()
     }, 0)
 
-    element.querySelector('input')?.addEventListener('keydown', (e)=>{
-      if(e.key==='Enter') {
+    element.querySelector('input')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
         let input = element.querySelector('input')!.value
 
         callback(input)
@@ -1641,11 +1641,26 @@ export default {
     let addHandler = (e: HTMLElement) => {
       e.addEventListener('mouseup', handleMousePress)
       e.addEventListener('mousedown', handleMousePress)
-      e.addEventListener(this.status.reversePreviewKey ? 'click' : 'contextmenu', previewFrame)
-      if(this.status.reversePreviewKey) e.addEventListener('contextmenu', (e)=>{
-        e.preventDefault()
-        location.replace(e.target.href)
-      })
+      e.addEventListener(
+        this.status.reversePreviewKey ? 'click' : 'contextmenu',
+        previewFrame
+      )
+      if (this.status.reversePreviewKey) {
+        e.addEventListener('contextmenu', e => {
+          e.preventDefault()
+
+          let href = (e.target as any).href
+
+          if (!href) {
+            href = ((e.target as HTMLElement).tagName === 'TR'
+              ? document.querySelector('a')
+              : findNeighbor(e.target as HTMLElement, 'a', 5, null)
+            )?.getAttribute('href')!
+          }
+
+          location.href = href
+        })
+      }
       e.addEventListener('mouseenter', ev =>
         miniPreview.create(ev, this.status.tooltipMode)
       )
