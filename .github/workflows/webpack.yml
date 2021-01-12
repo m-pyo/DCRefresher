@@ -28,13 +28,8 @@ jobs:
       run: yarn build
     - name: mocha test
       run: yarn test
-    - name: Archiving dist folder
-      uses: papeloto/action-zip@v1
-      with:
-        files: dist/
-        dest: refresher.zip
     - name: Update Artifacts
       uses: actions/upload-artifact@v2
       with:
         name: DCRefresher
-        path: ${{ github.workspace }}/refresher.zip
+        path: ${{ github.workspace }}/dist/
