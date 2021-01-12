@@ -935,7 +935,10 @@ export default {
     preventOpen: false,
     lastPress: 0,
     uuid: null,
-    uuid2: null
+    uuid2: null,
+    originalTitle: '',
+    frame: null,
+    closeByBrowser: false
   },
   enable: true,
   default_enable: true,
@@ -1105,6 +1108,8 @@ export default {
             )
             eventBus.emitNextTick('contentPreview', frame.app.$el)
 
+            this.memory.originalTitle = document.title
+            document.title = `${obj.title} - ${document.title.split('-').slice(-1)[0].trim()}`
             window.history.pushState(null, `${obj.title} - ${document.title.split('-').slice(-1)[0].trim()}`, preData.link)
 
             frame.data.load = false
@@ -1318,7 +1323,7 @@ export default {
           }
           scrolledCount = 0
 
-          if (!frame.app.first().error) {
+          if (!this.memory.frame || !this.memory.frame.app.first().error) {
             preData.id = (Number(preData.id) + 1).toString()
           }
 
@@ -1329,7 +1334,7 @@ export default {
         }
       })
 
-      let frame = new Frame(
+      this.memory.frame = new Frame(
         [
           {
             relative: true,
@@ -1362,8 +1367,8 @@ export default {
       )
 
       let newPostWithData = (preData: GalleryPredata) => {
-        let firstApp = frame.app.first()
-        let secondApp = frame.app.second()
+        let firstApp = this.memory.frame.app.first()
+        let secondApp = this.memory.frame.app.second()
 
         if (firstApp.data.load) {
           return
@@ -1381,7 +1386,7 @@ export default {
         ) {
           panel.admin(
             preData,
-            frame,
+              this.memory.frame,
             this.status.toggleBlur,
             eventBus,
             this.status.useKeyPress
@@ -1389,7 +1394,7 @@ export default {
         }
       }
 
-      frame.app.$on('close', () => {
+      this.memory.frame.app.$on('close', () => {
         controller.abort()
 
         let blockPopup = document.querySelector('.refresher-block-popup')
@@ -1406,11 +1411,15 @@ export default {
           document.removeEventListener('keypress', adminKeyPress)
         }
 
-        window.history.back()
+        if(!this.memory.closeByBrowser) window.history.back()
+
+        setTimeout(() => {
+          document.title = this.memory.originalTitle
+        }, 0)
       })
 
-      makeFirstFrame(frame.app.first(), preData, signal)
-      makeSecondFrame(frame.app.second(), preData, signal)
+      makeFirstFrame(this.memory.frame.app.first(), preData, signal)
+      makeSecondFrame(this.memory.frame.app.second(), preData, signal)
 
       if (
         this.status.toggleAdminPanel &&
@@ -1418,7 +1427,7 @@ export default {
       ) {
         panel.admin(
           preData,
-          frame,
+            this.memory.frame,
           this.status.toggleBlur,
           eventBus,
           this.status.useKeyPress
@@ -1426,7 +1435,7 @@ export default {
       }
 
       setTimeout(() => {
-        frame.app.fadeIn()
+        this.memory.frame.app.fadeIn()
       }, 0)
 
       ev.preventDefault()
@@ -1477,6 +1486,15 @@ export default {
       }
     )
     this.memory.uuid2 = filter.add('#right_issuezoom', addHandler)
+
+
+    window.addEventListener('popstate', (event) => {
+      if(!this.memory.frame?.app) location.reload()
+      else {
+        this.memory.closeByBrowser = true
+        this.memory.frame.app.close()
+      }
+    })
   },
 
   revoke (filter: RefresherFilter, eventBus: RefresherEventBus) {
