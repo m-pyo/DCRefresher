@@ -41,6 +41,7 @@ html.refresher-popup
                   refresher-input(v-if="settings[module][setting].type === 'text'" :placeholder="settings[module][setting].default" :value="settings[module][setting].value" :id="setting" :modname="module" :change="updateUserSetting")
                   refresher-range(v-if="settings[module][setting].type === 'range'" :placeholder="settings[module][setting].default" :value="Number(settings[module][setting].value)" :id="setting" :modname="module" :change="updateUserSetting" :min="settings[module][setting].min" :max="settings[module][setting].max" :step="settings[module][setting].step" :unit="settings[module][setting].unit")
                   refresher-options(v-if="settings[module][setting].type === 'option'" :options="settings[module][setting].items" :change="updateUserSetting" :modname="module")
+                  refresher-dccon(v-if="settings[module][setting].type === 'dccon'" :placeholder="settings[module][setting].default" :value="settings[module][setting].value" :id="setting" :modname="module" :change="updateUserSetting")
 
         div.tab.tab2(v-show="tab == 1" key="tab2")
           div(v-if="!Object.keys(settings).length")

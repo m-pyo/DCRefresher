@@ -22,7 +22,7 @@ export default {
             desc:
                 '자동으로 달 댓글의 내용을 설정합니다.',
             default: '안녕',
-            type: 'text'
+            type: 'dccon'
         }
     },
     func(filter: RefresherFilter) {
