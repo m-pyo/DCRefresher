@@ -1494,15 +1494,17 @@ export default {
     )
     this.memory.uuid2 = filter.add('#right_issuezoom', addHandler)
 
+    this.popStateHandler = this.popStateHandler.bind(this)
+    window.addEventListener('popstate', this.popStateHandler)
+  },
 
-    window.addEventListener('popstate', (event) => {
+  popStateHandler(event:PopStateEvent)  {
       if(this.memory.frameAlreadyClosed) return
       if(!this.memory.frame?.app) location.reload()
       else {
         this.memory.closeByBrowser = true
         this.memory.frame.app.close()
       }
-    })
   },
 
   revoke (filter: RefresherFilter, eventBus: RefresherEventBus) {
@@ -1513,5 +1515,7 @@ export default {
     if (this.memory.uuid2) {
       filter.remove(this.memory.uuid2, true)
     }
+
+    window.removeEventListener('popstate', this.popStateHandler)
   }
 }
