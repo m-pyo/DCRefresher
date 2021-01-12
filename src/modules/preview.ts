@@ -938,7 +938,8 @@ export default {
     uuid2: null,
     originalTitle: '',
     frame: null,
-    closeByBrowser: false
+    closeByBrowser: false,
+    frameAlreadyClosed: false
   },
   enable: true,
   default_enable: true,
@@ -1413,9 +1414,14 @@ export default {
 
         if(!this.memory.closeByBrowser) window.history.back()
 
+        this.memory.frameAlreadyClosed = true
         setTimeout(() => {
           document.title = this.memory.originalTitle
+          this.memory.originalTitle = ''
+          this.memory.closeByBrowser = false
+          this.memory.frame = ''
         }, 0)
+
       })
 
       makeFirstFrame(this.memory.frame.app.first(), preData, signal)
@@ -1436,6 +1442,7 @@ export default {
 
       setTimeout(() => {
         this.memory.frame.app.fadeIn()
+        this.memory.frameAlreadyClosed = false
       }, 0)
 
       ev.preventDefault()
@@ -1489,6 +1496,7 @@ export default {
 
 
     window.addEventListener('popstate', (event) => {
+      if(this.memory.frameAlreadyClosed) return
       if(!this.memory.frame?.app) location.reload()
       else {
         this.memory.closeByBrowser = true
