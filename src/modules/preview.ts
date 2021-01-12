@@ -1105,6 +1105,8 @@ export default {
             )
             eventBus.emitNextTick('contentPreview', frame.app.$el)
 
+            window.history.pushState(null, `${obj.title} - ${document.title.split('-').slice(-1)[0].trim()}`, preData.link)
+
             frame.data.load = false
           })
           .catch((e: Error) => {
@@ -1403,6 +1405,8 @@ export default {
         if (adminKeyPress) {
           document.removeEventListener('keypress', adminKeyPress)
         }
+
+        window.history.back()
       })
 
       makeFirstFrame(frame.app.first(), preData, signal)
