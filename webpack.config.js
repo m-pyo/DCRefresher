@@ -4,7 +4,6 @@ const fs = require('fs')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ZipWebpackPlugin = require('zip-webpack-plugin')
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
@@ -68,6 +67,15 @@ module.exports = (env, argv) => {
       ]
     },
     plugins: [
+      new HtmlWebpackPlugin({
+        template: './src/views/index.pug',
+        filename: 'views/index.html',
+        inject: false,
+        templateParameters: {
+          RefresherVersion: pkg.version || '1.0.0',
+          RefresherDevMode: devMode
+        }
+      }),
       new MiniCssExtractPlugin({
         filename: 'refresher.bundle.css'
       }),
@@ -109,20 +117,8 @@ module.exports = (env, argv) => {
             }
           }
         ]
-      }),
-      new HtmlWebpackPlugin({
-        template: './src/views/index.pug',
-        filename: 'views/index.html',
-        inject: false,
-        templateParameters: {
-          RefresherVersion: pkg.version || '1.0.0',
-          RefresherDevMode: devMode
-        }
-      }),
-      // new BundleAnalyzerPlugin(),
-      new ZipWebpackPlugin({
-        filename: (pkg.version || 'DCRefresher') + '.zip'
       })
+      // new BundleAnalyzerPlugin()
     ],
     resolve: {
       extensions: ['.js', '.ts', '.css'],
