@@ -362,6 +362,40 @@ const panel = {
     document.querySelector('body')?.appendChild(element)
 
     return element
+  },
+
+  captcha (src: string, callback: Function): boolean {
+    let element = document.createElement('div')
+    element.className = 'refresher-captcha-popup'
+
+    element.innerHTML = `
+    <p>코드 입력</p>
+    <div class="close">
+      <div class="cross"></div>
+      <div class="cross"></div>
+    </div>
+    <img src="${src}"></img>
+    <input type="text"></input>
+    <button class="refresher-preview-button primary">
+      <p class="refresher-vote-text">전송</p>
+    </button>
+    `
+
+    element.querySelector('.close')?.addEventListener('click', _ => {
+      element.parentElement?.removeChild(element)
+    })
+
+    element.querySelector('button')?.addEventListener('click', ev => {
+      let input = element.querySelector('input')!.value
+
+      callback(input)
+
+      element.parentElement?.removeChild(element)
+    })
+
+    document.querySelector('body')?.appendChild(element)
+
+    return true
   }
 }
 
@@ -839,6 +873,42 @@ const request = {
     }
 
     return result
+  },
+
+  async captcha (args: GalleryHTTPRequestArguments, kcaptchaType: string) {
+    if (!args.link) {
+      throw new Error('link 값이 주어지지 않았습니다. (확장 프로그램 오류)')
+    }
+
+    let galleryType = http.galleryType(args.link, '/')
+    let galleryTypeName = http.galleryTypeName(args.link)
+
+    await http.make(http.urls.captcha, {
+      method: 'POST',
+      dataType: 'json',
+      headers: {
+        Accept: 'application/json, text/javascript, */*; q=0.01',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      cache: 'no-store',
+      referrer: `https://gall.dcinside.com/${galleryType}board/lists/?id=${args.gallery}`,
+      body:
+        `ci_t=${get_cookie('ci_c')}&gall_id=${
+          args.gallery
+        }&kcaptcha_type=${kcaptchaType}&_GALLTYPE_=` + galleryTypeName
+    })
+
+    return (
+      '/kcaptcha/image/?gall_id=' +
+      args.gallery +
+      '&kcaptcha_type=' +
+      kcaptchaType +
+      '&time=' +
+      new Date().getTime() +
+      '&_GALLTYPE_=' +
+      galleryTypeName
+    )
   }
 }
 
@@ -895,6 +965,8 @@ let parse = (id: string, body: string) => {
   )
   let isNotice = noticeElement && noticeElement.innerHTML !== '공지 등록'
 
+  let requireCaptcha = dom.querySelector('.recommend_kapcode') !== null
+
   return new PostInfo(id, {
     header,
     title,
@@ -911,7 +983,8 @@ let parse = (id: string, body: string) => {
     contents,
     commentId,
     commentNo,
-    isNotice
+    isNotice,
+    requireCaptcha
   })
 }
 
@@ -1028,23 +1101,44 @@ export default {
       }
 
       frame.functions.vote = async (type: string) => {
-        let res = await request.vote(
-          preData.gallery,
-          preData.id,
-          type,
-          null,
-          preData.link || ''
-        )
-
-        if (res.result != 'true') {
-          alert(res.counts)
-
-          return false
+        if (!postFetchedData) {
+          return alert('게시글이 로딩될 때까지 잠시 기다려주세요.')
         }
 
-        frame[type ? 'upvotes' : 'downvotes'] = res.counts
+        let requireCapCode = postFetchedData.requireCaptcha
 
-        return true
+        let codeSrc = ''
+        if (requireCapCode) {
+          codeSrc = await request.captcha(preData, 'recommend')
+        }
+
+        let req = async (captcha?: string) => {
+          let res = await request.vote(
+            preData.gallery,
+            preData.id,
+            type,
+            captcha || null,
+            preData.link || ''
+          )
+
+          if (res.result != 'true') {
+            alert(res.counts)
+
+            return false
+          }
+
+          frame[type ? 'upvotes' : 'downvotes'] = res.counts
+
+          return true
+        }
+
+        if (codeSrc) {
+          return panel.captcha(codeSrc, (str: string) => {
+            req(str)
+          })
+        }
+
+        return req()
       }
 
       frame.functions.share = () => {
@@ -1393,6 +1487,11 @@ export default {
         let blockPopup = document.querySelector('.refresher-block-popup')
         if (blockPopup) {
           blockPopup.parentElement?.removeChild(blockPopup)
+        }
+
+        let captchaPopup = document.querySelector('.refresher-captcha-popup')
+        if (captchaPopup) {
+          captchaPopup.parentElement?.removeChild(captchaPopup)
         }
 
         let adminPanel = document.getElementById('refresher-management-panel')

@@ -7,6 +7,7 @@ export const urls = {
   },
   view: 'board/view/?id=',
   vote: 'https://gall.dcinside.com/board/recommend/vote',
+  captcha: 'https://gall.dcinside.com/kcaptcha/session',
   manage: {
     delete:
       'https://gall.dcinside.com/ajax/minor_manager_board_ajax/delete_list',
