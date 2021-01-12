@@ -103,7 +103,8 @@ export default class {
           fade: false,
           stampMode: false,
           scrollModeTop: false,
-          scrollModeBottom: false
+          scrollModeBottom: false,
+          closed: false
         }
       },
       methods: {
@@ -132,6 +133,8 @@ export default class {
           setTimeout(() => {
             document.querySelector('body')!.removeChild(this.$el)
           }, 300)
+
+          this.closed = true
         },
 
         close () {
@@ -140,6 +143,7 @@ export default class {
 
         fadeIn () {
           this.fade = true
+          this.closed = false
         },
 
         fadeOut () {

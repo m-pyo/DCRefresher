@@ -606,7 +606,7 @@ const miniPreview: { [index: string]: any } = {
     }
   },
 
-  close (_: MouseEvent, use: boolean) {
+  close (use: boolean) {
     miniPreview.cursorOut = true
 
     if (use) {
@@ -988,6 +988,8 @@ let parse = (id: string, body: string) => {
   })
 }
 
+let frame: RefresherFrame
+
 export default {
   name: '미리보기',
   description: '글을 오른쪽 클릭 했을때 미리보기 창을 만들어줍니다.',
@@ -1009,10 +1011,11 @@ export default {
     lastPress: 0,
     uuid: null,
     uuid2: null,
-    originalTitle: '',
-    frame: null,
-    closeByBrowser: false,
-    frameAlreadyClosed: false
+    popStateHandler: (_: PopStateEvent) => {},
+    signal: null,
+    historyClose: false,
+    titleStore: '',
+    urlStore: ''
   },
   enable: true,
   default_enable: true,
@@ -1041,8 +1044,8 @@ export default {
       type: 'check'
     },
     colorPreviewLink: {
-      name: '미리 본 게시글 읽음 처리',
-      desc: '오른쪽 클릭하여 읽은 게시글을 읽음 처리합니다.',
+      name: '게시글 URL 변경',
+      desc: '미리보기를 열변 게시글의 URL을 변경하여 탐색할 수 있게 해줍니다.',
       default: true,
       type: 'check'
     },
@@ -1092,16 +1095,27 @@ export default {
     let makeFirstFrame = (
       frame: RefresherFrame,
       preData: GalleryPredata,
-      signal: AbortSignal
+      signal: AbortSignal,
+      historySkip?: boolean
     ) => {
       frame.data.load = true
       frame.title = preData.title || ''
       frame.data.buttons = true
 
       if (this.status.colorPreviewLink) {
-        let currentURL = window.location.href
-        history.replaceState({}, '', preData.link)
-        history.replaceState({}, '', currentURL)
+        let title = `${preData.title} - ${document.title
+          .split('-')
+          .slice(-1)[0]
+          .trim()}`
+
+        if (!historySkip) {
+          window.history.pushState(
+            { preData, preURL: window.location.href },
+            title,
+            preData.link
+          )
+        }
+        document.title = title
       }
 
       frame.functions.vote = async (type: string) => {
@@ -1180,6 +1194,23 @@ export default {
               return
             }
 
+            if (this.status.colorPreviewLink) {
+              let title = `${obj.title} - ${document.title
+                .split('-')
+                .slice(-1)[0]
+                .trim()}`
+
+              if (!historySkip) {
+                preData.title = obj.title
+                window.history.replaceState(
+                  { preData, preURL: window.location.href },
+                  title,
+                  preData.link
+                )
+              }
+              document.title = title
+            }
+
             postFetchedData = obj
 
             frame.contents = obj.contents
@@ -1202,10 +1233,6 @@ export default {
               obj.commentNo
             )
             eventBus.emitNextTick('contentPreview', frame.app.$el)
-
-            this.memory.originalTitle = document.title
-            document.title = `${obj.title} - ${document.title.split('-').slice(-1)[0].trim()}`
-            window.history.pushState(null, `${obj.title} - ${document.title.split('-').slice(-1)[0].trim()}`, preData.link)
 
             frame.data.load = false
           })
@@ -1345,23 +1372,37 @@ export default {
       })
     }
 
-    let previewFrame = (ev: MouseEvent) => {
+    let previewFrame = (
+      ev: MouseEvent | null,
+      prd?: GalleryPredata,
+      historySkip?: boolean
+    ) => {
       if (this.memory.preventOpen) {
         this.memory.preventOpen = false
 
         return
       }
 
-      miniPreview.close(ev, this.status.tooltipMode)
+      miniPreview.close(this.status.tooltipMode)
 
-      let preData = getRelevantData(ev)
+      let preData: GalleryPredata | undefined
+      if (ev) {
+        preData = getRelevantData(ev)
+      } else if (prd) {
+        preData = prd
+      }
 
       if (!preData) {
         return
       }
 
+      if (!historySkip) {
+        this.memory.titleStore = document.title
+        this.memory.urlStore = location.href
+      }
+
       let controller = new AbortController()
-      let { signal } = controller
+      this.memory.signal = controller.signal
 
       let appStore: any
       let groupStore: HTMLElement
@@ -1396,7 +1437,7 @@ export default {
 
           preData.id = (Number(preData.id) - 1).toString()
 
-          newPostWithData(preData)
+          newPostWithData(preData, historySkip)
           groupStore.scrollTop = 0
           appStore.clearScrollMode()
         } else {
@@ -1418,18 +1459,18 @@ export default {
           }
           scrolledCount = 0
 
-          if (!this.memory.frame || !this.memory.frame.app.first().error) {
+          if (!frame || !frame.app.first().error) {
             preData.id = (Number(preData.id) + 1).toString()
           }
 
-          newPostWithData(preData)
+          newPostWithData(preData, historySkip)
 
           groupStore.scrollTop = 0
           appStore.clearScrollMode()
         }
       })
 
-      this.memory.frame = new Frame(
+      frame = new Frame(
         [
           {
             relative: true,
@@ -1461,35 +1502,7 @@ export default {
         }
       )
 
-      let newPostWithData = (preData: GalleryPredata) => {
-        let firstApp = this.memory.frame.app.first()
-        let secondApp = this.memory.frame.app.second()
-
-        if (firstApp.data.load) {
-          return
-        }
-
-        preData.title = '게시글 로딩 중...'
-        firstApp.contents = ''
-
-        makeFirstFrame(firstApp, preData, signal)
-        makeSecondFrame(secondApp, preData, signal)
-
-        if (
-          this.status.toggleAdminPanel &&
-          document.querySelector('.useradmin_btnbox button') !== null
-        ) {
-          panel.admin(
-            preData,
-              this.memory.frame,
-            this.status.toggleBlur,
-            eventBus,
-            this.status.useKeyPress
-          )
-        }
-      }
-
-      this.memory.frame.app.$on('close', () => {
+      frame.app.$on('close', () => {
         controller.abort()
 
         let blockPopup = document.querySelector('.refresher-block-popup')
@@ -1511,20 +1524,24 @@ export default {
           document.removeEventListener('keypress', adminKeyPress)
         }
 
-        if(!this.memory.closeByBrowser) window.history.back()
+        if (!this.memory.historyClose) {
+          history.pushState(null, this.memory.titleStore, this.memory.urlStore)
 
-        this.memory.frameAlreadyClosed = true
-        setTimeout(() => {
-          document.title = this.memory.originalTitle
-          this.memory.originalTitle = ''
-          this.memory.closeByBrowser = false
-          this.memory.frame = ''
-        }, 0)
+          this.memory.historyClose = false
+        }
 
+        if (this.memory.titleStore) {
+          document.title = this.memory.titleStore
+        }
       })
 
-      makeFirstFrame(this.memory.frame.app.first(), preData, signal)
-      makeSecondFrame(this.memory.frame.app.second(), preData, signal)
+      makeFirstFrame(
+        frame.app.first(),
+        preData,
+        this.memory.signal,
+        historySkip
+      )
+      makeSecondFrame(frame.app.second(), preData, this.memory.signal)
 
       if (
         this.status.toggleAdminPanel &&
@@ -1532,7 +1549,7 @@ export default {
       ) {
         panel.admin(
           preData,
-            this.memory.frame,
+          frame,
           this.status.toggleBlur,
           eventBus,
           this.status.useKeyPress
@@ -1540,11 +1557,44 @@ export default {
       }
 
       setTimeout(() => {
-        this.memory.frame.app.fadeIn()
-        this.memory.frameAlreadyClosed = false
+        frame.app.fadeIn()
       }, 0)
 
-      ev.preventDefault()
+      if (ev) {
+        ev.preventDefault()
+      }
+    }
+
+    let newPostWithData = (preData: GalleryPredata, historySkip?: boolean) => {
+      let firstApp = frame.app.first()
+      let secondApp = frame.app.second()
+
+      if (firstApp.data.load) {
+        return
+      }
+
+      let params = new URLSearchParams(preData.link)
+      params.set('no', preData.id)
+      preData.link = unescape(params.toString())
+
+      preData.title = '게시글 로딩 중...'
+      firstApp.contents = ''
+
+      makeFirstFrame(firstApp, preData, this.memory.signal, historySkip)
+      makeSecondFrame(secondApp, preData, this.memory.signal)
+
+      if (
+        this.status.toggleAdminPanel &&
+        document.querySelector('.useradmin_btnbox button') !== null
+      ) {
+        panel.admin(
+          preData,
+          frame,
+          this.status.toggleBlur,
+          eventBus,
+          this.status.useKeyPress
+        )
+      }
     }
 
     let handleMousePress = (ev: MouseEvent) => {
@@ -1577,8 +1627,8 @@ export default {
       e.addEventListener('mousemove', ev =>
         miniPreview.move(ev, this.status.tooltipMode)
       )
-      e.addEventListener('mouseleave', ev =>
-        miniPreview.close(ev, this.status.tooltipMode)
+      e.addEventListener('mouseleave', _ =>
+        miniPreview.close(this.status.tooltipMode)
       )
     }
 
@@ -1593,17 +1643,24 @@ export default {
     )
     this.memory.uuid2 = filter.add('#right_issuezoom', addHandler)
 
-    this.popStateHandler = this.popStateHandler.bind(this)
-    window.addEventListener('popstate', this.popStateHandler)
-  },
+    this.memory.popStateHandler = (ev: PopStateEvent) => {
+      if (!ev.state) {
+        this.memory.historyClose = true
+        frame.app.close()
 
-  popStateHandler(event:PopStateEvent)  {
-      if(this.memory.frameAlreadyClosed) return
-      if(!this.memory.frame?.app) location.reload()
-      else {
-        this.memory.closeByBrowser = true
-        this.memory.frame.app.close()
+        return
       }
+      this.memory.historyClose = false
+
+      if (frame.app.closed) {
+        previewFrame(null, ev.state.preData, true)
+      } else {
+        newPostWithData(ev.state.preData, true)
+      }
+
+      console.log(ev.state)
+    }
+    window.addEventListener('popstate', this.memory.popStateHandler)
   },
 
   revoke (filter: RefresherFilter, eventBus: RefresherEventBus) {
@@ -1615,6 +1672,6 @@ export default {
       filter.remove(this.memory.uuid2, true)
     }
 
-    window.removeEventListener('popstate', this.popStateHandler)
+    window.removeEventListener('popstate', this.memory.popStateHandler)
   }
 }
