@@ -381,6 +381,20 @@ const panel = {
     </button>
     `
 
+    setTimeout(()=>{
+      element.querySelector('input')?.focus()
+    }, 0)
+
+    element.querySelector('input')?.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter') {
+        let input = element.querySelector('input')!.value
+
+        callback(input)
+
+        element.parentElement?.removeChild(element)
+      }
+    })
+
     element.querySelector('.close')?.addEventListener('click', _ => {
       element.parentElement?.removeChild(element)
     })
@@ -1004,7 +1018,8 @@ export default {
     expandRecognizeRange: false,
     tooltipMode: true,
     useKeyPress: true,
-    colorPreviewLink: true
+    colorPreviewLink: true,
+    reversePreviewKey: false
   },
   memory: {
     preventOpen: false,
@@ -1023,6 +1038,12 @@ export default {
     tooltipMode: {
       name: '툴팁 미리보기 표시',
       desc: '마우스를 올려두면 글 내용만 빠르게 볼 수 있는 툴팁을 추가합니다.',
+      default: false,
+      type: 'check'
+    },
+    reversePreviewKey: {
+      name: '키 반전',
+      desc: '오른쪽 버튼 대신 왼쪽 버튼으로 미리보기를 엽니다.',
       default: false,
       type: 'check'
     },
@@ -1620,7 +1641,11 @@ export default {
     let addHandler = (e: HTMLElement) => {
       e.addEventListener('mouseup', handleMousePress)
       e.addEventListener('mousedown', handleMousePress)
-      e.addEventListener('contextmenu', previewFrame)
+      e.addEventListener(this.status.reversePreviewKey ? 'click' : 'contextmenu', previewFrame)
+      if(this.status.reversePreviewKey) e.addEventListener('contextmenu', (e)=>{
+        e.preventDefault()
+        location.replace(e.target.href)
+      })
       e.addEventListener('mouseenter', ev =>
         miniPreview.create(ev, this.status.tooltipMode)
       )
