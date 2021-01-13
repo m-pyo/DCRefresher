@@ -116,12 +116,6 @@ const tempButtonCreate = (elem:HTMLElement) =>{
   }
 }
 
-
-
-
-
-
-
 export default {
   name: '스텔스 모드',
   description: '페이지내에서 표시되는 모든 이미지를 비활성화합니다',
@@ -154,6 +148,8 @@ export default {
       if (elem.className.indexOf('refresherStealth') == -1) {
         elem.className += ' refresherStealth'
       }
+      tempButtonCreate(elem)
+
       // if(!elem.querySelectorAll('.stealth_off_button').length){
       //   button_set_all(elem, setImgTarget)
       // }

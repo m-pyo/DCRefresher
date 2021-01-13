@@ -161,11 +161,16 @@ $dark-tint2: #3d3d3d;
         padding: 0px;;
         height: 100px;
         width: 100px;
-        background: rgba(0, 0, 0, 0.342);
         content: 'test';
         color: white;
         z-index: 1;
         border-radius: 0px 13.3px 13.3px 0px;
+
+        background: rgba(41, 41, 41, 0.85);
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(80, 80, 80);
+        border-image: initial;
     }
     
 }
