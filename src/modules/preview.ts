@@ -6,9 +6,8 @@ import * as http from '../utils/http'
 import * as Toast from '../components/toast'
 
 import { ScrollDetection } from '../utils/scrollDetection'
-import {get_cookie, set_cookie_tmp} from '../utils/webStorage'
-import {submitComment} from "../utils/comment";
-
+import { get_cookie, set_cookie_tmp } from '../utils/webStorage'
+import { submitComment } from '../utils/comment'
 
 interface GalleryPredata {
   gallery: string
@@ -207,6 +206,10 @@ const panel = {
     if (useKeyPress) {
       adminKeyPress = (ev: KeyboardEvent) => {
         if (ev.code !== 'KeyB' && ev.code !== 'KeyD') {
+          return ev
+        }
+
+        if (frame.app.inputFocus) {
           return ev
         }
 
@@ -1395,6 +1398,10 @@ export default {
 
         frame.functions.load()
         frame.functions.retry = frame.functions.load
+
+        frame.functions.writeComment = (type, memo) => {
+          // TODO : submitComment
+        }
       })
     }
 

@@ -5,6 +5,7 @@ import CountDown from './countdown'
 import PreviewButton from './button'
 import User from './user'
 import Comment from './comment'
+import WriteComment from './write_comment'
 import Icon from './icon'
 
 export const Loader = Vue.component('refresher-loader', {
@@ -33,6 +34,7 @@ export const Frame = Vue.component('refresher-frame', {
     CountDown,
     User,
     Comment,
+    WriteComment,
     Icon
   },
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
@@ -81,8 +83,7 @@ export const Frame = Vue.component('refresher-frame', {
           <br/>
         </div>
         <div v-if="frame.data.comments">
-          <input type="text" placeholder="댓글을 입력하세요." v-model="memoText" v-on:keyup.enter="writeComment" id="comment_main"></input>
-          <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
+          <WriteComment :func="writeComment"></WriteComment>
         </div>
       </div>
       <div class="refresher-preview-contents refresher-error" v-if="frame.error">
@@ -154,19 +155,20 @@ export const Frame = Vue.component('refresher-frame', {
       return this.frame.functions.retry()
     },
 
-    async writeComment () {
-      let res = await this.frame.functions.comment(this.memoText)
-      this.memoText = ''
+    writeComment (...args: any) {
+      if (this.frame.functions.writeComment) {
+        return this.frame.functions.writeComment(...args)
+      }
+
       this.frame.functions.retry()
-      return res
     },
 
-    toCommentWrite() {
+    toCommentWrite () {
       document.getElementById('comment_main').focus()
       return true
     },
 
-    refresh() {
+    refresh () {
       this.frame.functions.retry()
       return true
     },
