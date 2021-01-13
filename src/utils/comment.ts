@@ -1,6 +1,7 @@
 import * as http from './http'
+import { GalleryPreData } from '../structs/post'
 
-let requestBeforeServiceCode = () => {
+let requestBeforeServiceCode = (dom: HTMLElement) => {
   var P = [
     'replace',
     'ps7dOSoKtSkfW6i',
@@ -169,8 +170,8 @@ let requestBeforeServiceCode = () => {
       }
     }
   })(P, -0x8e52c + 0x523a9 + 0xf6b0c)
-  let pre = document['querySelector'](h(0xa7, 'D&85'))
-  if (!pre) throw new Error(h(0xac, 'R8kT'))
+  let pre = dom['querySelector'](h(0xa7, 'D&85'))
+  if (!pre) return false
   var _d = function (K) {
     var T = v,
       M = h,
@@ -223,7 +224,7 @@ let requestBeforeServiceCode = () => {
       : fi + (0xe52 * 0x1 + 0x7 * 0x14b + 0x3 * -0x7c9)),
     (tvl = tvl[h(0x9c, 'EV#@')](/^./, fi[h(0x9f, '4qnM')]())),
     (_r = tvl)
-  var r = document[G(0xa5)](h(0xa2, '%QjQ'))[G(0x99)],
+  var r = dom[G(0xa5)](h(0xa2, '%QjQ'))[G(0x99)],
     _rs = _r['split'](','),
     t = ''
   for (
@@ -243,9 +244,58 @@ let requestBeforeServiceCode = () => {
   return r[h(0xb0, 'D&85')](/(.{10})$/, t)
 }
 
-export async function submitComment (secretKey: string, memo: string) {
-  let code = requestBeforeServiceCode()
-  secretKey += `&service_code=${code}`
+const secretKey = (dom: HTMLElement) => {
+  return (
+    Array.from(dom.querySelectorAll('#focus_cmt > input'))
+      .map(el => {
+        let id = el.name || el.id
+        if (
+          id === 'service_code' ||
+          id === 'gallery_no' ||
+          id === 'clickbutton'
+        ) {
+          return ``
+        } else {
+          return `&${id}=${(el as HTMLInputElement).value}`
+        }
+      })
+      .join('') + '&t_vch2=&g-recaptcha-response='
+  )
+}
+
+export async function submitComment (
+  preData: GalleryPreData,
+  user: { [index: string]: any },
+  dom: HTMLElement,
+  memo: string
+) {
+  let code = requestBeforeServiceCode(dom)
+
+  if (!preData.gallery || !preData.id) {
+    return {
+      result: 'PreNotWorking',
+      message: 'preData 값이 올바르지 않습니다. (확장 프로그램 오류)'
+    }
+  }
+
+  if (typeof code !== 'string') {
+    return {
+      result: 'PreNotWorking',
+      message: 'code 값이 올바르지 않습니다. (확장 프로그램 오류)'
+    }
+  }
+
+  if (code.length !== 412) {
+    return {
+      result: 'PreNotWorking',
+      message: 'code의 길이가 올바르지 않습니다. (확장 프로그램 오류)'
+    }
+  }
+
+  let key = secretKey(dom) + `&service_code=${code}`
+
+  // localStorage.nonmember_nick
+  // localStorage.nonmember_pw
 
   let response = await http.make(http.urls.comments_submit, {
     method: 'POST',
@@ -257,9 +307,9 @@ export async function submitComment (secretKey: string, memo: string) {
     },
     cache: 'no-store',
     referrer: location.href,
-    body: `&id=${http.queryString('id')}&no=${http.queryString('no')}&name=${
-      localStorage.nonmember_nick
-    }&password=${localStorage.nonmember_pw}&memo=${encodeURI(memo)}${secretKey}`
+    body: `&id=${preData.gallery}&no=${preData.id}&name=${user.name}${
+      user.pw ? '&password=' + user.pw : ''
+    }&memo=${encodeURI(memo)}${key}`
   })
   let res = response.split('||')
 

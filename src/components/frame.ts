@@ -40,12 +40,21 @@ export const Frame = Vue.component('refresher-frame', {
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
       <div class="refresher-preview-info" v-if="!frame.error">
         <div class="refresher-preview-title-zone">
-          <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-            <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
-          </transition>
-          <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-            <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
-          </transition>
+          <div class="refresher-preview-title-text">
+            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+              <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
+            </transition>
+            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+              <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
+            </transition>
+          </div>
+
+          <div v-if="frame.data.comments" style="float: right;">
+            <PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" style="float:left;">
+            </PreviewButton>
+            <PreviewButton :id="'refresh'" :text="'새로고침'" :click="refresh" style="float:right;">
+            </PreviewButton>
+          </div>
         </div>
         <div class="refresher-preview-meta">
           <User v-if="frame.data.user" :user="frame.data.user"></User>
@@ -71,6 +80,7 @@ export const Frame = Vue.component('refresher-frame', {
             <img src="https://dcimg5.dcinside.com/dccon.php?no=62b5df2be09d3ca567b1c5bc12d46b394aa3b1058c6e4d0ca41648b65ceb246e13df9546348593b9b03553cb2b363e94da0bda2f33af133d69a3e3bd02836ad0aeef62ce"></img>
             <h3>댓글이 없습니다.</h3>
           </div>
+          <br/>
         </div>
         <div v-if="frame.data.comments">
           <WriteComment :func="writeComment"></WriteComment>
@@ -99,7 +109,7 @@ export const Frame = Vue.component('refresher-frame', {
           <li>알 수 없는 오류입니다. 아래 코드를 복사하여 개발자에게 문의해주세요.</li>
         </ul>
         <br>
-        <PreviewButton class="refresher-writecomment primary" id="refresh" text="다시 시도" :click="retry "></PreviewButton>
+        <PreviewButton class="refresher-writecomment primary" id="refresh" text="다시 시도" :click="retry"></PreviewButton>
         <br>
         <span class="refresher-mute">{{frame.error.detail}}</span>
       </div>
@@ -115,6 +125,11 @@ export const Frame = Vue.component('refresher-frame', {
       </div>
     </div>`,
   props: ['frame', 'index'],
+  data: function () {
+    return {
+      memoText: ''
+    }
+  },
   methods: {
     beforeEnter (el: HTMLElement) {
       el.style.transitionDelay = 45 * Number(el.dataset.index) + 'ms'
@@ -140,10 +155,26 @@ export const Frame = Vue.component('refresher-frame', {
       return this.frame.functions.retry()
     },
 
-    writeComment (...args: any) {
+    async writeComment (...args: any) {
+      let result = false
+
       if (this.frame.functions.writeComment) {
-        return this.frame.functions.writeComment(...args)
+        result = await this.frame.functions.writeComment(...args)
       }
+
+      this.frame.functions.retry()
+
+      return result
+    },
+
+    toCommentWrite () {
+      document.getElementById('comment_main').focus()
+      return true
+    },
+
+    refresh () {
+      this.frame.functions.retry()
+      return true
     },
 
     makeVoteRequest () {}

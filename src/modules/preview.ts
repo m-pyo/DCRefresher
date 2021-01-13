@@ -1,5 +1,5 @@
 import { User } from '../structs/user'
-import { PostInfo } from '../structs/post'
+import { PostInfo, GalleryPreData } from '../structs/post'
 import { findNeighbor } from '../utils/dom'
 import * as http from '../utils/http'
 
@@ -8,15 +8,6 @@ import * as Toast from '../components/toast'
 import { ScrollDetection } from '../utils/scrollDetection'
 import { get_cookie, set_cookie_tmp } from '../utils/webStorage'
 import { submitComment } from '../utils/comment'
-
-interface GalleryPredata {
-  gallery: string
-  id: string
-  title?: string
-  link?: string
-  notice?: boolean
-  recommend?: boolean
-}
 
 interface GalleryHTTPRequestArguments {
   gallery: string
@@ -129,7 +120,7 @@ const panel = {
   },
 
   admin: (
-    preData: GalleryPredata,
+    preData: GalleryPreData,
     frame: RefresherFrame,
     toggleBlur: boolean,
     eventBus: RefresherEventBus,
@@ -943,6 +934,7 @@ let parse = (id: string, body: string) => {
     let width = writeDiv.style.width
     writeDiv.style.width = 'unset'
     writeDiv.style.maxWidth = width
+    writeDiv.style.overflow = ''
   }
   let contents = content_query?.innerHTML
 
@@ -980,7 +972,8 @@ let parse = (id: string, body: string) => {
     commentId,
     commentNo,
     isNotice,
-    requireCaptcha
+    requireCaptcha,
+    dom
   })
 }
 
@@ -1002,7 +995,9 @@ export default {
     tooltipMode: true,
     useKeyPress: true,
     colorPreviewLink: true,
-    reversePreviewKey: false
+    reversePreviewKey: false,
+    autoRefreshComment: true,
+    commentRefreshInterval: 10
   },
   memory: {
     preventOpen: false,
@@ -1013,7 +1008,9 @@ export default {
     signal: null,
     historyClose: false,
     titleStore: '',
-    urlStore: ''
+    urlStore: '',
+    dom: null,
+    refreshIntervalId: 0
   },
   enable: true,
   default_enable: true,
@@ -1050,9 +1047,25 @@ export default {
     colorPreviewLink: {
       name: '게시글 URL 변경',
       desc:
-        '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
+          '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
       default: true,
       type: 'check'
+    },
+    autoRefreshComment: {
+      name: '댓글 자동 새로고침',
+      desc: '댓글을 일정 주기마다 자동으로 새로고침합니다. (일부 성능 영향 있음)',
+      default: true,
+      type: 'check'
+    },
+    commentRefreshInterval: {
+      name: '댓글 자동 새로고침 주기',
+      desc: '위의 옵션이 켜져있을 시 댓글을 새로고침할 주기를 설정합니다.',
+      default: 10,
+      type: 'range',
+      min: 1,
+      step: 1,
+      max: 20,
+      unit: 's'
     },
     toggleBlur: {
       name: '게시글 배경 블러 활성화',
@@ -1106,7 +1119,7 @@ export default {
     let postFetchedData: PostInfo
     let makeFirstFrame = (
       frame: RefresherFrame,
-      preData: GalleryPredata,
+      preData: GalleryPreData,
       signal: AbortSignal,
       historySkip?: boolean
     ) => {
@@ -1263,14 +1276,16 @@ export default {
 
     let makeSecondFrame = (
       frame: RefresherFrame,
-      preData: GalleryPredata,
+      preData: GalleryPreData,
       signal: AbortSignal
     ) => {
       frame.data.load = true
       frame.title = `댓글`
       frame.subtitle = `로딩 중`
 
-      new Promise<GalleryPredata>((resolve, _) => {
+      let postDom: HTMLElement
+
+      new Promise<GalleryPreData>((resolve, _) => {
         if (preData.gallery !== 'issuezoom') {
           resolve({
             gallery: preData.gallery,
@@ -1295,11 +1310,13 @@ export default {
 
         if (postFetchedData) {
           frame.data.postUserId = postFetchedData.user?.id
+          postDom = postFetchedData.dom
         } else {
           eventBus.on(
             'RefresherPostDataLoaded',
             (obj: PostInfo) => {
               frame.data.postUserId = obj.user?.id
+              postDom = obj.dom
             },
             {
               once: true
@@ -1307,6 +1324,20 @@ export default {
           )
         }
       }).then(postData => {
+        if (postFetchedData) {
+          postDom = postFetchedData.dom
+        } else {
+          eventBus.on(
+            'RefresherPostDataLoaded',
+            (obj: PostInfo) => {
+              postDom = obj.dom
+            },
+            {
+              once: true
+            }
+          )
+        }
+
         frame.functions.load = () => {
           frame.error = false
 
@@ -1382,15 +1413,59 @@ export default {
         frame.functions.load()
         frame.functions.retry = frame.functions.load
 
-        frame.functions.writeComment = (type, memo) => {
-          // TODO : submitComment
+        frame.functions.writeComment = async (
+          type: string,
+          memo: string,
+          user?: any
+        ) => {
+          // TODO : 디시콘 추가시 type 핸들링 (현재 text만)
+
+          let gallogName = document.querySelector(
+            '#login_box .user_info .nickname em'
+          ) as HTMLElement
+
+          let loggedIn = false
+
+          let fixedName = gallogName && gallogName.innerHTML
+          if (fixedName) {
+            loggedIn = true
+          }
+
+          let res = await submitComment(
+            postData,
+            loggedIn
+              ? {
+                  name: fixedName
+                }
+              : {
+                  name:
+                    (user && user.id) || localStorage.nonmember_nick || 'ㅇㅇ',
+                  pw:
+                    (user && user.pw) ||
+                    localStorage.nonmember_pw ||
+                    'refresherDefault'
+                },
+            postDom,
+            memo
+          )
+
+          if (res.result === 'false') {
+            alert(res.message)
+            return false
+          } else {
+            return true
+          }
         }
+
+        this.memory.refreshIntervalId = setInterval(()=>{
+          frame.functions.retry()
+        }, this.status.commentRefreshInterval * 1000)
       })
     }
 
     let previewFrame = (
       ev: MouseEvent | null,
-      prd?: GalleryPredata,
+      prd?: GalleryPreData,
       historySkip?: boolean
     ) => {
       if (this.memory.preventOpen) {
@@ -1401,7 +1476,7 @@ export default {
 
       miniPreview.close(this.status.tooltipMode)
 
-      let preData: GalleryPredata | undefined
+      let preData: GalleryPreData | undefined
       if (ev) {
         preData = getRelevantData(ev)
       } else if (prd) {
@@ -1550,6 +1625,8 @@ export default {
         if (this.memory.titleStore) {
           document.title = this.memory.titleStore
         }
+
+        clearInterval(this.memory.refreshIntervalId)
       })
 
       makeFirstFrame(
@@ -1582,7 +1659,7 @@ export default {
       }
     }
 
-    let newPostWithData = (preData: GalleryPredata, historySkip?: boolean) => {
+    let newPostWithData = (preData: GalleryPreData, historySkip?: boolean) => {
       let firstApp = frame.app.first()
       let secondApp = frame.app.second()
 
@@ -1709,5 +1786,6 @@ export default {
     }
 
     window.removeEventListener('popstate', this.memory.popStateHandler)
+    clearInterval(this.memory.refreshIntervalId)
   }
 }

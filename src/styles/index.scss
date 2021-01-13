@@ -135,15 +135,14 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   display: block;
   min-width: 100px;
   min-height: 100px;
-  max-width: 70%;
-  width: -moz-fit-content;
-  width: fit-content;
+  width: 70%;
+  max-width: 700px;
   background-color: #fff;
   transform: translateY(10px);
   box-shadow: $shadow-2dp;
   border-radius: 13.3px;
   padding: 3vh 2.5vw;
-  overflow: auto;
+  overflow: hidden;
   pointer-events: all;
 
   @media screen and (max-width: 900px) {
@@ -637,6 +636,14 @@ tr .gall_writer {
   }
 }
 
+.write_div {
+  img,
+  video {
+    max-width: calc(100% - 10px);
+    margin: 10px;
+  }
+}
+
 .refresher-frame.preview .refresher-preview-contents {
   embed {
     background-color: #333;
@@ -665,7 +672,12 @@ tr .gall_writer {
 
 .refresher-preview-title-zone {
   display: flex;
+  justify-content: space-between;
   position: relative;
+}
+
+.refresher-preview-title-text {
+  display: flex;
 }
 
 .refresher-preview-title {
@@ -677,8 +689,8 @@ tr .gall_writer {
 .refresher-preview-title-mute {
   font-size: 16px;
   margin-left: 10px;
-  margin-top: auto;
-  margin-bottom: auto;
+  margin-top: 10px;
+  margin-bottom: 0;
   color: rgb(170, 170, 170);
 }
 
