@@ -22,8 +22,6 @@ const ISSUE_ZOOM_NO = /\$\(document\)\.data\('comment_no'\,\s\'.+'\);/g
 
 const QUOTES = /(["'])(?:(?=(\\?))\2.)*?\1/g
 
-const REFRESH_INTERVAL = 3000
-
 const getURL = (u: string) => {
   return !chrome || !chrome.extension ? u : chrome.extension.getURL(u)
 }
@@ -998,7 +996,8 @@ export default {
     useKeyPress: true,
     colorPreviewLink: true,
     reversePreviewKey: false,
-    autoRefreshComment: true
+    autoRefreshComment: true,
+    commentRefreshInterval: 10000
   },
   memory: {
     preventOpen: false,
@@ -1055,8 +1054,18 @@ export default {
     autoRefreshComment: {
       name: '댓글 자동 새로고침',
       desc: '댓글을 일정 주기마다 자동으로 새로고침합니다. (일부 성능 영향 있음)',
-      default: false,
+      default: true,
       type: 'check'
+    },
+    commentRefreshInterval: {
+      name: '댓글 자동 새로고침 주기',
+      desc: '위의 옵션이 켜져있을 시 댓글을 새로고침할 주기를 설정합니다.',
+      default: 10,
+      type: 'range',
+      min: 1,
+      step: 1,
+      max: 20,
+      unit: 's'
     },
     toggleBlur: {
       name: '게시글 배경 블러 활성화',
@@ -1390,10 +1399,6 @@ export default {
 
               frame.data.comments = comments
               frame.data.load = false
-
-              this.memory.refreshIntervalId = setInterval(()=>{
-                frame.functions.retry()
-              }, REFRESH_INTERVAL)
             })
             .catch((e: Error) => {
               frame.subtitle = ``
@@ -1451,6 +1456,10 @@ export default {
             return true
           }
         }
+
+        this.memory.refreshIntervalId = setInterval(()=>{
+          frame.functions.retry()
+        }, this.status.commentRefreshInterval * 1000)
       })
     }
 
