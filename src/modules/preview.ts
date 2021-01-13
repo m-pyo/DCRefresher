@@ -997,7 +997,7 @@ export default {
     colorPreviewLink: true,
     reversePreviewKey: false,
     autoRefreshComment: true,
-    commentRefreshInterval: 10000
+    commentRefreshInterval: 10
   },
   memory: {
     preventOpen: false,
