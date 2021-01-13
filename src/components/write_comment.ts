@@ -5,10 +5,10 @@ export default {
     PreviewButton
   },
   template: `<div class="refresher-write-comment">
-    <div class="user">
+    <!--<div class="user">
       <input type="text"></input>
       <input type="password"></input>
-    </div>
+    </div>-->
     <div class="input-wrap" :class="{focus: focused, disable: disabled}">
       <input id="comment_main" placeholder="댓글 입력..." v-model="text" type="text" v-on:focus="focus" v-on:blur="blur" v-on:keydown="type" :disabled="disabled"></input>
     </div>
