@@ -996,7 +996,7 @@ export default {
     useKeyPress: true,
     colorPreviewLink: true,
     reversePreviewKey: false,
-    autoRefreshComment: true,
+    autoRefreshComment: false,
     commentRefreshInterval: 10
   },
   memory: {
@@ -1047,14 +1047,14 @@ export default {
     colorPreviewLink: {
       name: '게시글 URL 변경',
       desc:
-          '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
+        '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
       default: true,
       type: 'check'
     },
     autoRefreshComment: {
       name: '댓글 자동 새로고침',
-      desc: '댓글을 일정 주기마다 자동으로 새로고침합니다. (일부 성능 영향 있음)',
-      default: true,
+      desc: '댓글을 일정 주기마다 자동으로 새로고침합니다.',
+      default: false,
       type: 'check'
     },
     commentRefreshInterval: {
@@ -1457,7 +1457,7 @@ export default {
           }
         }
 
-        this.memory.refreshIntervalId = setInterval(()=>{
+        this.memory.refreshIntervalId = setInterval(() => {
           frame.functions.retry()
         }, this.status.commentRefreshInterval * 1000)
       })
