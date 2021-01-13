@@ -12,6 +12,7 @@ interface FrameStackOption {
   stack?: boolean
   groupOnce?: boolean
   onScroll?: Function
+  blur?: boolean
 }
 
 import { Outer, Scroll } from '../components/frame'

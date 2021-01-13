@@ -33,6 +33,10 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
 
   z-index: 100;
 
+  &.blur {
+    backdrop-filter: blur(5px) saturate(150%);
+  }
+
   &.center {
     justify-content: center;
     align-items: center;

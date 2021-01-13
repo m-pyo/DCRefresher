@@ -147,7 +147,7 @@ export const Frame = Vue.component('refresher-frame', {
 })
 
 export const Outer = Vue.component('refresher-frame-outer', {
-  template: `<div class="refresher-frame-outer" :class="{background: this.$root.background, fadeIn: this.$root.fade, fadeOut: !this.$root.fade, stack: this.$root.fade}" >
+  template: `<div class="refresher-frame-outer" :class="{background: this.$root.background, blur: this.$root.blur, fadeIn: this.$root.fade, fadeOut: !this.$root.fade, stack: this.$root.fade}" >
     <refresher-group></refresher-group>
     <transition name="refresher-prev-post">
       <refresher-scroll side="top" v-show="this.$root.scrollModeTop"></refresher-scroll>
