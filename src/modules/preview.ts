@@ -1,5 +1,5 @@
 import { User } from '../structs/user'
-import { PostInfo } from '../structs/post'
+import { PostInfo, GalleryPreData } from '../structs/post'
 import { findNeighbor } from '../utils/dom'
 import * as http from '../utils/http'
 
@@ -8,15 +8,6 @@ import * as Toast from '../components/toast'
 import { ScrollDetection } from '../utils/scrollDetection'
 import { get_cookie, set_cookie_tmp } from '../utils/webStorage'
 import { submitComment } from '../utils/comment'
-
-interface GalleryPredata {
-  gallery: string
-  id: string
-  title?: string
-  link?: string
-  notice?: boolean
-  recommend?: boolean
-}
 
 interface GalleryHTTPRequestArguments {
   gallery: string
@@ -131,7 +122,7 @@ const panel = {
   },
 
   admin: (
-    preData: GalleryPredata,
+    preData: GalleryPreData,
     frame: RefresherFrame,
     toggleBlur: boolean,
     eventBus: RefresherEventBus,
@@ -966,7 +957,6 @@ let parse = (id: string, body: string) => {
 
   let requireCaptcha = dom.querySelector('.recommend_kapcode') !== null
 
-
   return new PostInfo(id, {
     header,
     title,
@@ -1120,7 +1110,7 @@ export default {
     let postFetchedData: PostInfo
     let makeFirstFrame = (
       frame: RefresherFrame,
-      preData: GalleryPredata,
+      preData: GalleryPreData,
       signal: AbortSignal,
       historySkip?: boolean
     ) => {
@@ -1252,8 +1242,6 @@ export default {
             frame.data.expire = obj.expire
             frame.data.buttons = true
 
-            this.memory.dom = obj.dom
-
             eventBus.emit('RefresherPostDataLoaded', obj)
             eventBus.emit(
               'RefresherPostCommentIDLoaded',
@@ -1279,25 +1267,16 @@ export default {
 
     let makeSecondFrame = (
       frame: RefresherFrame,
-      preData: GalleryPredata,
+      preData: GalleryPreData,
       signal: AbortSignal
     ) => {
       frame.data.load = true
       frame.title = `댓글`
       frame.subtitle = `로딩 중`
 
-      frame.functions.comment = async (memo: string) => {
-        let res=await submitComment(this.memory.dom,memo)
-        if(res.result==='false') {
-          alert(res.message)
-          return false
-        }
-        else {
-          return true
-        }
-      }
+      let postDom: HTMLElement
 
-      new Promise<GalleryPredata>((resolve, _) => {
+      new Promise<GalleryPreData>((resolve, _) => {
         if (preData.gallery !== 'issuezoom') {
           resolve({
             gallery: preData.gallery,
@@ -1322,11 +1301,13 @@ export default {
 
         if (postFetchedData) {
           frame.data.postUserId = postFetchedData.user?.id
+          postDom = postFetchedData.dom
         } else {
           eventBus.on(
             'RefresherPostDataLoaded',
             (obj: PostInfo) => {
               frame.data.postUserId = obj.user?.id
+              postDom = obj.dom
             },
             {
               once: true
@@ -1334,6 +1315,20 @@ export default {
           )
         }
       }).then(postData => {
+        if (postFetchedData) {
+          postDom = postFetchedData.dom
+        } else {
+          eventBus.on(
+            'RefresherPostDataLoaded',
+            (obj: PostInfo) => {
+              postDom = obj.dom
+            },
+            {
+              once: true
+            }
+          )
+        }
+
         frame.functions.load = () => {
           frame.error = false
 
@@ -1413,15 +1408,55 @@ export default {
         frame.functions.load()
         frame.functions.retry = frame.functions.load
 
-        frame.functions.writeComment = async (type, memo) => {
-          // TODO : submitComment
+        frame.functions.writeComment = async (
+          type: string,
+          memo: string,
+          user?: any
+        ) => {
+          // TODO : 디시콘 추가시 type 핸들링 (현재 text만)
+
+          let gallogName = document.querySelector(
+            '#login_box .user_info .nickname em'
+          ) as HTMLElement
+
+          let loggedIn = false
+
+          let fixedName = gallogName && gallogName.innerHTML
+          if (fixedName) {
+            loggedIn = true
+          }
+
+          let res = await submitComment(
+            postData,
+            loggedIn
+              ? {
+                  name: fixedName
+                }
+              : {
+                  name:
+                    (user && user.id) || localStorage.nonmember_nick || 'ㅇㅇ',
+                  pw:
+                    (user && user.pw) ||
+                    localStorage.nonmember_pw ||
+                    'refresherDefault'
+                },
+            postDom,
+            memo
+          )
+
+          if (res.result === 'false') {
+            alert(res.message)
+            return false
+          } else {
+            return true
+          }
         }
       })
     }
 
     let previewFrame = (
       ev: MouseEvent | null,
-      prd?: GalleryPredata,
+      prd?: GalleryPreData,
       historySkip?: boolean
     ) => {
       if (this.memory.preventOpen) {
@@ -1432,7 +1467,7 @@ export default {
 
       miniPreview.close(this.status.tooltipMode)
 
-      let preData: GalleryPredata | undefined
+      let preData: GalleryPreData | undefined
       if (ev) {
         preData = getRelevantData(ev)
       } else if (prd) {
@@ -1615,7 +1650,7 @@ export default {
       }
     }
 
-    let newPostWithData = (preData: GalleryPredata, historySkip?: boolean) => {
+    let newPostWithData = (preData: GalleryPreData, historySkip?: boolean) => {
       let firstApp = frame.app.first()
       let secondApp = frame.app.second()
 

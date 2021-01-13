@@ -1,4 +1,4 @@
-import { User } from "./user"
+import { User } from './user'
 
 export class PostInfo {
   id: string
@@ -27,4 +27,13 @@ export class PostInfo {
       this[key] = data[key]
     }
   }
+}
+
+export interface GalleryPreData {
+  gallery: string
+  id: string
+  title?: string
+  link?: string
+  notice?: boolean
+  recommend?: boolean
 }
