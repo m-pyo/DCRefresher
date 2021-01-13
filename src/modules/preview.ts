@@ -1420,34 +1420,7 @@ export default {
         ) => {
           // TODO : 디시콘 추가시 type 핸들링 (현재 text만)
 
-          let gallogName = document.querySelector(
-            '#login_box .user_info .nickname em'
-          ) as HTMLElement
-
-          let loggedIn = false
-
-          let fixedName = gallogName && gallogName.innerHTML
-          if (fixedName) {
-            loggedIn = true
-          }
-
-          let res = await submitComment(
-            postData,
-            loggedIn
-              ? {
-                  name: fixedName
-                }
-              : {
-                  name:
-                    (user && user.id) || localStorage.nonmember_nick || 'ㅇㅇ',
-                  pw:
-                    (user && user.pw) ||
-                    localStorage.nonmember_pw ||
-                    'refresherDefault'
-                },
-            postDom,
-            memo
-          )
+          let res = await submitComment(postData, user, postDom, memo)
 
           if (res.result === 'false') {
             alert(res.message)

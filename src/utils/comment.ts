@@ -294,9 +294,6 @@ export async function submitComment (
 
   let key = secretKey(dom) + `&service_code=${code}`
 
-  // localStorage.nonmember_nick
-  // localStorage.nonmember_pw
-
   let response = await http.make(http.urls.comments_submit, {
     method: 'POST',
     dataType: 'json',

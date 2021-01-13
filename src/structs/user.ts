@@ -40,21 +40,26 @@ const getType = (icon: string) => {
 
 export class User {
   nick: string
-  id: string
+  id: string | null
   ip_data: string
-  icon: string
+  icon: string | null
   type: number
-  __ip: string
+  __ip: string | null
 
-  constructor (nick: string, id: string, ip: string, icon: string) {
+  constructor (
+    nick: string,
+    id: string | null,
+    ip: string | null,
+    icon: string | null
+  ) {
     this.__ip = ''
     this.ip_data = ''
 
     this.nick = nick
     this.id = id
     this.ip = ip
-    this.icon = icon
-    this.type = getType(icon)
+    this.icon = icon || ''
+    this.type = getType(this.icon)
   }
 
   import (dom: HTMLElement | null) {
@@ -91,9 +96,9 @@ export class User {
     return this.id !== null
   }
 
-  set ip (v: string) {
+  set ip (v: string | null) {
     this.ip_data = ip.format(ip.ISPData(v, ''))
-    this.__ip = v
+    this.__ip = v || null
   }
 
   get ip () {
