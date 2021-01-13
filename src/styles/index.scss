@@ -498,6 +498,19 @@ tr .gall_writer {
   left: calc(50% - 160px);
   top: calc(50% - 75px);
 
+  .close {
+    &:after {
+      cursor: pointer;
+      left: -3.5px;
+      top: -15px;
+      width: 35px;
+      height: 35px;
+      content: ' ';
+      display: block;
+      position: relative;
+    }
+  }
+
   & > p {
     font-size: 18px;
     font-weight: bold;
@@ -515,7 +528,7 @@ tr .gall_writer {
 
     &:focus,
     &:hover {
-      box-shadow: inset 0px 0px 4px rgb(0, 132, 255);
+      box-shadow: inset 0px 0px 4px rgba(60, 71, 144, 0.5);
     }
   }
 
@@ -579,6 +592,7 @@ tr .gall_writer {
         filter: invert(22%) sepia(85%) saturate(5841%) hue-rotate(355deg)
           brightness(92%) contrast(126%);
       }
+
       p {
         color: #f00;
       }
@@ -764,16 +778,21 @@ tr .gall_writer {
   border-radius: 15px;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-  font-weight: 700;
 
   &.primary {
-    background-color: rgba(60, 71, 144, 0.6);
+    background-color: rgba(0, 110, 255, 0.32);
     -moz-backdrop-filter: saturate(180%);
     backdrop-filter: blur(10px) saturate(180%);
 
+    p {
+      color: rgba(255, 255, 255, 0.87);
+      font-weight: 500;
+      filter: saturate(130%);
+    }
+
     * {
-       filter: invert(1);
-     }
+      filter: invert(1);
+    }
   }
 
   &.refresher-writecomment img {
@@ -781,20 +800,16 @@ tr .gall_writer {
   }
 
   &:hover {
-    background-color: rgba(60, 71, 144, 0.8);
+    background-color: rgba(0, 110, 255, 0.28);
     cursor: pointer;
 
     backdrop-filter: blur(10px) saturate(200%);
 
     box-shadow: $shadow-2dp;
-
-    * {
-      filter: invert(1);
-    }
   }
 
   &:active {
-    background-color: rgba(60, 71, 144, 1);
+    background-color: rgba(0, 110, 255, 0.22);
     backdrop-filter: blur(10px) saturate(220%);
     box-shadow: $shadow-1dp;
   }
@@ -966,6 +981,7 @@ tr .gall_writer {
 .refresher-preview-comments .refresher-comment[data-depth='1'] {
   margin-left: 2.2vw;
 }
+
 .refresher-preview-comments .refresher-comment[data-rereply='true'] {
   margin-left: 4.4vw;
 }
