@@ -15,6 +15,10 @@ export default {
     me: {
       type: Boolean,
       required: false
+    },
+
+    click: {
+      type: Function
     }
   },
   methods: {
@@ -23,6 +27,10 @@ export default {
     },
 
     clickHandle () {
+      if (typeof this.click === 'function') {
+        return this.click(this.user)
+      }
+
       if (this.user.id) {
         this.openLink('https://gallog.dcinside.com/' + this.user.id)
       }
