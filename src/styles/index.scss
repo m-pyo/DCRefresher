@@ -792,7 +792,7 @@ tr .gall_writer {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.primary {
-    background-color: rgba(0, 110, 255, 0.32);
+    background-color: rgba(0, 110, 255, 0.8);
     -moz-backdrop-filter: saturate(180%);
     backdrop-filter: blur(10px) saturate(180%);
 
@@ -812,7 +812,7 @@ tr .gall_writer {
   }
 
   &:hover {
-    background-color: rgba(0, 110, 255, 0.28);
+    background-color: rgba(0, 110, 255, 0.7);
     cursor: pointer;
 
     backdrop-filter: blur(10px) saturate(200%);
@@ -824,7 +824,7 @@ tr .gall_writer {
   }
 
   &:active {
-    background-color: rgba(0, 110, 255, 0.22);
+    background-color: rgba(0, 110, 255, 0.6);
     backdrop-filter: blur(10px) saturate(220%);
     box-shadow: $shadow-1dp;
     * {
