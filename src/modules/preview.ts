@@ -1419,15 +1419,41 @@ export default {
           user?: any
         ) => {
           // TODO : 디시콘 추가시 type 핸들링 (현재 text만)
-
-          let res = await submitComment(postData, user, postDom, memo)
-
-          if (res.result === 'false' || res.result === 'PreNotWorking') {
-            alert(res.message)
-            return false
-          } else {
-            return true
+          if (!postFetchedData) {
+            return alert('게시글이 로딩될 때까지 잠시 기다려주세요.')
           }
+
+          let requireCapCode = postFetchedData.requireCaptcha
+
+          let codeSrc = ''
+          if (requireCapCode) {
+            codeSrc = await request.captcha(preData, 'comment')
+          }
+
+          let req = async (captcha?: string) => {
+            let res = await submitComment(
+              postData,
+              user,
+              postDom,
+              memo,
+              captcha
+            )
+
+            if (res.result === 'false' || res.result === 'PreNotWorking') {
+              alert(res.message)
+              return false
+            } else {
+              return true
+            }
+          }
+
+          if (codeSrc) {
+            return panel.captcha(codeSrc, (str: string) => {
+              req(str)
+            })
+          }
+
+          return req()
         }
 
         this.memory.refreshIntervalId = setInterval(() => {

@@ -185,7 +185,7 @@ let requestBeforeServiceCode = (dom: HTMLElement) => {
       A = M(0xb1, 'L[]1'),
       b = '',
       E = -0x1278 + 0xa * 0x2ad + -0x84a
-    for (K = K[T(0xaf)](/[^A-Za-z0-9+\/=]/g, ''); E < K['length']; )
+    for (K = K[T(0xaf)](/[^A-Za-z0-9+/=]/g, ''); E < K['length']; )
       (q = A[M(0xb2, '*M3$')](K[M(0x94, 'E]]a')](E++))),
         (C = A[T(0x97)](K[T(0x95)](E++))),
         (z = A['indexOf'](K[T(0x95)](E++))),
@@ -267,7 +267,8 @@ export async function submitComment (
   preData: GalleryPreData,
   user: { [index: string]: any },
   dom: HTMLElement,
-  memo: string
+  memo: string,
+  captcha?: string
 ) {
   let code = requestBeforeServiceCode(dom)
 
@@ -285,14 +286,14 @@ export async function submitComment (
     }
   }
 
-  if (code.length !== 412) {
-    return {
-      result: 'PreNotWorking',
-      message:
-        'code의 길이가 올바르지 않습니다. (확장 프로그램 오류) length=' +
-        code.length
-    }
-  }
+  //   if (code.length !== 412 && code.length !== 402) {
+  //     return {
+  //       result: 'PreNotWorking',
+  //       message:
+  //         'code의 길이가 올바르지 않습니다. (확장 프로그램 오류) length=' +
+  //         code.length
+  //     }
+  //   }
 
   let key = secretKey(dom) + `&service_code=${code}`
 
@@ -308,7 +309,7 @@ export async function submitComment (
     referrer: location.href,
     body: `&id=${preData.gallery}&no=${preData.id}&name=${user.name}${
       user.pw ? '&password=' + user.pw : ''
-    }&memo=${encodeURI(memo)}${key}`
+    }${captcha ? '&code=' + captcha : ''}&memo=${encodeURI(memo)}${key}`
   })
   let res = response.split('||')
 
