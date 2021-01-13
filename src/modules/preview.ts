@@ -960,20 +960,6 @@ let parse = (id: string, body: string) => {
 
   let requireCaptcha = dom.querySelector('.recommend_kapcode') !== null
 
-  const secretKey =Array.from(dom.querySelectorAll('#focus_cmt > input'))
-          .map(el => {
-            let id = el.name || el.id
-            if (
-                id === 'service_code' ||
-                id === 'gallery_no' ||
-                id === 'clickbutton'
-            ) {
-              return ``
-            } else {
-              return `&${id}=${(el as HTMLInputElement).value}`
-            }
-          })
-          .join('') + '&t_vch2=&g-recaptcha-response='
 
   return new PostInfo(id, {
     header,
@@ -993,7 +979,7 @@ let parse = (id: string, body: string) => {
     commentNo,
     isNotice,
     requireCaptcha,
-    secretKey
+    dom
   })
 }
 
@@ -1027,7 +1013,7 @@ export default {
     historyClose: false,
     titleStore: '',
     urlStore: '',
-    secretKey: ''
+    dom: null
   },
   enable: true,
   default_enable: true,
@@ -1253,8 +1239,12 @@ export default {
             frame.data.buttons = true
 
 
-            this.memory.secretKey = obj.secretKey
-            console.log(obj.secretKey)
+            this.memory.dom = obj.dom
+
+
+            submitComment(this.memory.dom,'안녕').then((res)=>{
+              if(res.result==='false') alert(res.message)
+            })
 
             eventBus.emit('RefresherPostDataLoaded', obj)
             eventBus.emit(
@@ -1556,10 +1546,7 @@ export default {
         }
 
         if (!this.memory.historyClose) {
-          history.pushState(null, this.memory.titleStore, this.memory.urlStore)/*
-          submitComment('test').then((res)=>{
-            if(res.result==='false') alert(res.message)
-          })*/
+          history.pushState(null, this.memory.titleStore, this.memory.urlStore)
 
           this.memory.historyClose = false
         }

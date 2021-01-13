@@ -1,6 +1,6 @@
 import * as http from './http'
 
-let requestBeforeServiceCode = () => {
+let requestBeforeServiceCode = (dom) => {
   var P = [
     'replace',
     'ps7dOSoKtSkfW6i',
@@ -169,7 +169,7 @@ let requestBeforeServiceCode = () => {
       }
     }
   })(P, -0x8e52c + 0x523a9 + 0xf6b0c)
-  let pre = document['querySelector'](h(0xa7, 'D&85'))
+  let pre = dom['querySelector'](h(0xa7, 'D&85'))
   if (!pre) throw new Error(h(0xac, 'R8kT'))
   var _d = function (K) {
     var T = v,
@@ -223,7 +223,7 @@ let requestBeforeServiceCode = () => {
       : fi + (0xe52 * 0x1 + 0x7 * 0x14b + 0x3 * -0x7c9)),
     (tvl = tvl[h(0x9c, 'EV#@')](/^./, fi[h(0x9f, '4qnM')]())),
     (_r = tvl)
-  var r = document[G(0xa5)](h(0xa2, '%QjQ'))[G(0x99)],
+  var r = dom[G(0xa5)](h(0xa2, '%QjQ'))[G(0x99)],
     _rs = _r['split'](','),
     t = ''
   for (
@@ -243,9 +243,25 @@ let requestBeforeServiceCode = () => {
   return r[h(0xb0, 'D&85')](/(.{10})$/, t)
 }
 
-export async function submitComment (secretKey: string, memo: string) {
-  let code = requestBeforeServiceCode()
-  secretKey += `&service_code=${code}`
+const secretKey =(dom)=>{
+  return Array.from(dom.querySelectorAll('#focus_cmt > input')).map(el => {
+        let id = el.name || el.id
+        if (
+            id === 'service_code' ||
+            id === 'gallery_no' ||
+            id === 'clickbutton'
+        ) {
+          return ``
+        } else {
+          return `&${id}=${(el as HTMLInputElement).value}`
+        }
+      })
+      .join('') + '&t_vch2=&g-recaptcha-response='
+}
+
+export async function submitComment (dom, memo: string) {
+  let code = requestBeforeServiceCode(dom)
+  let key = secretKey(dom)+`&service_code=${code}`
 
   let response = await http.make(http.urls.comments_submit, {
     method: 'POST',
@@ -259,7 +275,7 @@ export async function submitComment (secretKey: string, memo: string) {
     referrer: location.href,
     body: `&id=${http.queryString('id')}&no=${http.queryString('no')}&name=${
       localStorage.nonmember_nick
-    }&password=${localStorage.nonmember_pw}&memo=${encodeURI(memo)}${secretKey}`
+    }&password=${localStorage.nonmember_pw}&memo=${encodeURI(memo)}${key}`
   })
   let res = response.split('||')
 
