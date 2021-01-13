@@ -38,12 +38,21 @@ export const Frame = Vue.component('refresher-frame', {
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
       <div class="refresher-preview-info" v-if="!frame.error">
         <div class="refresher-preview-title-zone">
-          <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-            <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
-          </transition>
-          <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-            <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
-          </transition>
+          <div class="refresher-preview-title-text">
+            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+              <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
+            </transition>
+            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+              <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
+            </transition>
+          </div>
+
+          <div v-if="frame.data.comments" style="float: right;">
+            <PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" style="float:left;">
+            </PreviewButton>
+            <PreviewButton :id="'refresh'" :text="'새로고침'" :click="refresh" style="float:right;">
+            </PreviewButton>
+          </div>
         </div>
         <div class="refresher-preview-meta">
           <User v-if="frame.data.user" :user="frame.data.user"></User>
@@ -72,7 +81,7 @@ export const Frame = Vue.component('refresher-frame', {
           <br/>
         </div>
         <div v-if="frame.data.comments">
-          <input type="text" placeholder="댓글을 입력하세요." v-model="memoText" v-on:keyup.enter="writeComment"></input>
+          <input type="text" placeholder="댓글을 입력하세요." v-model="memoText" v-on:keyup.enter="writeComment" id="comment_main"></input>
           <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
         </div>
       </div>
@@ -145,10 +154,21 @@ export const Frame = Vue.component('refresher-frame', {
       return this.frame.functions.retry()
     },
 
-    writeComment () {
-      let res = this.frame.functions.comment(this.memoText)
+    async writeComment () {
+      let res = await this.frame.functions.comment(this.memoText)
       this.memoText = ''
+      this.frame.functions.retry()
       return res
+    },
+
+    toCommentWrite() {
+      document.getElementById('comment_main').focus()
+      return true
+    },
+
+    refresh() {
+      this.frame.functions.retry()
+      return true
     },
 
     makeVoteRequest () {}

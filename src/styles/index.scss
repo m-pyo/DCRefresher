@@ -690,7 +690,12 @@ tr .gall_writer {
 
 .refresher-preview-title-zone {
   display: flex;
+  justify-content: space-between;
   position: relative;
+}
+
+.refresher-preview-title-text {
+  display: flex;
 }
 
 .refresher-preview-title {
@@ -702,8 +707,8 @@ tr .gall_writer {
 .refresher-preview-title-mute {
   font-size: 16px;
   margin-left: 10px;
-  margin-top: auto;
-  margin-bottom: auto;
+  margin-top: 10px;
+  margin-bottom: 0;
   color: rgb(170, 170, 170);
 }
 

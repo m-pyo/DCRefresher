@@ -1274,15 +1274,14 @@ export default {
       frame.subtitle = `로딩 중`
 
       frame.functions.comment = async (memo: string) => {
-        submitComment(this.memory.dom,memo).then((res)=>{
-          if(res.result==='false') {
-            alert(res.message)
-            return false
-          }
-          else {
-            return true
-          }
-        })
+        let res=await submitComment(this.memory.dom,memo)
+        if(res.result==='false') {
+          alert(res.message)
+          return false
+        }
+        else {
+          return true
+        }
       }
 
       new Promise<GalleryPredata>((resolve, _) => {
