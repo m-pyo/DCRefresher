@@ -940,6 +940,7 @@ let parse = (id: string, body: string) => {
     let width = writeDiv.style.width
     writeDiv.style.width = 'unset'
     writeDiv.style.maxWidth = width
+    writeDiv.style.overflow = ''
   }
   let contents = content_query?.innerHTML
 
@@ -1238,13 +1239,7 @@ export default {
             frame.data.expire = obj.expire
             frame.data.buttons = true
 
-
             this.memory.dom = obj.dom
-
-
-            submitComment(this.memory.dom,'안녕').then((res)=>{
-              if(res.result==='false') alert(res.message)
-            })
 
             eventBus.emit('RefresherPostDataLoaded', obj)
             eventBus.emit(

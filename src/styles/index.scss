@@ -135,9 +135,8 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   display: block;
   min-width: 100px;
   min-height: 100px;
-  max-width: 70%;
-  width: -moz-fit-content;
-  width: fit-content;
+  width: 70%;
+  max-width: 700px;
   background-color: #fff;
   transform: translateY(10px);
   box-shadow: $shadow-2dp;
@@ -637,6 +636,14 @@ tr .gall_writer {
   }
 }
 
+.write_div {
+  img,
+  video {
+    max-width: calc(100% - 10px);
+    margin: 10px;
+  }
+}
+
 .refresher-frame.preview .refresher-preview-contents {
   embed {
     background-color: #333;
@@ -660,6 +667,24 @@ tr .gall_writer {
 
   img:hover {
     box-shadow: $shadow-1dp;
+  }
+
+  input {
+    width: calc(100% - 140px);
+    height: 34px;
+    float: left;
+    margin-right: 10px;
+
+    border-radius: 13.3px;
+    outline: none;
+    text-decoration: none;
+    border: 1px solid #777;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:focus,
+    &:hover {
+      box-shadow: inset 0px 0px 4px rgba(60, 71, 144, 0.5);
+    }
   }
 }
 

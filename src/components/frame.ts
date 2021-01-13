@@ -65,15 +65,15 @@ export const Frame = Vue.component('refresher-frame', {
           </transition-group>
         </div>
         <div v-if="frame.data.comments && !frame.data.comments.comments">
-          <div v-if="false">
-            <!-- TODO : 댓글 작성 -->
-            <h3 class="refresher-nocomment">작성된 댓글이 없습니다.</h3>
-            <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
-          </div>
-          <div v-else class="refresher-nocomment-wrap">
+          <div class="refresher-nocomment-wrap">
             <img src="https://dcimg5.dcinside.com/dccon.php?no=62b5df2be09d3ca567b1c5bc12d46b394aa3b1058c6e4d0ca41648b65ceb246e13df9546348593b9b03553cb2b363e94da0bda2f33af133d69a3e3bd02836ad0aeef62ce"></img>
             <h3>댓글이 없습니다.</h3>
           </div>
+          <br/>
+        </div>
+        <div v-if="frame.data.comments">
+          <input type="text" placeholder="댓글을 입력하세요."></input>
+          <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
         </div>
       </div>
       <div class="refresher-preview-contents refresher-error" v-if="frame.error">
