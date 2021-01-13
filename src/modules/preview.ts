@@ -1451,9 +1451,11 @@ export default {
           }
 
           if (codeSrc) {
-            return panel.captcha(codeSrc, (str: string) => {
-              req(str)
-            })
+            return new Promise((resolve, reject) =>
+              panel.captcha(codeSrc, async (str: string) => {
+                resolve(await req(str))
+              })
+            )
           }
 
           return req()
