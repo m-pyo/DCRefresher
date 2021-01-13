@@ -48,11 +48,12 @@ function dcconDetail(e) {
 }
 
 function search() {
-    fetch(`https://dccon.dcinside.com/hot/1/title/${document.getElementById('title').value}`).then(res => res.text()).then(res => {
+    fetch(document.getElementById('title').value ? `https://dccon.dcinside.com/hot/1/title/${document.getElementById('title').value}` : 'https://dccon.dcinside.com/').then(res => res.text()).then(res => {
         const parser = new DOMParser()
         const doc = parser.parseFromString(res, "text/html")
         document.getElementById('main').innerHTML = ''
-        let elS = doc.querySelector('.dccon_shop_list')
+        let elS = doc.querySelector('.dccon_listbox:not(.dccon_js) .dccon_shop_list')
+        console.log(elS)
         elS.querySelectorAll('li').forEach((el) => {
             let thumbnail = el.querySelector('img').src
             let name = el.querySelector('.dcon_name').innerText
@@ -78,4 +79,5 @@ function search() {
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('search').addEventListener('click', search)
     document.getElementById('title').addEventListener('change', search)
+    search()
 })
