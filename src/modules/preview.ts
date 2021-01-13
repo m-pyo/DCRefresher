@@ -31,6 +31,8 @@ const ISSUE_ZOOM_NO = /\$\(document\)\.data\('comment_no'\,\s\'.+'\);/g
 
 const QUOTES = /(["'])(?:(?=(\\?))\2.)*?\1/g
 
+const REFRESH_INTERVAL = 3000
+
 const getURL = (u: string) => {
   return !chrome || !chrome.extension ? u : chrome.extension.getURL(u)
 }
@@ -1005,7 +1007,8 @@ export default {
     tooltipMode: true,
     useKeyPress: true,
     colorPreviewLink: true,
-    reversePreviewKey: false
+    reversePreviewKey: false,
+    autoRefreshComment: true
   },
   memory: {
     preventOpen: false,
@@ -1017,7 +1020,8 @@ export default {
     historyClose: false,
     titleStore: '',
     urlStore: '',
-    dom: null
+    dom: null,
+    refreshIntervalId: 0
   },
   enable: true,
   default_enable: true,
@@ -1054,8 +1058,14 @@ export default {
     colorPreviewLink: {
       name: '게시글 URL 변경',
       desc:
-        '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
+          '미리보기를 열면 게시글의 URL을 변경하여 브라우저 탐색으로 게시글을 바꿀 수 있게 해줍니다.',
       default: true,
+      type: 'check'
+    },
+    autoRefreshComment: {
+      name: '댓글 자동 새로고침',
+      desc: '댓글을 일정 주기마다 자동으로 새로고침합니다. (일부 성능 영향 있음)',
+      default: false,
       type: 'check'
     },
     toggleBlur: {
@@ -1385,6 +1395,10 @@ export default {
 
               frame.data.comments = comments
               frame.data.load = false
+
+              this.memory.refreshIntervalId = setInterval(()=>{
+                frame.functions.retry()
+              }, REFRESH_INTERVAL)
             })
             .catch((e: Error) => {
               frame.subtitle = ``
@@ -1399,7 +1413,7 @@ export default {
         frame.functions.load()
         frame.functions.retry = frame.functions.load
 
-        frame.functions.writeComment = (type, memo) => {
+        frame.functions.writeComment = async (type, memo) => {
           // TODO : submitComment
         }
       })
@@ -1567,6 +1581,8 @@ export default {
         if (this.memory.titleStore) {
           document.title = this.memory.titleStore
         }
+
+        clearInterval(this.memory.refreshIntervalId)
       })
 
       makeFirstFrame(
@@ -1726,5 +1742,6 @@ export default {
     }
 
     window.removeEventListener('popstate', this.memory.popStateHandler)
+    clearInterval(this.memory.refreshIntervalId)
   }
 }
