@@ -954,6 +954,8 @@ let parse = (id: string, body: string) => {
   let isNotice = noticeElement && noticeElement.innerHTML !== '공지 등록'
 
   let requireCaptcha = dom.querySelector('.recommend_kapcode') !== null
+  let requireCommentCaptcha =
+    dom.querySelector('.cmt_write_box input[name="comment_code"]') !== null
 
   return new PostInfo(id, {
     header,
@@ -973,6 +975,7 @@ let parse = (id: string, body: string) => {
     commentNo,
     isNotice,
     requireCaptcha,
+    requireCommentCaptcha,
     dom
   })
 }
@@ -1423,7 +1426,7 @@ export default {
             return alert('게시글이 로딩될 때까지 잠시 기다려주세요.')
           }
 
-          let requireCapCode = postFetchedData.requireCaptcha
+          let requireCapCode = postFetchedData.requireCommentCaptcha
 
           let codeSrc = ''
           if (requireCapCode) {

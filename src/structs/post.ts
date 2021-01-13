@@ -15,6 +15,7 @@ export class PostInfo {
   commentNo?: string
   isNotice?: boolean
   requireCaptcha?: boolean
+  requireCommentCaptcha?: boolean
   dom?: any
 
   constructor (id: string, data: object) {
