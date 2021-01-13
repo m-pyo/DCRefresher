@@ -1422,7 +1422,7 @@ export default {
 
           let res = await submitComment(postData, user, postDom, memo)
 
-          if (res.result === 'false') {
+          if (res.result === 'false' || res.result === 'PreNotWorking') {
             alert(res.message)
             return false
           } else {
