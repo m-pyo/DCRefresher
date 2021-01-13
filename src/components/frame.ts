@@ -155,12 +155,16 @@ export const Frame = Vue.component('refresher-frame', {
       return this.frame.functions.retry()
     },
 
-    writeComment (...args: any) {
+    async writeComment (...args: any) {
+      let result = false
+
       if (this.frame.functions.writeComment) {
-        return this.frame.functions.writeComment(...args)
+        result = await this.frame.functions.writeComment(...args)
       }
 
       this.frame.functions.retry()
+
+      return result
     },
 
     toCommentWrite () {
