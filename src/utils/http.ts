@@ -28,6 +28,7 @@ export const urls = {
       'https://gall.dcinside.com/ajax/mini_manager_board_ajax/set_recommend'
   },
   comments: 'https://gall.dcinside.com/board/comment/',
+  comments_submit: 'https://gall.dcinside.com/board/forms/comment_submit',
   dccon: {
     detail: 'https://gall.dcinside.com/dccon/package_detail',
     info: 'https://dccon.dcinside.com/index/get_info',
@@ -142,7 +143,7 @@ export const galleryTypeName = (url: string) => {
 
 /**
  * 현재 URL의 query를 가져옵니다.
- * 
+ *
  * @param name Query 이름
  */
 export const queryString = (name: string) =>

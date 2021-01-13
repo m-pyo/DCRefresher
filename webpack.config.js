@@ -76,6 +76,15 @@ module.exports = (env, argv) => {
           RefresherDevMode: devMode
         }
       }),
+      new HtmlWebpackPlugin({
+        template: './src/views/dcconSel.pug',
+        filename: 'views/dcconSel.html',
+        inject: false,
+        templateParameters: {
+          RefresherVersion: pkg.version || '1.0.0',
+          RefresherDevMode: devMode
+        }
+      }),
       new MiniCssExtractPlugin({
         filename: 'refresher.bundle.css'
       }),

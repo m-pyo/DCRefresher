@@ -88,9 +88,9 @@ interface RefresherDOM {
    * @param current 현재 깊이 (내부용)
    */
   findNeighbor(
-    el: HTMLElement,
-    find: string,
-    max: number,
-    current?: number
+      el: HTMLElement,
+      find: string,
+      max: number,
+      current?: number
   ): HTMLElement | null
 }
