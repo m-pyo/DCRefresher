@@ -288,7 +288,9 @@ export async function submitComment (
   if (code.length !== 412) {
     return {
       result: 'PreNotWorking',
-      message: 'code의 길이가 올바르지 않습니다. (확장 프로그램 오류)'
+      message:
+        'code의 길이가 올바르지 않습니다. (확장 프로그램 오류) length=' +
+        code.length
     }
   }
 
