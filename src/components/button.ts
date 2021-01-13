@@ -1,11 +1,14 @@
 export default {
   template: `
-  <transition name="refresher-shake">
-    <div class="refresher-preview-button" :key="error" v-on:click="safeClick">
-      <img :src="getURL('/assets/icons/' + id + '.png')"></img>
-      <p class="refresher-vote-text" :id="'refresher-' + id + '-counts'">{{text}}</p>
+    <div class="refresher-preview-button" v-on:click="safeClick">
+      <transition name="refresher-shake">
+        <img :key="error + 1" :src="getURL('/assets/icons/' + id + '.png')"></img>
+      </transition>
+      <transition name="refresher-shake">
+        <p class="refresher-vote-text" :key="error" :id="'refresher-' + id + '-counts'">{{text}}</p>
+      </transition>
     </div>
-  </transition>`,
+  `,
   props: {
     id: { type: [String, Number] },
     text: {
