@@ -7,6 +7,7 @@ import * as Toast from '../components/toast'
 
 import { ScrollDetection } from '../utils/scrollDetection'
 import {get_cookie, set_cookie_tmp} from '../utils/webStorage'
+import {submitComment} from "../utils/comment";
 
 
 interface GalleryPredata {
@@ -959,6 +960,21 @@ let parse = (id: string, body: string) => {
 
   let requireCaptcha = dom.querySelector('.recommend_kapcode') !== null
 
+  const secretKey =Array.from(dom.querySelectorAll('#focus_cmt > input'))
+          .map(el => {
+            let id = el.name || el.id
+            if (
+                id === 'service_code' ||
+                id === 'gallery_no' ||
+                id === 'clickbutton'
+            ) {
+              return ``
+            } else {
+              return `&${id}=${(el as HTMLInputElement).value}`
+            }
+          })
+          .join('') + '&t_vch2=&g-recaptcha-response='
+
   return new PostInfo(id, {
     header,
     title,
@@ -976,7 +992,8 @@ let parse = (id: string, body: string) => {
     commentId,
     commentNo,
     isNotice,
-    requireCaptcha
+    requireCaptcha,
+    secretKey
   })
 }
 
@@ -1009,7 +1026,8 @@ export default {
     signal: null,
     historyClose: false,
     titleStore: '',
-    urlStore: ''
+    urlStore: '',
+    secretKey: ''
   },
   enable: true,
   default_enable: true,
@@ -1233,6 +1251,10 @@ export default {
             frame.data.date = new Date(obj.date!.replace(/\./g, '-'))
             frame.data.expire = obj.expire
             frame.data.buttons = true
+
+
+            this.memory.secretKey = obj.secretKey
+            console.log(obj.secretKey)
 
             eventBus.emit('RefresherPostDataLoaded', obj)
             eventBus.emit(
@@ -1534,7 +1556,10 @@ export default {
         }
 
         if (!this.memory.historyClose) {
-          history.pushState(null, this.memory.titleStore, this.memory.urlStore)
+          history.pushState(null, this.memory.titleStore, this.memory.urlStore)/*
+          submitComment('test').then((res)=>{
+            if(res.result==='false') alert(res.message)
+          })*/
 
           this.memory.historyClose = false
         }
