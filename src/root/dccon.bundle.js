@@ -32,18 +32,23 @@ function dcconDetail(e) {
         }).then(res => res.json()).then(res => {
         document.getElementById('main').innerHTML = `
             <h1>${res.info.title}</h1>
-            <h3>${res.info.description}</h3>
+            <p>${res.info.description}</p>
         `
         res.detail.forEach(el => {
             let newElement = document.createElement('img')
             newElement.src = 'https://dcimg5.dcinside.com/dccon.php?no=' + el.path
             newElement.alt = el.title
-            newElement.style = 'width:33%;float:left;cursor:pointer;'
+            newElement.className = 'dccon'
             newElement.addEventListener('click', selectDCON)
 
             newElement.id = `${el.package_idx}||${el.idx}||${el.path}`
             document.getElementById('main').appendChild(newElement)
         })
+
+        let margin = document.createElement('div')
+        margin.style.clear = 'left'
+        document.getElementById('main').appendChild(margin)
+        document.documentElement.scroll(0, 0)
     })
 }
 
@@ -60,19 +65,21 @@ function search() {
             let by = el.querySelector('.dcon_seller').innerText
             let id = el.querySelector('a').href.split('#')[1]
             let newElement = document.createElement('div')
-            newElement.style.width = 'calc(100% - 20px)'
-            newElement.style.float = 'left'
-            newElement.style.cursor = 'pointer'
             newElement.id = id
+            newElement.className = 'menu'
             newElement.addEventListener('click', dcconDetail)
             newElement.innerHTML = `
-                <img src="${thumbnail}" style="float: left;height:100px;margin-right: 20px;">
-                <div style="float: left;">
+                <img src="${thumbnail}">
+                <div>
                     <h2>${name}</h2>
                     <h4>${by}</h4>
                 </div>`
             document.getElementById('main').appendChild(newElement)
         })
+        let margin = document.createElement('div')
+        margin.style.clear = 'left'
+        document.getElementById('main').appendChild(margin)
+        document.documentElement.scroll(0, 0)
     })
 }
 

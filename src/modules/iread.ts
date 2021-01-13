@@ -20,7 +20,7 @@ export default {
         dccon: {
             name: '댓글 내용',
             desc:
-                '자동으로 달 댓글의 내용을 설정합니다.',
+                '자동으로 달 디시콘을 설정합니다.',
             default: '없음',
             type: 'dccon'
         }
