@@ -930,16 +930,18 @@ tr .gall_writer {
 
 .refresher-write-comment {
   display: flex;
+  margin-top: 20px;
 
   .input-wrap {
     position: relative;
     width: 80%;
     min-width: 400px;
     height: 45px;
+    margin-right: 20px;
 
     &.focus {
       &::after {
-        width: 100%;
+        width: calc(100% + 4px);
       }
     }
 
@@ -984,12 +986,14 @@ tr .gall_writer {
 
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
+
+  & > .refresher-writecomment {
+    margin: auto;
+  }
 }
 
 .refresherDark {
   .refresher-write-comment {
-    display: flex;
-
     &.disable {
       input {
         color: rgb(63, 63, 63);
@@ -1001,11 +1005,6 @@ tr .gall_writer {
     }
 
     input {
-      width: 80%;
-      min-width: 400px;
-      height: 45px;
-      outline: none;
-      border: 0;
       border-bottom: 1px solid #fff;
       color: #fff;
 
