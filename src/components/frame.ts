@@ -72,7 +72,7 @@ export const Frame = Vue.component('refresher-frame', {
           <br/>
         </div>
         <div v-if="frame.data.comments">
-          <input type="text" placeholder="댓글을 입력하세요."></input>
+          <input type="text" placeholder="댓글을 입력하세요." v-model="memoText" v-on:keyup.enter="writeComment"></input>
           <PreviewButton class="refresher-writecomment primary" id="write" text="댓글 달기" :click="writeComment"></PreviewButton>
         </div>
       </div>
@@ -99,7 +99,7 @@ export const Frame = Vue.component('refresher-frame', {
           <li>알 수 없는 오류입니다. 아래 코드를 복사하여 개발자에게 문의해주세요.</li>
         </ul>
         <br>
-        <PreviewButton class="refresher-writecomment primary" id="refresh" text="다시 시도" :click="retry "></PreviewButton>
+        <PreviewButton class="refresher-writecomment primary" id="refresh" text="다시 시도" :click="retry"></PreviewButton>
         <br>
         <span class="refresher-mute">{{frame.error.detail}}</span>
       </div>
@@ -115,6 +115,11 @@ export const Frame = Vue.component('refresher-frame', {
       </div>
     </div>`,
   props: ['frame', 'index'],
+  data: function () {
+    return {
+      memoText: ''
+    }
+  },
   methods: {
     beforeEnter (el: HTMLElement) {
       el.style.transitionDelay = 45 * Number(el.dataset.index) + 'ms'
@@ -140,7 +145,11 @@ export const Frame = Vue.component('refresher-frame', {
       return this.frame.functions.retry()
     },
 
-    writeComment () {},
+    writeComment () {
+      let res = this.frame.functions.comment(this.memoText)
+      this.memoText = ''
+      return res
+    },
 
     makeVoteRequest () {}
   }
