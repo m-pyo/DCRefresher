@@ -48,10 +48,9 @@ export const Frame = Vue.component('refresher-frame', {
               <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
             </transition>
           </div>
-
           <div v-if="frame.data.comments" class="refresher-comment-controls-container">
-            <PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" class="refresher-comment-controls">
-            </PreviewButton>
+            <!--<PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" class="refresher-comment-controls">
+            </PreviewButton>-->
             <PreviewButton :id="'refresh'" :text="'새로고침'" :click="refresh" class="refresher-comment-controls">
             </PreviewButton>
           </div>
@@ -83,7 +82,7 @@ export const Frame = Vue.component('refresher-frame', {
           <br/>
         </div>
         <div v-if="frame.data.comments">
-          <WriteComment :func="writeComment"></WriteComment>
+          <!--<WriteComment :func="writeComment"></WriteComment>-->
         </div>
       </div>
       <div class="refresher-preview-contents refresher-error" v-if="frame.error">
