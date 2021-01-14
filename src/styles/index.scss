@@ -30,6 +30,7 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   min-height: 100%;
   opacity: 0;
   overflow: hidden;
+  line-height: 25px;
 
   z-index: 100;
 
@@ -879,16 +880,24 @@ tr .gall_writer {
 }
 
 .refresher-user {
-  display: flex;
-  padding: 2px 4px;
+
+  max-width: calc(100% - 170px);
+
+  .refresher-user-content {
+    display: flex;
+    padding: 2px 4px;
+    width: 100%;
+  }
 
   &.cursor {
     cursor: pointer;
   }
 
   &[data-me='true'] {
-    background-color: rgb(20, 109, 243);
-    border-radius: 5px;
+    .refresher-user-content {
+      background-color: rgba(0, 110, 255, 0.6);
+      border-radius: 5px;
+    }
   }
 
   .refresher-user-icon,
@@ -901,6 +910,7 @@ tr .gall_writer {
   .refresher-user-icon,
   .refresher-user-nick {
     margin-right: 5px;
+    white-space:nowrap;
   }
 
   .refresher-user-icon {
@@ -941,6 +951,11 @@ tr .gall_writer {
   .refresher-user-info {
     opacity: 0.4;
     font-size: 12px;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap:normal;
   }
 }
 
@@ -961,6 +976,7 @@ tr .gall_writer {
 
   .refresher-timestamp {
     margin-left: 2vw;
+    white-space: nowrap;
   }
 }
 
