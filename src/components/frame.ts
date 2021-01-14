@@ -47,14 +47,6 @@ export const Frame = Vue.component('refresher-frame', {
             <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
               <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
             </transition>
-            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
-              <div v-if="frame.data.buttons" class="refresher-post-original">
-                <div>
-                  <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
-                  </PreviewButton>
-                </div>
-              </div>
-            </transition>
           </div>
 
           <div v-if="frame.data.comments" class="refresher-comment-controls-container">
@@ -126,6 +118,8 @@ export const Frame = Vue.component('refresher-frame', {
           <PreviewButton class="refresher-upvote" :id="'upvote'" :text="frame.upvotes || '0'" :click="upvote">
           </PreviewButton>
           <PreviewButton class="refresher-downvote" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
+          </PreviewButton>
+          <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
           </PreviewButton>
           <PreviewButton class="refresher-share primary" :id="'share'" :text="'공유'" :click="share">
           </PreviewButton>
