@@ -1275,6 +1275,11 @@ export default {
 
       frame.functions.load()
       frame.functions.retry = frame.functions.load
+
+      frame.functions.openOriginal = () => {
+        if(this.status.colorPreviewLink) location.reload()
+        else location.href = preData.link
+      }
     }
 
     let makeSecondFrame = (

@@ -182,7 +182,7 @@ export const Frame = Vue.component('refresher-frame', {
     makeVoteRequest () {},
 
     original () {
-      location.reload()
+      this.frame.functions.openOriginal()
       return true
     }
   }
