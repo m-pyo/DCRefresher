@@ -47,6 +47,9 @@ export const Frame = Vue.component('refresher-frame', {
             <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
               <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
             </transition>
+            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+              <span class="refresher-preview-title-info" v-html="frame.titleInfo"></span>
+            </transition>
           </div>
           <div v-if="frame.data.comments" class="refresher-comment-controls-container">
             <!--<PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" class="refresher-comment-controls">
