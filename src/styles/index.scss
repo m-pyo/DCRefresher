@@ -678,7 +678,9 @@ tr .gall_writer {
 
 .refresher-preview-title-text {
   display: flex;
-  width: 100%;
+  &.refresher-title-post {
+    width: 100%;
+  }
 }
 
 .refresher-preview-title {
@@ -1168,4 +1170,12 @@ $btn-height: 20px;
   margin-top: -3px;
   margin-right: -30px;
   margin-left: auto;
+}
+
+.refresher-comment-controls-container {
+  right: -30px;
+  position: relative;
+  .refresher-comment-controls {
+    float: left;
+  }
 }
