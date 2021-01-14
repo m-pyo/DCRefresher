@@ -47,6 +47,14 @@ export const Frame = Vue.component('refresher-frame', {
             <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
               <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
             </transition>
+            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+              <div v-if="frame.data.buttons" class="refresher-post-original">
+                <div>
+                  <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
+                  </PreviewButton>
+                </div>
+              </div>
+            </transition>
           </div>
 
           <div v-if="frame.data.comments" style="float: right;">
@@ -61,13 +69,6 @@ export const Frame = Vue.component('refresher-frame', {
           <div class="float-right">
             <TimeStamp v-if="frame.data.date" :date="frame.data.date"></TimeStamp>
             <CountDown v-if="frame.data.expire" :date="frame.data.expire"></CountDown>
-            <br/>
-            <div v-if="frame.data.buttons">
-              <div>
-                <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
-                </PreviewButton>
-              </div>
-            </div>
           </div>
         </div>
       </div>
