@@ -30,7 +30,6 @@ $shadow-3dp: 0px 0px 16px rgba(0, 0, 0, 0.24);
   min-height: 100%;
   opacity: 0;
   overflow: hidden;
-  line-height: 25px;
 
   z-index: 100;
 
@@ -879,8 +878,13 @@ tr .gall_writer {
   }
 }
 
-.refresher-user {
+.refresherDark .refresher-user {
+  &[data-me='true'] {
+    background-color: rgb(20, 109, 243);
+  }
+}
 
+.refresher-user {
   max-width: calc(100% - 170px);
 
   .refresher-user-content {
@@ -894,10 +898,9 @@ tr .gall_writer {
   }
 
   &[data-me='true'] {
-    .refresher-user-content {
-      background-color: rgba(0, 110, 255, 0.6);
-      border-radius: 5px;
-    }
+    background-color: rgba(0, 110, 255, 0.6);
+    color: white;
+    border-radius: 5px;
   }
 
   .refresher-user-icon,
@@ -910,7 +913,7 @@ tr .gall_writer {
   .refresher-user-icon,
   .refresher-user-nick {
     margin-right: 5px;
-    white-space:nowrap;
+    white-space: nowrap;
   }
 
   .refresher-user-icon {
@@ -955,7 +958,7 @@ tr .gall_writer {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    word-wrap:normal;
+    word-wrap: normal;
   }
 }
 
