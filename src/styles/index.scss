@@ -964,7 +964,7 @@ tr .gall_writer {
   margin-top: 20px;
 
   .refresher-comment-util {
-    transition: opacity 0.2s;
+    transition: opacity 0.2s cubic-bezier(0.19, 1, 0.22, 1);
     opacity: 0;
 
     &.refresher-comment-util-show {
@@ -1082,6 +1082,12 @@ tr .gall_writer {
 
       &:disabled {
         border-bottom: 1px solid rgb(63, 63, 63);
+      }
+    }
+
+    .refresher-comment-util {
+      &.refresher-comment-util-edit {
+        color: white;
       }
     }
   }

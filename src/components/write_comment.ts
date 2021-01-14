@@ -28,7 +28,7 @@ export default {
         <span>로 작성 중</span>
       </div>
       <div class="whoami" v-bind:class="{'refresher-comment-util': true, 'refresher-comment-util-edit': true, 'refresher-comment-util-show': hoverUserInfo && !this.user.id}">
-        <span v-on:click="editUser = !editUser">작성자 정보 수정하기</span>
+        <span v-on:click="toggleEditUser">클릭하면 작성자 정보 수정 모드를 {{editUser ? '비활성화' : '활성화'}}시킵니다.</span>
       </div>
     </div>
   </div>`,
@@ -106,6 +106,12 @@ export default {
             '" 으로 설정합니다.'
         )
         this.unsignedUserPW = random
+      }
+    },
+
+    toggleEditUser () {
+      if (!this.user.id) {
+        this.editUser = !this.editUser
       }
     },
 
