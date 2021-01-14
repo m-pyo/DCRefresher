@@ -678,6 +678,9 @@ tr .gall_writer {
 
 .refresher-preview-title-text {
   display: flex;
+  &.refresher-title-post {
+    width: 100%;
+  }
 }
 
 .refresher-preview-title {
@@ -1065,6 +1068,7 @@ tr .gall_writer {
 
 .refresher-timestamp {
   cursor: pointer;
+  text-align: right;
 }
 
 .refresher-mini-preview {
@@ -1159,5 +1163,13 @@ $btn-height: 20px;
     .selected {
       transform: translateX(($btn-width / 2) - 1);
     }
+  }
+}
+
+.refresher-comment-controls-container {
+  right: -30px;
+  position: relative;
+  .refresher-comment-controls {
+    float: left;
   }
 }

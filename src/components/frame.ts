@@ -40,7 +40,7 @@ export const Frame = Vue.component('refresher-frame', {
   template: `<div class="refresher-frame" :class="{relative: frame.options.relative, blur: frame.options.blur, preview: frame.options.preview, center: frame.options.center}">
       <div class="refresher-preview-info" v-if="!frame.error">
         <div class="refresher-preview-title-zone">
-          <div class="refresher-preview-title-text">
+          <div :class="{'refresher-preview-title-text':true, 'refresher-title-post':frame.data.buttons}">
             <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
               <div class="refresher-preview-title" v-html="frame.title" :data-index="index + 1" :key="frame.title"></div>
             </transition>
@@ -48,11 +48,10 @@ export const Frame = Vue.component('refresher-frame', {
               <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
             </transition>
           </div>
-
-          <div v-if="frame.data.comments" style="float: right;">
-            <!--<PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" style="float:left;">
+          <div v-if="frame.data.comments" class="refresher-comment-controls-container">
+            <!--<PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" class="refresher-comment-controls">
             </PreviewButton>-->
-            <PreviewButton :id="'refresh'" :text="'새로고침'" :click="refresh" style="float:right;">
+            <PreviewButton :id="'refresh'" :text="'새로고침'" :click="refresh" class="refresher-comment-controls">
             </PreviewButton>
           </div>
         </div>
@@ -121,6 +120,8 @@ export const Frame = Vue.component('refresher-frame', {
           </PreviewButton>
           <PreviewButton class="refresher-share primary" :id="'share'" :text="'공유'" :click="share">
           </PreviewButton>
+          <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
+          </PreviewButton>
         </div>
       </div>
     </div>`,
@@ -177,7 +178,12 @@ export const Frame = Vue.component('refresher-frame', {
       return true
     },
 
-    makeVoteRequest () {}
+    makeVoteRequest () {},
+
+    original () {
+      this.frame.functions.openOriginal()
+      return true
+    }
   }
 })
 
