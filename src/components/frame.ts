@@ -47,6 +47,8 @@ export const Frame = Vue.component('refresher-frame', {
             <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
               <span class="refresher-preview-title-mute" v-html="frame.subtitle"></span>
             </transition>
+            <transition name="refresher-slide-up" appear @before-enter="beforeEnter" @after-enter="afterEnter">
+            </transition>
           </div>
           <div v-if="frame.data.comments" class="refresher-comment-controls-container">
             <!--<PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" class="refresher-comment-controls">
@@ -58,7 +60,10 @@ export const Frame = Vue.component('refresher-frame', {
         <div class="refresher-preview-meta">
           <User v-if="frame.data.user" :user="frame.data.user"></User>
           <div class="float-right">
-            <TimeStamp v-if="frame.data.date" :date="frame.data.date"></TimeStamp>
+            <div class="date-views">
+              <TimeStamp v-if="frame.data.date" :date="frame.data.date"></TimeStamp>
+              <span class="refresher-views" v-html="frame.data.views"></span>
+            </div>
             <CountDown v-if="frame.data.expire" :date="frame.data.expire"></CountDown>
           </div>
         </div>
@@ -82,7 +87,7 @@ export const Frame = Vue.component('refresher-frame', {
           <br/>
         </div>
         <div v-if="frame.data.comments">
-          <!--<WriteComment :func="writeComment"></WriteComment>-->
+          <WriteComment :func="writeComment"></WriteComment>
         </div>
       </div>
       <div class="refresher-preview-contents refresher-error" v-if="frame.error">

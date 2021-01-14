@@ -22,9 +22,14 @@ export default {
       </div>
       <PreviewButton class="refresher-writecomment primary" id="write" text="작성" :click="write"></PreviewButton>
     </div>
-    <div class="whoami">
-      <UserComponent :user="user" :click="() => !this.user.id && (editUser = !editUser)"></UserComponent>
-      <span>로 작성 중</span>
+    <div @mouseover="hoverUserInfo = true" @mouseleave="hoverUserInfo = false">
+      <div class="whoami" v-bind:class="{'refresher-comment-util': true, 'refresher-comment-util-show': !(hoverUserInfo && !this.user.id)}">
+        <UserComponent :user="user"></UserComponent>
+        <span>로 작성 중</span>
+      </div>
+      <div class="whoami" v-bind:class="{'refresher-comment-util': true, 'refresher-comment-util-edit': true, 'refresher-comment-util-show': hoverUserInfo && !this.user.id}">
+        <span v-on:click="toggleEditUser">클릭하면 작성자 정보 수정 모드를 {{editUser ? '비활성화' : '활성화'}}시킵니다.</span>
+      </div>
     </div>
   </div>`,
   data () {
@@ -34,6 +39,7 @@ export default {
       text: '',
       editUser: false,
       fixedUser: false,
+      hoverUserInfo: false,
       user: new User('', null, null, null),
       unsignedUserID: localStorage.nonmember_nick || 'ㅇㅇ',
       unsignedUserPW:
@@ -100,6 +106,12 @@ export default {
             '" 으로 설정합니다.'
         )
         this.unsignedUserPW = random
+      }
+    },
+
+    toggleEditUser () {
+      if (!this.user.id) {
+        this.editUser = !this.editUser
       }
     },
 
