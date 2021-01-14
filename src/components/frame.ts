@@ -118,9 +118,9 @@ export const Frame = Vue.component('refresher-frame', {
           </PreviewButton>
           <PreviewButton class="refresher-downvote" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
           </PreviewButton>
-          <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
-          </PreviewButton>
           <PreviewButton class="refresher-share primary" :id="'share'" :text="'공유'" :click="share">
+          </PreviewButton>
+          <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
           </PreviewButton>
         </div>
       </div>
