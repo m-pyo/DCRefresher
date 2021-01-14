@@ -22,9 +22,14 @@ export default {
       </div>
       <PreviewButton class="refresher-writecomment primary" id="write" text="작성" :click="write"></PreviewButton>
     </div>
-    <div class="whoami">
-      <UserComponent :user="user" :click="() => !this.user.id && (editUser = !editUser)"></UserComponent>
-      <span>로 작성 중</span>
+    <div @mouseover="hoverUserInfo = true" @mouseleave="hoverUserInfo = false">
+      <div class="whoami" v-bind:class="{'refresher-comment-util': true, 'refresher-comment-util-show': !(hoverUserInfo && !this.user.id)}">
+        <UserComponent :user="user"></UserComponent>
+        <span>로 작성 중</span>
+      </div>
+      <div class="whoami" v-bind:class="{'refresher-comment-util': true, 'refresher-comment-util-edit': true, 'refresher-comment-util-show': hoverUserInfo && !this.user.id}">
+        <span v-on:click="editUser = !editUser">작성자 정보 수정하기</span>
+      </div>
     </div>
   </div>`,
   data () {
@@ -34,6 +39,7 @@ export default {
       text: '',
       editUser: false,
       fixedUser: false,
+      hoverUserInfo: false,
       user: new User('', null, null, null),
       unsignedUserID: localStorage.nonmember_nick || 'ㅇㅇ',
       unsignedUserPW:

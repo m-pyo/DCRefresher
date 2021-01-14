@@ -85,7 +85,7 @@ export const Frame = Vue.component('refresher-frame', {
           <br/>
         </div>
         <div v-if="frame.data.comments">
-          <!--<WriteComment :func="writeComment"></WriteComment>-->
+          <WriteComment :func="writeComment"></WriteComment>
         </div>
       </div>
       <div class="refresher-preview-contents refresher-error" v-if="frame.error">
