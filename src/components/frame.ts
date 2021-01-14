@@ -61,6 +61,13 @@ export const Frame = Vue.component('refresher-frame', {
           <div class="float-right">
             <TimeStamp v-if="frame.data.date" :date="frame.data.date"></TimeStamp>
             <CountDown v-if="frame.data.expire" :date="frame.data.expire"></CountDown>
+            <br/>
+            <div v-if="frame.data.buttons">
+              <div>
+                <PreviewButton :id="'newtab'" :text="'원본 보기'" :click="original">
+                </PreviewButton>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -177,7 +184,12 @@ export const Frame = Vue.component('refresher-frame', {
       return true
     },
 
-    makeVoteRequest () {}
+    makeVoteRequest () {},
+
+    original () {
+      location.reload()
+      return true
+    }
   }
 })
 

@@ -1763,7 +1763,11 @@ export default {
     this.memory.popStateHandler = (ev: PopStateEvent) => {
       if (!ev.state) {
         this.memory.historyClose = true
-        frame.app.close()
+        try {
+          frame.app.close()
+        } catch (e) {
+          location.reload()
+        }
 
         return
       }
