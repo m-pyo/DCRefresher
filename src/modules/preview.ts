@@ -1253,6 +1253,7 @@ export default {
             frame.data.date = new Date(obj.date!.replace(/\./g, '-'))
             frame.data.expire = obj.expire
             frame.data.buttons = true
+            frame.subtitle = `조회 ${obj.views}회`
 
             eventBus.emit('RefresherPostDataLoaded', obj)
             eventBus.emit(
