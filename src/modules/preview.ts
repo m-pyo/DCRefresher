@@ -954,6 +954,8 @@ let parse = (id: string, body: string) => {
   let isNotice = noticeElement && noticeElement.innerHTML !== '공지 등록'
 
   let requireCaptcha = dom.querySelector('.recommend_kapcode') !== null
+  let requireCommentCaptcha =
+    dom.querySelector('.cmt_write_box input[name="comment_code"]') !== null
 
   return new PostInfo(id, {
     header,
@@ -973,6 +975,7 @@ let parse = (id: string, body: string) => {
     commentNo,
     isNotice,
     requireCaptcha,
+    requireCommentCaptcha,
     dom
   })
 }
@@ -1250,6 +1253,7 @@ export default {
             frame.data.date = new Date(obj.date!.replace(/\./g, '-'))
             frame.data.expire = obj.expire
             frame.data.buttons = true
+            frame.data.views = `조회 ${obj.views}회`
 
             eventBus.emit('RefresherPostDataLoaded', obj)
             eventBus.emit(
@@ -1272,6 +1276,11 @@ export default {
 
       frame.functions.load()
       frame.functions.retry = frame.functions.load
+
+      frame.functions.openOriginal = () => {
+        if(this.status.colorPreviewLink) location.reload()
+        else location.href = preData.link
+      }
     }
 
     let makeSecondFrame = (
@@ -1419,42 +1428,43 @@ export default {
           user?: any
         ) => {
           // TODO : 디시콘 추가시 type 핸들링 (현재 text만)
-
-          let gallogName = document.querySelector(
-            '#login_box .user_info .nickname em'
-          ) as HTMLElement
-
-          let loggedIn = false
-
-          let fixedName = gallogName && gallogName.innerHTML
-          if (fixedName) {
-            loggedIn = true
+          if (!postFetchedData) {
+            return alert('게시글이 로딩될 때까지 잠시 기다려주세요.')
           }
 
-          let res = await submitComment(
-            postData,
-            loggedIn
-              ? {
-                  name: fixedName
-                }
-              : {
-                  name:
-                    (user && user.id) || localStorage.nonmember_nick || 'ㅇㅇ',
-                  pw:
-                    (user && user.pw) ||
-                    localStorage.nonmember_pw ||
-                    'refresherDefault'
-                },
-            postDom,
-            memo
-          )
+          let requireCapCode = postFetchedData.requireCommentCaptcha
 
-          if (res.result === 'false') {
-            alert(res.message)
-            return false
-          } else {
-            return true
+          let codeSrc = ''
+          if (requireCapCode) {
+            codeSrc = await request.captcha(preData, 'comment')
           }
+
+          let req = async (captcha?: string) => {
+            let res = await submitComment(
+              postData,
+              user,
+              postDom,
+              memo,
+              captcha
+            )
+
+            if (res.result === 'false' || res.result === 'PreNotWorking') {
+              alert(res.message)
+              return false
+            } else {
+              return true
+            }
+          }
+
+          if (codeSrc) {
+            return new Promise((resolve, reject) =>
+              panel.captcha(codeSrc, async (str: string) => {
+                resolve(await req(str))
+              })
+            )
+          }
+
+          return req()
         }
 
         this.memory.refreshIntervalId = setInterval(() => {
@@ -1759,7 +1769,11 @@ export default {
     this.memory.popStateHandler = (ev: PopStateEvent) => {
       if (!ev.state) {
         this.memory.historyClose = true
-        frame.app.close()
+        try {
+          frame.app.close()
+        } catch (e) {
+          location.reload()
+        }
 
         return
       }

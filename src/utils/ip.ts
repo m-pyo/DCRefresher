@@ -254,7 +254,7 @@ const detailWrap = (obj: ISPInfo, detail: string) => {
   }
 }
 
-const DCREF_COMMON_IP: { [index: string]: object } = {
+const DCREF_COMMON_IP: { [index: string]: any } = {
   '63.160': DCREF_ISP.SPRINT,
   '63.161': DCREF_ISP.SPRINT,
   '63.162': DCREF_ISP.SPRINT,

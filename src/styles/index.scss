@@ -679,6 +679,9 @@ tr .gall_writer {
 
 .refresher-preview-title-text {
   display: flex;
+  &.refresher-title-post {
+    width: 100%;
+  }
 }
 
 .refresher-preview-title {
@@ -701,11 +704,26 @@ tr .gall_writer {
 
   .float-right {
     margin-left: auto;
+
+    .date-views {
+      display: flex;
+
+      .refresher-timestamp {
+        &::after {
+          content: ', ';
+        }
+      }
+
+      .refresher-views {
+        margin-left: 5px;
+      }
+    }
   }
 }
 
 .refresher-timestamp,
-.refresher-countdown {
+.refresher-countdown,
+.refresher-views {
   font-size: 12px;
   font-weight: thin;
   opacity: 0.6;
@@ -793,7 +811,7 @@ tr .gall_writer {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.primary {
-    background-color: rgba(0, 110, 255, 0.32);
+    background-color: rgba(0, 110, 255, 0.8);
     -moz-backdrop-filter: saturate(180%);
     backdrop-filter: blur(10px) saturate(180%);
 
@@ -813,18 +831,24 @@ tr .gall_writer {
   }
 
   &:hover {
-    background-color: rgba(0, 110, 255, 0.28);
+    background-color: rgba(0, 110, 255, 0.7);
     cursor: pointer;
 
     backdrop-filter: blur(10px) saturate(200%);
 
     box-shadow: $shadow-2dp;
+    * {
+      filter: invert(1);
+    }
   }
 
   &:active {
-    background-color: rgba(0, 110, 255, 0.22);
+    background-color: rgba(0, 110, 255, 0.6);
     backdrop-filter: blur(10px) saturate(220%);
     box-shadow: $shadow-1dp;
+    * {
+      filter: invert(1);
+    }
   }
 
   img {
@@ -855,16 +879,28 @@ tr .gall_writer {
   }
 }
 
+.refresherDark .refresher-user {
+  &[data-me='true'] {
+    background-color: rgb(20, 109, 243);
+  }
+}
+
 .refresher-user {
-  display: flex;
-  padding: 2px 4px;
+  max-width: calc(100% - 170px);
+
+  .refresher-user-content {
+    display: flex;
+    padding: 2px 4px;
+    width: 100%;
+  }
 
   &.cursor {
     cursor: pointer;
   }
 
   &[data-me='true'] {
-    background-color: rgb(20, 109, 243);
+    background-color: rgba(0, 110, 255, 0.6);
+    color: white;
     border-radius: 5px;
   }
 
@@ -878,6 +914,7 @@ tr .gall_writer {
   .refresher-user-icon,
   .refresher-user-nick {
     margin-right: 5px;
+    white-space: nowrap;
   }
 
   .refresher-user-icon {
@@ -918,6 +955,11 @@ tr .gall_writer {
   .refresher-user-info {
     opacity: 0.4;
     font-size: 12px;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap: normal;
   }
 }
 
@@ -938,16 +980,60 @@ tr .gall_writer {
 
   .refresher-timestamp {
     margin-left: 2vw;
+    white-space: nowrap;
   }
 }
 
 .refresher-write-comment {
   display: flex;
+  flex-direction: column;
   margin-top: 20px;
+
+  .refresher-comment-util {
+    transition: opacity 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+    opacity: 0;
+
+    &.refresher-comment-util-show {
+      opacity: 1;
+    }
+
+    &.refresher-comment-util-edit {
+      margin-top: -17px;
+      margin-left: 15px;
+      color: black;
+      cursor: pointer;
+    }
+  }
+
+  .whoami {
+    display: flex;
+
+    & > span {
+      margin-top: auto;
+      margin-bottom: 1px;
+      opacity: 0.5;
+      letter-spacing: -1px;
+    }
+  }
+
+  .refresher-user {
+    margin-top: 10px;
+  }
+
+  .user {
+    display: grid;
+    grid-template-columns: 100px 30px 200px;
+  }
+
+  .refresher-comment-body {
+    display: flex;
+    margin-top: 30px;
+  }
 
   .input-wrap {
     position: relative;
     width: 80%;
+    height: 35px;
     min-width: 400px;
     height: 45px;
     margin-right: 20px;
@@ -983,7 +1069,6 @@ tr .gall_writer {
   }
 
   input {
-    position: absolute;
     width: 100%;
     height: 100%;
     outline: none;
@@ -1025,11 +1110,18 @@ tr .gall_writer {
         border-bottom: 1px solid rgb(63, 63, 63);
       }
     }
+
+    .refresher-comment-util {
+      &.refresher-comment-util-edit {
+        color: white;
+      }
+    }
   }
 }
 
 .refresher-timestamp {
   cursor: pointer;
+  text-align: right;
 }
 
 .refresher-mini-preview {
@@ -1124,5 +1216,13 @@ $btn-height: 20px;
     .selected {
       transform: translateX(($btn-width / 2) - 1);
     }
+  }
+}
+
+.refresher-comment-controls-container {
+  right: -30px;
+  position: relative;
+  .refresher-comment-controls {
+    float: left;
   }
 }
