@@ -873,6 +873,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '3.253': DCREF_ISP.AMAZON,
   '3.254': DCREF_ISP.AMAZON,
   '3.255': DCREF_ISP.AMAZON,
+  '4.35': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
   '5.252': detailWrap(
     DCREF_ISP.GENERAL,
     '[JP]BIT-ISLE Equinix Jpapan Enterprise K.K.'
@@ -1210,6 +1211,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '23.131': DCREF_ISP.AMAZON,
   '23.133': DCREF_ISP.AMAZON,
   '23.136': DCREF_ISP.AMAZON,
+  '23.160': DCREF_ISP.AMAZON,
   '23.166': DCREF_ISP.AMAZON,
   '23.169': DCREF_ISP.AMAZON,
   '23.195': DCREF_ISP.LG,
@@ -1277,7 +1279,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     '[JP]ACROSS Dream Wave Shizuoka Co. Ltd., [JP]QUICK-YCCNET QUICK Corp., [JP]WATVNET Watarase Television Co.,Ltd, KCTV 제주 방송'
   ),
   '27.101': detailWrap(DCREF_ISP.GENERAL, '국가정보자원관리원'),
-  '27.102': detailWrap(DCREF_ISP.GENERAL, 'SKB, 다우기술, STARVANKOREA'),
+  '27.102': detailWrap(DCREF_ISP.GENERAL, '다우기술, STARVANKOREA'),
   '27.106': detailWrap(DCREF_ISP.GENERAL, '[JP]E-CATV EHIME CATV CO.,LTD.'),
   '27.109': detailWrap(
     DCREF_ISP.GENERAL,
@@ -1803,10 +1805,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     '[JP]VECTANT ARTERIA Networks Corporation'
   ),
-  '43.227': detailWrap(
-    DCREF_ISP.GENERAL,
-    'KT, 베고니아 네트워크, NHN, 광주방송'
-  ),
+  '43.227': detailWrap(DCREF_ISP.GENERAL, '베고니아 네트워크, NHN, 광주방송'),
   '43.228': DCREF_ISP.KT,
   '43.229': detailWrap(
     DCREF_ISP.GENERAL,
@@ -1815,7 +1814,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '43.230': detailWrap(DCREF_ISP.GENERAL, 'SKB, KT, LG, 티브로드'),
   '43.231': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, 베고니아 네트워크, [JP]AS131963, [JP]VECTANT ARTERIA Networks Corporation, [JP]BEKKOAME BEKKOAME INTERNET INC.'
+    '베고니아 네트워크, [JP]AS131963, [JP]VECTANT ARTERIA Networks Corporation, [JP]BEKKOAME BEKKOAME INTERNET INC.'
   ),
   '43.232': DCREF_ISP.UCOM,
   '43.233': DCREF_ISP.UCOM,
@@ -1925,6 +1924,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '45.11': DCREF_ISP.AMAZON,
   '45.13': DCREF_ISP.AMAZON,
   '45.14': detailWrap(DCREF_ISP.GENERAL, '-JP xTom'),
+  '45.42': DCREF_ISP.AMAZON,
   '45.58': DCREF_ISP.EDUCATION,
   '45.62': DCREF_ISP.AMAZON,
   '45.64': detailWrap(DCREF_ISP.GENERAL, 'CMB, KT, 더존 비즈온, NEXINNO'),
@@ -1972,7 +1972,10 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     '[JP]AS-PNAPOSK Internap Japan Co.,Ltd.'
   ),
-  '45.119': detailWrap(DCREF_ISP.GENERAL, 'KT, [JP]CTC, -AP GATEWAY INC'),
+  '45.119': detailWrap(
+    DCREF_ISP.GENERAL,
+    '[JP]CTC, -AP GATEWAY INC, 베고니아 네트워크'
+  ),
   '45.120': detailWrap(
     DCREF_ISP.GENERAL,
     'LG, 닷네임코리아, 베고니아 네트워크, [JP]TOKAI TOKAI Communications Corporation, [JP]CTC'
@@ -1992,14 +1995,14 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '45.129': DCREF_ISP.AMAZON,
   '45.130': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]BIT-ISLE Equinix Jpapan Enterprise K.K.'
+    '[JP]BIT-ISLE Equinix Jpapan Enterprise K.K., AS138195'
   ),
   '45.131': detailWrap(DCREF_ISP.GENERAL, '-JP xTom'),
   '45.135': detailWrap(DCREF_ISP.GENERAL, '-JP xTom, [JP]OSOA'),
   '45.136': detailWrap(DCREF_ISP.GENERAL, 'AS138195, [US]Amazon'),
   '45.138': DCREF_ISP.LG,
   '45.140': DCREF_ISP.AMAZON,
-  '45.141': detailWrap(DCREF_ISP.GENERAL, 'AS138195, [US]Amazon'),
+  '45.141': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
   '45.142': detailWrap(DCREF_ISP.GENERAL, '-JP xTom'),
   '45.147': detailWrap(
     DCREF_ISP.GENERAL,
@@ -2012,6 +2015,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '45.155': DCREF_ISP.AMAZON,
   '45.156': DCREF_ISP.AMAZON,
   '45.159': DCREF_ISP.AMAZON,
+  '45.197': detailWrap(DCREF_ISP.GENERAL, '[JP]AS139076'),
   '45.220': detailWrap(DCREF_ISP.GENERAL, '-AP QT Inc.'),
   '45.223': DCREF_ISP.AMAZON,
   '45.225': DCREF_ISP.EHOSTICT,
@@ -2124,7 +2128,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '49.238': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, [JP]OCT Oita Cable Telecom Co,ltd., 효성ITX, 드림마크원'
+    '[JP]OCT Oita Cable Telecom Co,ltd., 효성ITX, 드림마크원'
   ),
   '49.239': detailWrap(DCREF_ISP.GENERAL, '[JP]IIJ, 엘림넷'),
   '49.240': detailWrap(DCREF_ISP.GENERAL, '[JP]FBDC FreeBit Co.,Ltd.'),
@@ -2845,7 +2849,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '61.43': detailWrap(
     DCREF_ISP.GENERAL,
-    'LG U+, LG, LG CNS, KCTV 제주 방송, HANASK card, 한국방송통신대, 경인여대, 한국무역보험공사, OCI정보통신, 연세대, 포스텍, 한국부동산원, 부산케이블'
+    'LG U+, LG, LG CNS, HCN, KCTV 제주 방송, HANASK card, 한국방송통신대, 경인여대, 한국무역보험공사, OCI정보통신, 연세대, 포스텍, 한국부동산원, 부산케이블'
   ),
   '61.44': detailWrap(
     DCREF_ISP.GENERAL,
@@ -3072,6 +3076,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     'SKB, LG 헬로비전, 채드윅 국제학교, 인천경제산업정보테크노파크, 교육정보연구원, ottogi.co.kr'
   ),
+  '62.133': DCREF_ISP.AMAZON,
   '63.32': DCREF_ISP.AMAZON,
   '63.33': DCREF_ISP.AMAZON,
   '63.34': DCREF_ISP.AMAZON,
@@ -3167,6 +3172,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '72.21': DCREF_ISP.AMAZON,
   '72.44': DCREF_ISP.AMAZON,
   '72.46': DCREF_ISP.AMAZON,
+  '72.167': DCREF_ISP.AMAZON,
   '74.112': DCREF_ISP.AMAZON,
   '74.114': DCREF_ISP.GOOGLE_CLOUD,
   '74.116': DCREF_ISP.AMAZON,
@@ -3204,7 +3210,6 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '87.237': DCREF_ISP.AMAZON,
   '87.238': DCREF_ISP.AMAZON,
   '88.218': DCREF_ISP.AMAZON,
-  '89.22': DCREF_ISP.AMAZON,
   '89.190': detailWrap(
     DCREF_ISP.GENERAL,
     '[JP]BIT-ISLE Equinix Jpapan Enterprise K.K.'
@@ -3303,10 +3308,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     '[JP]BIT-ISLE Equinix Jpapan Enterprise K.K.'
   ),
   '101.101': DCREF_ISP.KT,
-  '101.102': detailWrap(
-    DCREF_ISP.GENERAL,
-    '[JP]SANNET Rakuten Mobile, Inc., [JP]AS131960, [JP]GIGA SoftBank'
-  ),
+  '101.102': detailWrap(DCREF_ISP.GENERAL, '[JP]AS131960, [JP]GIGA SoftBank'),
   '101.110': DCREF_ISP.GIGASOFTBANK,
   '101.111': detailWrap(
     DCREF_ISP.GENERAL,
@@ -3443,15 +3445,11 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '103.31': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]TS-NET TS-NET of TOSET, Inc. in Japan, [JP]BEKKOAME BEKKOAME INTERNET INC., 닷네임코리아, [JP]HCTV-NET HONJYO CABLE VISION CO., LTD.'
+    '[JP]TS-NET TS-NET of TOSET, Inc. in Japan, [JP]BEKKOAME BEKKOAME INTERNET INC., [JP]HCTV-NET HONJYO CABLE VISION CO., LTD.'
   ),
   '103.35': detailWrap(
     DCREF_ISP.GENERAL,
     '[JP]GIGA SoftBank, [JP]VECTANT ARTERIA Networks Corporation'
-  ),
-  '103.36': detailWrap(
-    DCREF_ISP.GENERAL,
-    '[JP]MEX Computer Engineering & Consulting, Ltd.'
   ),
   '103.37': detailWrap(
     DCREF_ISP.GENERAL,
@@ -3591,7 +3589,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '103.81': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]OCT-NET Ogaki Cable Television Co.,Inc., [JP]NCT NCT CO.,LTD.'
+    '[JP]OCT-NET Ogaki Cable Television Co.,Inc., [JP]NCT NCT CO.,LTD., [JP]AS136796'
   ),
   '103.82': detailWrap(
     DCREF_ISP.GENERAL,
@@ -3599,7 +3597,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '103.83': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]BIT-ISLE Equinix Jpapan Enterprise K.K., [JP]CTC'
+    '[JP]BIT-ISLE Equinix Jpapan Enterprise K.K.'
   ),
   '103.84': detailWrap(
     DCREF_ISP.GENERAL,
@@ -3687,7 +3685,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     '[JP]UUNET-JP-AP UUNET Japan Limited, [JP]MIXI Mixi,Inc., [JP]BIT-ISLE Equinix Jpapan Enterprise K.K.'
   ),
-  '103.110': detailWrap(DCREF_ISP.GENERAL, '-AP PF LINK SYSTEMS, 이호스트 IDC'),
+  '103.110': detailWrap(DCREF_ISP.GENERAL, '-AP PF LINK SYSTEMS'),
   '103.112': detailWrap(DCREF_ISP.GENERAL, '[JP]OPTAGE OPTAGE Inc.'),
   '103.113': detailWrap(
     DCREF_ISP.GENERAL,
@@ -3795,12 +3793,12 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     '[JP]JCV Joetsu Cable Vision, [JP]MEX Computer Engineering & Consulting, Ltd., [JP]AVISNET Densan Co., Ltd., [JP]CTNET Energia Communications, Inc., [US]Amazon'
   ),
-  '103.153': DCREF_ISP.EDUCATION,
+  '103.153': detailWrap(DCREF_ISP.GENERAL, '교육청, [JP]AS131970'),
   '103.154': detailWrap(
     DCREF_ISP.GENERAL,
     '[JP]ONI OKAYAMA NETWORK INC., [JP]AS131971'
   ),
-  '103.157': detailWrap(DCREF_ISP.GENERAL, 'LG, [JP]AS131972'),
+  '103.157': detailWrap(DCREF_ISP.GENERAL, 'LG, [JP]AS131972, [JP]AS131973'),
   '103.192': detailWrap(
     DCREF_ISP.GENERAL,
     '[JP]JCOM, [JP]GIGA SoftBank, [JP]DIG-NET DIG Inc., [JP]BIT-ISLE Equinix Jpapan Enterprise K.K., [JP]SANYUNETCORP-JP 5-3 Miyuki-cho, [JP]CTC'
@@ -4155,7 +4153,6 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '108.175': DCREF_ISP.AMAZON,
   '108.177': DCREF_ISP.GOOGLE_CLOUD,
   '109.68': DCREF_ISP.AMAZON,
-  '109.94': detailWrap(DCREF_ISP.GENERAL, '-AP QT Inc., [JP]OSOA'),
   '109.95': DCREF_ISP.AMAZON,
   '109.232': DCREF_ISP.AMAZON,
   '109.236': detailWrap(DCREF_ISP.GENERAL, '[JP]GLBB-JP GLBB Japan KK'),
@@ -4242,7 +4239,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '110.163': DCREF_ISP.DOCOMO,
   '110.165': detailWrap(
     DCREF_ISP.GENERAL,
-    '네이버 비즈니스 플랫폼, 피라냐 시스템, [JP]SANNET Rakuten Mobile, Inc.'
+    '네이버 비즈니스 플랫폼, 피라냐 시스템'
   ),
   '110.172': detailWrap(
     DCREF_ISP.GENERAL,
@@ -4349,7 +4346,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '112.106': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
   '112.107': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
-  '112.108': detailWrap(DCREF_ISP.GENERAL, 'LG, 삼성SDS, AS138380'),
+  '112.108': detailWrap(DCREF_ISP.GENERAL, 'LG, 삼성SDS'),
   '112.109': detailWrap(
     DCREF_ISP.GENERAL,
     '[JP]SAKURA-B SAKURA Internet Inc., [JP]VECTANT ARTERIA Networks Corporation, 울산중앙방송'
@@ -4413,10 +4410,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '112.172': detailWrap(DCREF_ISP.GENERAL, 'KT, 전국24시콜화물'),
   '112.173': DCREF_ISP.KT,
   '112.174': DCREF_ISP.KT,
-  '112.175': detailWrap(
-    DCREF_ISP.GENERAL,
-    'KT, GS네오텍, N-BLOCK Japan Network Information Center'
-  ),
+  '112.175': detailWrap(DCREF_ISP.GENERAL, 'KT, GS네오텍'),
   '112.176': DCREF_ISP.KT,
   '112.177': DCREF_ISP.KT,
   '112.178': DCREF_ISP.KT,
@@ -4448,7 +4442,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '113.10': detailWrap(DCREF_ISP.GENERAL, '강남 케이블TV, 다우기술'),
   '113.20': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]NSK NSK Co.,Ltd., [JP]SAKURA-B SAKURA Internet Inc., [JP]ZLAN ZTV CO.,LTD'
+    'KT, [JP]NSK NSK Co.,Ltd., [JP]SAKURA-B SAKURA Internet Inc., [JP]ZLAN ZTV CO.,LTD'
   ),
   '113.21': detailWrap(
     DCREF_ISP.GENERAL,
@@ -4904,7 +4898,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '117.17': detailWrap(
     DCREF_ISP.GENERAL,
-    'LG, SKB, KT, DAELIM, 안양대, 목포대, 제주대, 군산대, 강원대, 서정대, 광주교육대, 서경대, 고려대, 인천대, 대구가톨릭대, 경기대'
+    'LG, SKB, KT, DAELIM, 안양대, 목포대, 제주대, 군산대, 강원대, 서정대, 광주교육대, 고려대, 인천대, 대구가톨릭대, 경기대'
   ),
   '117.18': detailWrap(
     DCREF_ISP.GENERAL,
@@ -4953,6 +4947,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '117.111': detailWrap(DCREF_ISP.GENERAL, 'LG U+, LGPUB, 교육청'),
   '117.120': detailWrap(DCREF_ISP.GENERAL, '[JP]ATWORKS A.T.WORKS, Inc.'),
   '117.123': DCREF_ISP.TBROAD,
+  '118.0': DCREF_ISP.NTT,
   '118.1': DCREF_ISP.NTT,
   '118.2': DCREF_ISP.NTT,
   '118.3': DCREF_ISP.NTT,
@@ -5116,11 +5111,11 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '119.26': DCREF_ISP.JCOM,
   '119.30': detailWrap(
     DCREF_ISP.GENERAL,
-    'KINX, [JP]E-CATV EHIME CATV CO.,LTD., [JP]SANNET Rakuten Mobile, Inc.'
+    'KINX, [JP]E-CATV EHIME CATV CO.,LTD.'
   ),
   '119.31': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]SANNET Rakuten Mobile, Inc., National IT Industry Promotion Agency'
+    'National IT Industry Promotion Agency'
   ),
   '119.42': DCREF_ISP.INET,
   '119.47': detailWrap(
@@ -5321,7 +5316,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '121.64': DCREF_ISP.LG,
   '121.65': detailWrap(
     DCREF_ISP.GENERAL,
-    'LG, MMAAC C, 경북대, 해외문화홍보원, 서경대, NH투자증권'
+    'LG, MMAAC C, 경북대, 해외문화홍보원, NH투자증권'
   ),
   '121.66': DCREF_ISP.LG,
   '121.67': detailWrap(DCREF_ISP.GENERAL, 'LG, KT, 영산대, 농협정보시스템'),
@@ -6228,7 +6223,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '126.250': DCREF_ISP.GIGASOFTBANK,
   '126.251': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]JCV Joetsu Cable Vision, [JP]CCSNET CITY-CABLE SHUNAN Corporation, [JP]UCATV Utsunomiya Cable TV Corporation'
+    '[JP]JCV Joetsu Cable Vision, [JP]CCSNET CITY-CABLE SHUNAN Corporation, [JP]UCATV Utsunomiya Cable TV Corporation, [JP]AS131970'
   ),
   '126.252': DCREF_ISP.GIGASOFTBANK,
   '126.255': DCREF_ISP.GIGASOFTBANK,
@@ -6239,7 +6234,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '128.53': DCREF_ISP.NTTPC,
   '128.134': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, 강원대, Seoul Housing Communities Corporation, 연세의료원, 안양대, DB Financial Investment Co.,Ltd., 한화정보서비스부서, KOSCOM, 신한금융투자, viaweb'
+    'KT, HCN, 강원대, Seoul Housing Communities Corporation, 연세의료원, 안양대, DB Financial Investment Co.,Ltd., 한화정보서비스부서, KOSCOM, 신한금융투자, viaweb'
   ),
   '129.33': DCREF_ISP.AMAZON,
   '129.41': DCREF_ISP.AMAZON,
@@ -6419,7 +6414,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '133.87': detailWrap(DCREF_ISP.GENERAL, '[JP]일본정보시스템연구기구'),
   '133.88': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]ACROSS Dream Wave Shizuoka Co. Ltd., [JP]AS131969, [JP]SSC Suzuyo Shinwart Corporation, [JP]TAC-NET Tokoname New-TV Corporation, [JP]CANET IMIZU CABLE NETWORK CO.,LTD., [JP]CTC'
+    '[JP]ACROSS Dream Wave Shizuoka Co. Ltd., [JP]AS131969, [JP]INTERQ GMO Internet,Inc, [JP]SSC Suzuyo Shinwart Corporation, [JP]TAC-NET Tokoname New-TV Corporation, [JP]CANET IMIZU CABLE NETWORK CO.,LTD., [JP]CTC'
   ),
   '133.89': detailWrap(DCREF_ISP.GENERAL, '[JP]일본정보시스템연구기구'),
   '133.90': DCREF_ISP.NTT,
@@ -6595,11 +6590,12 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '134.180': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]SANNET Rakuten Mobile, Inc., [JP]VECTANT ARTERIA Networks Corporation'
+    '[JP]VECTANT ARTERIA Networks Corporation'
   ),
   '134.224': DCREF_ISP.AMAZON,
   '134.237': DCREF_ISP.SOFTBANK,
   '135.39': detailWrap(DCREF_ISP.GENERAL, '[JP]IDCF IDC Frontier Inc.'),
+  '135.84': DCREF_ISP.AMAZON,
   '136.112': DCREF_ISP.GOOGLE_CLOUD,
   '136.113': DCREF_ISP.GOOGLE_CLOUD,
   '136.114': DCREF_ISP.GOOGLE_CLOUD,
@@ -6665,6 +6661,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '139.180': DCREF_ISP.AMAZON,
   '139.181': DCREF_ISP.KT,
   '140.16': DCREF_ISP.AMAZON,
+  '140.17': DCREF_ISP.AMAZON,
   '140.18': DCREF_ISP.AMAZON,
   '140.19': DCREF_ISP.AMAZON,
   '140.83': detailWrap(DCREF_ISP.GENERAL, '-AP Oracle Corporation'),
@@ -6734,6 +6731,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '148.68': DCREF_ISP.DOCOMO,
   '148.163': DCREF_ISP.AMAZON,
   '148.188': DCREF_ISP.IIJ,
+  '149.19': DCREF_ISP.AMAZON,
   '149.20': DCREF_ISP.AMAZON,
   '149.54': detailWrap(
     DCREF_ISP.GENERAL,
@@ -6867,6 +6865,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     '[JP]SO-NET So-net Entertainment Corporation'
   ),
   '151.148': DCREF_ISP.AMAZON,
+  '151.216': DCREF_ISP.AMAZON,
   '152.99': detailWrap(DCREF_ISP.GENERAL, '국가정보자원관리원'),
   '152.129': DCREF_ISP.AMAZON,
   '152.149': detailWrap(DCREF_ISP.GENERAL, 'SKB, DSME, 대우정보시스템'),
@@ -7162,7 +7161,6 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     'CDNetworks, [JP]DD-NET datadockInc.'
   ),
-  '157.192': detailWrap(DCREF_ISP.GENERAL, '[JP]SANNET Rakuten Mobile, Inc.'),
   '157.197': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
   '157.205': detailWrap(DCREF_ISP.GENERAL, '[JP]AICS Otsuka Corp.'),
   '157.248': DCREF_ISP.AMAZON,
@@ -7252,7 +7250,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '160.199': detailWrap(DCREF_ISP.GENERAL, '[JP]QTNET QTnet,Inc.'),
   '160.202': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, [JP]일본정보시스템연구기구, [US]Amazon, [JP]AS-PNAPOSK Internap Japan Co.,Ltd., 이호스트 IDC'
+    'KT, KINX, [JP]일본정보시스템연구기구, [US]Amazon, [JP]AS-PNAPOSK Internap Japan Co.,Ltd., 이호스트 IDC'
   ),
   '160.203': detailWrap(
     DCREF_ISP.GENERAL,
@@ -7340,7 +7338,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '163.138': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]CORE NTT, [JP]ERX-ECLNET Electrical Communications Laboratories, [JP]KAIT-NWLAB Kanagawa Institute of Technology, [JP]HANABI NTT Communications Corporation, [JP]CPF-NET NTT Communications Corporation, [JP]HANABI4 NTT Communications Corporation, [JP]HIGE NTT Communications Corporation, [JP]IR3 NTT Communications Corporation Innovative IP Architecture Center'
+    '[JP]CORE NTT, [JP]ERX-ECLNET Electrical Communications Laboratories, [JP]KAIT-NWLAB Kanagawa Institute of Technology, [JP]HANABI NTT Communications Corporation, [JP]HANABI4 NTT Communications Corporation, [JP]HIGE NTT Communications Corporation, [JP]IR3 NTT Communications Corporation Innovative IP Architecture Center'
   ),
   '163.139': detailWrap(
     DCREF_ISP.GENERAL,
@@ -7382,7 +7380,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     '[JP]FCN University Public Corporation Osaka'
   ),
   '163.229': DCREF_ISP.KT,
-  '163.239': detailWrap(DCREF_ISP.GENERAL, 'SKB, LG, 서강대'),
+  '163.239': detailWrap(DCREF_ISP.GENERAL, 'LG, 서강대'),
   '163.253': DCREF_ISP.AMAZON,
   '163.255': DCREF_ISP.KT,
   '164.43': detailWrap(
@@ -7522,6 +7520,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '172.96': DCREF_ISP.AMAZON,
   '172.110': DCREF_ISP.GOOGLE_CLOUD,
   '172.111': DCREF_ISP.KT,
+  '172.119': detailWrap(DCREF_ISP.GENERAL, 'AS23593'),
   '172.122': DCREF_ISP.IIJ,
   '172.123': DCREF_ISP.IIJ,
   '172.217': DCREF_ISP.GOOGLE_CLOUD,
@@ -7829,7 +7828,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '180.188': detailWrap(DCREF_ISP.GENERAL, '[JP]EDION EDION Corporation'),
   '180.189': detailWrap(
     DCREF_ISP.GENERAL,
-    'LG 헬로비전, [JP]JCOM, [JP]ASN-EXCITE Excite Japan Co., Ltd., [JP]EDION EDION Corporation, 퍼플스톤즈'
+    'LG 헬로비전, [JP]JCOM, [JP]ASN-EXCITE Excite Japan Co., Ltd., AS139281, [JP]EDION EDION Corporation, 퍼플스톤즈'
   ),
   '180.196': DCREF_ISP.CTC,
   '180.197': DCREF_ISP.CTC,
@@ -8044,10 +8043,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     'KT, HANA TI, INICIS Co., Ltd, 동화기업'
   ),
   '183.110': detailWrap(DCREF_ISP.GENERAL, 'KT, netmarble, GS네오텍'),
-  '183.111': detailWrap(
-    DCREF_ISP.GENERAL,
-    'KT, N-BLOCK Japan Network Information Center, GS네오텍'
-  ),
+  '183.111': detailWrap(DCREF_ISP.GENERAL, 'KT, GS네오텍'),
   '183.112': DCREF_ISP.KT,
   '183.113': DCREF_ISP.KT,
   '183.114': DCREF_ISP.KT,
@@ -8128,13 +8124,14 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '185.186': DCREF_ISP.AMAZON,
   '185.187': DCREF_ISP.AMAZON,
   '185.188': DCREF_ISP.AMAZON,
-  '185.192': DCREF_ISP.EHOSTICT,
+  '185.192': detailWrap(DCREF_ISP.GENERAL, '이호스트 IDC, [JP]AS136796'),
   '185.195': DCREF_ISP.AMAZON,
   '185.206': DCREF_ISP.AMAZON,
   '185.215': DCREF_ISP.AMAZON,
   '185.226': DCREF_ISP.AMAZON,
   '185.227': detailWrap(DCREF_ISP.GENERAL, 'AS138195'),
   '185.228': detailWrap(DCREF_ISP.GENERAL, '-AP First Innovation K.K.'),
+  '185.232': detailWrap(DCREF_ISP.GENERAL, '[JP]AS137819'),
   '185.235': detailWrap(DCREF_ISP.GENERAL, '-AP Criteo APAC'),
   '185.248': detailWrap(DCREF_ISP.GENERAL, '-JP xTom'),
   '185.249': DCREF_ISP.LG,
@@ -8157,7 +8154,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '192.31': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]일본정보시스템연구기구, [JP]AIST National Institute of Advanced Industrial Science and Technology'
+    '[US]Amazon, [JP]일본정보시스템연구기구, [JP]AIST National Institute of Advanced Industrial Science and Technology'
   ),
   '192.33': detailWrap(
     DCREF_ISP.GENERAL,
@@ -8297,6 +8294,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '193.119': detailWrap(DCREF_ISP.GENERAL, '[JP]AS138384'),
   '193.149': detailWrap(DCREF_ISP.GENERAL, '[JP]AGNSCUS-HK AGNS Customer AS'),
   '193.186': DCREF_ISP.GOOGLE_CLOUD,
+  '193.219': DCREF_ISP.AMAZON,
   '193.235': detailWrap(
     DCREF_ISP.GENERAL,
     '[JP]VOLVOITJAPAN UD Trucks Corporation, Volvo Information Technology Japan'
@@ -8393,6 +8391,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '199.36': DCREF_ISP.GOOGLE_CLOUD,
   '199.43': DCREF_ISP.AMAZON,
   '199.47': DCREF_ISP.AMAZON,
+  '199.59': DCREF_ISP.AMAZON,
   '199.68': DCREF_ISP.AMAZON,
   '199.91': detailWrap(
     DCREF_ISP.GENERAL,
@@ -8615,7 +8614,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '202.79': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]OCN NTT, [JP]AS131960, [JP]CCNET-NET COMMUNITY NETWORK CENTER INCORPORATED., [JP]J-STREAM J-Stream Inc.'
+    '[JP]OCN NTT, [JP]CCNET-NET COMMUNITY NETWORK CENTER INCORPORATED., [JP]J-STREAM J-Stream Inc.'
   ),
   '202.80': detailWrap(
     DCREF_ISP.GENERAL,
@@ -8808,7 +8807,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '202.175': detailWrap(DCREF_ISP.GENERAL, '[JP]일본정보시스템연구기구'),
   '202.176': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]HNB Hitachi Information Systems, Ltd., [JP]SANNET Rakuten Mobile, Inc., [JP]FUSION Rakuten Mobile, Inc.'
+    '[JP]HNB Hitachi Information Systems, Ltd., [JP]FUSION Rakuten Mobile, Inc.'
   ),
   '202.177': detailWrap(
     DCREF_ISP.GENERAL,
@@ -8864,7 +8863,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '202.216': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]OCN NTT, [JP]SANNET Rakuten Mobile, Inc., [JP]VECTANT ARTERIA Networks Corporation, [JP]TOKAI TOKAI Communications Corporation, [JP]OPTAGE OPTAGE Inc., [JP]HANSHIN ITEC HANKYU HANSHIN CO.,LTD., [JP]MEDIAWEB Fujitsu Systems Applications & Support Limited, [JP]TEES TOYOHASHI CABLE NETWORK INC., [JP]PFU-IDC PFU LIMITED, [JP]TAC-NET Tokoname New-TV Corporation, [JP]INFOWEB FUJITSU LIMITED, [JP]FBDC FreeBit Co.,Ltd.'
+    '[JP]OCN NTT, [JP]VECTANT ARTERIA Networks Corporation, [JP]TOKAI TOKAI Communications Corporation, [JP]OPTAGE OPTAGE Inc., [JP]HANSHIN ITEC HANKYU HANSHIN CO.,LTD., [JP]MEDIAWEB Fujitsu Systems Applications & Support Limited, [JP]TEES TOYOHASHI CABLE NETWORK INC., [JP]PFU-IDC PFU LIMITED, [JP]TAC-NET Tokoname New-TV Corporation, [JP]INFOWEB FUJITSU LIMITED, [JP]FBDC FreeBit Co.,Ltd.'
   ),
   '202.217': detailWrap(
     DCREF_ISP.GENERAL,
@@ -8895,7 +8894,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '202.225': detailWrap(DCREF_ISP.GENERAL, '[JP]BIGLOBE BIGLOBE Inc.'),
   '202.226': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]UCOM, [JP]KAMOIKE-NET Kamoike.net LLP, [JP]HOMENOC Home NOC Operators Group, [JP]ASO-NET General Incorporated Foundation Aso Telework Center, [JP]AS131954, [JP]TOKAI TOKAI Communications Corporation, [JP]SO-NET So-net Entertainment Corporation, [JP]ENJOYVC EnjoyVC Japan Corporation, [JP]AS131965, [JP]BIRDIE-NET2 Birdie Mobile Inc., [JP]GIGA SoftBank, [JP]ANC-NET Azumino Network Community TV, [JP]AS131966, [JP]PTOP Marubeni OKI Network Solutions Inc., [JP]MEDIAWEB Fujitsu Systems Applications & Support Limited, [JP]QTNET QTnet,Inc.'
+    '[JP]UCOM, [JP]KAMOIKE-NET Kamoike.net LLP, [JP]HOMENOC Home NOC Operators Group, [JP]ASO-NET General Incorporated Foundation Aso Telework Center, [JP]AS131954, [JP]TOKAI TOKAI Communications Corporation, [JP]SO-NET So-net Entertainment Corporation, [JP]ENJOYVC EnjoyVC Japan Corporation, [JP]AS139076, [JP]AS131965, [JP]BIRDIE-NET2 Birdie Mobile Inc., [JP]GIGA SoftBank, [JP]ANC-NET Azumino Network Community TV, [JP]AS131966, [JP]PTOP Marubeni OKI Network Solutions Inc., [JP]MEDIAWEB Fujitsu Systems Applications & Support Limited, [JP]QTNET QTnet,Inc.'
   ),
   '202.227': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9258,7 +9257,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '203.210': detailWrap(
     DCREF_ISP.GENERAL,
-    '티브로드, 닷네임코리아, [US]Amazon, [JP]TAM TAM-Internet Service (T.A.M Co., Ltd.)'
+    '티브로드, [US]Amazon, [JP]TAM TAM-Internet Service (T.A.M Co., Ltd.)'
   ),
   '203.211': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9305,7 +9304,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '203.229': detailWrap(
     DCREF_ISP.GENERAL,
-    '티브로드, KT, SNUH, flexnetworks, 가톨릭대, 유한대, 그리스도대, 케이엘넷'
+    '티브로드, KT, SNUH, flexnetworks, 가톨릭대, HCN, 유한대, 그리스도대, 케이엘넷'
   ),
   '203.230': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9325,7 +9324,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '203.234': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, LG, SKB, 우송대, 목포대, 서울대, 유한대, 군산대, 한서대, 충청대, 한국해양대, 교육정보연구원, CNUE, 하나은행, N-BLOCK Japan Network Information Center, 연합뉴스, 신한금융투자, HANNET Co.,Ltd., namyang, NICE, 나이스평가정보'
+    'KT, LG, SKB, 우송대, 목포대, 서울대, 유한대, 군산대, 한서대, 충청대, 한국해양대, 교육정보연구원, CNUE, 하나은행, 연합뉴스, 신한금융투자, HANNET Co.,Ltd., namyang, NICE, 나이스평가정보, HCN'
   ),
   '203.235': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9379,7 +9378,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '203.249': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, SKB, LG, 경기대, 한국방송통신대, 전주비전대, 경민대, 안양대, 원광대, 홍익대, 서울시립대, 전주교육대, 목원대, 서경대, 중앙일보, NDS Coporation'
+    'KT, SKB, LG, 경기대, 한국방송통신대, 전주비전대, 경민대, 안양대, 원광대, 홍익대, 서울시립대, 전주교육대, 목원대, 중앙일보, NDS Coporation'
   ),
   '203.250': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9429,6 +9428,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '205.201': DCREF_ISP.AMAZON,
   '205.220': DCREF_ISP.AMAZON,
   '205.228': detailWrap(DCREF_ISP.GENERAL, '-AP Morgan Stanley Japan Limited'),
+  '205.235': DCREF_ISP.AMAZON,
   '205.251': DCREF_ISP.AMAZON,
   '206.3': detailWrap(DCREF_ISP.GENERAL, '[JP]IDCF IDC Frontier Inc.'),
   '206.67': detailWrap(DCREF_ISP.GENERAL, '삼성SDS'),
@@ -9466,6 +9466,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '208.84': DCREF_ISP.AMAZON,
   '208.88': DCREF_ISP.AMAZON,
   '208.89': DCREF_ISP.AMAZON,
+  '208.91': DCREF_ISP.AMAZON,
   '208.93': DCREF_ISP.AMAZON,
   '208.111': detailWrap(DCREF_ISP.GENERAL, '[JP]BBTOWER BroadBand Tower, Inc.'),
   '208.127': DCREF_ISP.AMAZON,
@@ -9519,10 +9520,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     'KT, 서울교통공사, 국가정보자원관리원, 관세청, Cycle Racing Association, KORECO, 국립환경과학원'
   ),
-  '210.91': detailWrap(
-    DCREF_ISP.GENERAL,
-    'KT, 인덕대, DAILY SPORTSWORLD, 안양대'
-  ),
+  '210.91': detailWrap(DCREF_ISP.GENERAL, 'KT, DAILY SPORTSWORLD, 안양대'),
   '210.92': detailWrap(
     DCREF_ISP.GENERAL,
     'KT, LG, SKB, 대우증권, 키움증권, 이호스트 IDC, AS23594, BCCARD, 조선일보, 연합뉴스, 신분당선, AS23591, 하나은행, 신한생명보험, 국민은행, 신세계 I & C, HANATI, PHIS, KB손해보험, 새마을금고, SMILESERV, JTNet'
@@ -9590,11 +9588,11 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '210.109': detailWrap(
     DCREF_ISP.GENERAL,
-    'LG 헬로비전, AS23588, 세종텔레콤, Hostway IDC, KEPCO, 포스코ICT'
+    'KINX, LG 헬로비전, AS23588, 세종텔레콤, Hostway IDC, KEPCO, 포스코ICT'
   ),
   '210.110': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, LG, SKB, 대전보건대, 서경대, 영산대, 광주교육대, 고려대, 순천대, 한국과학기술정보연구원, 부경대, 선문대, 단국대, 경남정보대, 한국천문연구원, 호서대, DGIST, 한밭대'
+    'KT, LG, SKB, 대전보건대, 영산대, 광주교육대, 고려대, 순천대, 한국과학기술정보연구원, 부경대, 선문대, 단국대, 경남정보대, 한국천문연구원, 호서대, DGIST, 한밭대'
   ),
   '210.111': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9743,7 +9741,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '210.157': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]au, [JP]INTERQ GMO Internet,Inc, [JP]INFOWEB FUJITSU LIMITED, [JP]ICV-NET Ibara Broadcasting Company, [JP]SANNET Rakuten Mobile, Inc., [JP]STCN STNet, Incorporated'
+    '[JP]au, [JP]INTERQ GMO Internet,Inc, [JP]INFOWEB FUJITSU LIMITED, [JP]ICV-NET Ibara Broadcasting Company, [JP]STCN STNet, Incorporated'
   ),
   '210.158': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9810,7 +9808,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '210.181': detailWrap(
     DCREF_ISP.GENERAL,
-    'LG, LG 헬로비전, SKB, KT, 드림라인, 드림마크원, flexnetworks, KSNET.Inc, 더존 비즈온, 한국기술교육대, 연성대, 충청대, 한국무역정보통신, 엘림넷'
+    '티브로드, LG, LG 헬로비전, SKB, KT, 드림라인, 드림마크원, flexnetworks, KSNET.Inc, 더존 비즈온, 한국기술교육대, 연성대, 충청대, 한국무역정보통신, 엘림넷'
   ),
   '210.182': detailWrap(
     DCREF_ISP.GENERAL,
@@ -9992,7 +9990,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '211.6': DCREF_ISP.NTT,
   '211.7': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]au, [JP]TOKAI TOKAI Communications Corporation, [JP]SANNET Rakuten Mobile, Inc., [JP]CSK CSK-IT MANAGEMENT CORPORATION, [JP]STCN STNet, Incorporated'
+    '[JP]au, [JP]TOKAI TOKAI Communications Corporation, [JP]CSK CSK-IT MANAGEMENT CORPORATION, [JP]STCN STNet, Incorporated'
   ),
   '211.8': DCREF_ISP.SOFTBANK,
   '211.9': detailWrap(
@@ -10124,7 +10122,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '211.61': detailWrap(
     DCREF_ISP.GENERAL,
-    'LGPUB, 조달청, 대법원, 교육청, 국가정보자원관리원, 대통령비서실, 신비넷IDC, 하나은행, 드림라인, 교보라이프플래닛, 율촌, flexnetworks, CCS-AS-KR CCS, 드림마크원'
+    'LGPUB, 조달청, 대법원, 교육청, 국가정보자원관리원, 대통령비서실, 신비넷IDC, 하나은행, 드림라인, 율촌, flexnetworks, Dial Communications, INC., CCS-AS-KR CCS, 드림마크원'
   ),
   '211.62': detailWrap(
     DCREF_ISP.GENERAL,
@@ -10389,7 +10387,10 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '211.245': detailWrap(DCREF_ISP.GENERAL, 'SKB, 서울아산병원'),
   '211.246': detailWrap(DCREF_ISP.GENERAL, 'KT, 서경방송'),
-  '211.247': detailWrap(DCREF_ISP.GENERAL, '티브로드, 드림라인, 현대홈쇼핑'),
+  '211.247': detailWrap(
+    DCREF_ISP.GENERAL,
+    '티브로드, 드림라인, 현대홈쇼핑, Dial Communications, INC.'
+  ),
   '211.248': detailWrap(DCREF_ISP.GENERAL, 'KT, 교육청, 우리카드'),
   '211.249': detailWrap(
     DCREF_ISP.GENERAL,
@@ -10424,6 +10425,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
     DCREF_ISP.GENERAL,
     '[JP]HANSHIN ITEC HANKYU HANSHIN CO.,LTD.'
   ),
+  '213.109': DCREF_ISP.AMAZON,
   '213.139': detailWrap(DCREF_ISP.GENERAL, '[JP]OSOA, -AP OSOA Co.,LTD.'),
   '213.156': DCREF_ISP.AMAZON,
   '216.8': detailWrap(
@@ -10435,6 +10437,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '216.58': DCREF_ISP.GOOGLE_CLOUD,
   '216.73': DCREF_ISP.GOOGLE_CLOUD,
   '216.74': detailWrap(DCREF_ISP.GENERAL, '-AP GATEWAY INC'),
+  '216.75': DCREF_ISP.AMAZON,
   '216.98': DCREF_ISP.IIJ,
   '216.99': DCREF_ISP.AMAZON,
   '216.115': DCREF_ISP.AMAZON,
@@ -10760,11 +10763,11 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   '219.104': detailWrap(DCREF_ISP.GENERAL, '[JP]INFOWEB FUJITSU LIMITED'),
   '219.105': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]IIJ, [JP]JCOM, [JP]DCN D.C.N. Corporation, [JP]FBDC FreeBit Co.,Ltd., [JP]AS-ENECOM Energia Communications,Inc., [JP]MCN-NET01 miyazaki cabletelevision network Co.,LTD, [JP]SANNET Rakuten Mobile, Inc., [JP]FUSION Rakuten Mobile, Inc., [JP]MCTV Matsusaka Cable-TV Station Inc.'
+    '[JP]IIJ, [JP]JCOM, [JP]DCN D.C.N. Corporation, [JP]FBDC FreeBit Co.,Ltd., [JP]AS-ENECOM Energia Communications,Inc., [JP]MCN-NET01 miyazaki cabletelevision network Co.,LTD, [JP]FUSION Rakuten Mobile, Inc., [JP]MCTV Matsusaka Cable-TV Station Inc.'
   ),
   '219.106': detailWrap(
     DCREF_ISP.GENERAL,
-    '[JP]SANNET Rakuten Mobile, Inc., [JP]HANSHIN ITEC HANKYU HANSHIN CO.,LTD., [JP]STCN STNet, Incorporated, [JP]ADVAN advanscope.inc, [JP]TOKAI TOKAI Communications Corporation, [JP]SONYTELECOM So-net Corporation'
+    '[JP]HANSHIN ITEC HANKYU HANSHIN CO.,LTD., [JP]STCN STNet, Incorporated, [JP]ADVAN advanscope.inc, [JP]TOKAI TOKAI Communications Corporation, [JP]SONYTELECOM So-net Corporation'
   ),
   '219.107': detailWrap(DCREF_ISP.GENERAL, '[JP]BIGLOBE BIGLOBE Inc.'),
   '219.108': DCREF_ISP.AU,
@@ -10972,7 +10975,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '220.66': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, LG, SKB, 유한대, 한서대, 한경대, 협성대, 안양대, 용인대, DAELIM, 한국사학진흥재단, 연암공대, 전주비전대, 한밭대, 그리스도대, 경주대, 서라벌대, 대구공업대, 경북대, 부경대'
+    'KT, LG, SKB, 유한대, 한서대, 연암공대, 한경대, 협성대, 안양대, 용인대, DAELIM, 한국사학진흥재단, 전주비전대, 한밭대, 그리스도대, 경주대, 서라벌대, 대구공업대, 경북대, 부경대'
   ),
   '220.67': detailWrap(
     DCREF_ISP.GENERAL,
@@ -11058,7 +11061,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '220.149': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, SKB, LG, 대구대, 순천대, 삼명대, 유한대, 제주대, 강원대, DST, 목포대, 건국대학병원, 호서대, 경주대, 한국해양대, 중부대, 청주교육대, 한국산업기술대, 한국항공대, 안산대'
+    'KT, SKB, LG, 대구대, 순천대, 삼명대, 유한대, 제주대, 강원대, DST, 목포대, 건국대학병원, 호서대, 경주대, 한국해양대, 중부대, 청주교육대, 한국산업기술대, KUMC, 한국항공대, 안산대'
   ),
   '220.150': detailWrap(
     DCREF_ISP.GENERAL,
@@ -11506,7 +11509,7 @@ const DCREF_COMMON_IP: { [index: string]: any } = {
   ),
   '223.195': detailWrap(
     DCREF_ISP.GENERAL,
-    'KT, LG, 세종대, 안산대, 홍익대, 청운대, 서경대, 안양대, 부산외대, 동국대'
+    'KT, LG, SKB, 세종대, 안산대, 홍익대, 청운대, 부산외대, 동국대'
   ),
   '223.216': DCREF_ISP.NTT,
   '223.217': DCREF_ISP.NTT,
