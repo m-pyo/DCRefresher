@@ -51,8 +51,8 @@ export const Frame = Vue.component('refresher-frame', {
             </transition>
           </div>
           <div v-if="frame.data.comments" class="refresher-comment-controls-container">
-            <!--<PreviewButton :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" class="refresher-comment-controls">
-            </PreviewButton>-->
+            <PreviewButton v-if="frame.data.useWriteComment" :id="'write'" :text="'댓글 쓰기'" :click="toCommentWrite" class="refresher-comment-controls">
+            </PreviewButton>
             <PreviewButton :id="'refresh'" :text="'새로고침'" :click="refresh" class="refresher-comment-controls">
             </PreviewButton>
           </div>
@@ -86,7 +86,7 @@ export const Frame = Vue.component('refresher-frame', {
           </div>
           <br/>
         </div>
-        <div v-if="frame.data.comments">
+        <div v-if="frame.data.comments && frame.data.useWriteComment">
           <WriteComment :func="writeComment"></WriteComment>
         </div>
       </div>
@@ -121,7 +121,7 @@ export const Frame = Vue.component('refresher-frame', {
         <div>
           <PreviewButton class="refresher-upvote" :id="'upvote'" :text="frame.upvotes || '0'" :click="upvote">
           </PreviewButton>
-          <PreviewButton class="refresher-downvote" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
+          <PreviewButton v-if="!frame.data.disabledDownvote" class="refresher-downvote" :id="'downvote'" :text="frame.downvotes || '0'" :click="downvote">
           </PreviewButton>
           <PreviewButton class="refresher-share primary" :id="'share'" :text="'공유'" :click="share">
           </PreviewButton>

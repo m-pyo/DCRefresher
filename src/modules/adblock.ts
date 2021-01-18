@@ -44,15 +44,14 @@ export default {
     uuid: null,
     uuidf2: null,
     uuidf3: null,
-    uuidf4: null,
     eventRefresh: null
   },
   enable: true,
   default_enable: true,
   require: ['filter', 'eventBus'],
   func (filter: RefresherFilter, eventBus: RefresherEventBus) {
-    if (document.body) {
-      document.body.classList.add('refresherAdBlock')
+    if (document.documentElement) {
+      document.documentElement.classList.add('refresherAdBlock')
     }
 
     this.memory.uuid = filter.add('script', blockScripts)
@@ -63,21 +62,13 @@ export default {
       blockListAds
     )
 
-    this.memory.uuidf4 = filter.add('body', (elem: HTMLElement) => {
-      if (elem.className.indexOf('refresherAdBlock') == -1) {
-        elem.className += ' refresherAdBlock'
-      }
-    })
-
     this.memory.eventRefresh = eventBus.on('refresh', () => {
       filter.runSpecific('listAd').catch((_: Error) => {})
     })
   },
 
   revoke (filter: RefresherFilter, eventBus: RefresherEventBus) {
-    if (document.body) {
-      document.body.classList.remove('refresherAdBlock')
-    }
+    document.documentElement.classList.remove('refresherAdBlock')
 
     if (this.memory.uuid) {
       filter.remove(this.memory.uuid, true)
@@ -89,10 +80,6 @@ export default {
 
     if (this.memory.uuidf3) {
       filter.remove(this.memory.uuidf3, true)
-    }
-
-    if (this.memory.uuidf4) {
-      filter.remove(this.memory.uuidf4, true)
     }
 
     if (this.memory.eventRefresh) {

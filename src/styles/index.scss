@@ -261,99 +261,121 @@ tr .gall_writer {
 
 // DC Layout Module
 
-.refresherResponsive {
-  @media screen and (max-width: 900px) {
+.refresherCompact {
+  min-width: unset;
+
+  .wrap_inner {
+    width: unset;
+  }
+
+  .list_wrap,
+  .view_wrap {
     min-width: unset;
+    width: 100%;
+  }
 
-    .wrap_inner {
-      width: unset;
-    }
+  .width1160 .dchead,
+  .width1160 .gnb,
+  .width1160 #container,
+  .width1160 .info_policy,
+  .width1160 .copyright {
+    width: unset;
+  }
 
-    .list_wrap,
-    .view_wrap {
-      min-width: unset;
-      width: 100%;
-    }
+  .dchead {
+    height: 20px;
+  }
 
-    .width1160 .dchead,
-    .width1160 .gnb,
-    .width1160 #container,
-    .width1160 .info_policy,
-    .width1160 .copyright {
-      width: unset;
-    }
+  .list_wrap .dc_logo,
+  .gnb_bar {
+    display: none;
+  }
+  .width1160 .top_search {
+    display: none;
+  }
 
-    .dchead {
-      height: 20px;
-    }
+  .area_links {
+    right: 13px;
+  }
 
-    .list_wrap .dc_logo,
-    .gnb_bar {
-      display: none;
-    }
-    .width1160 .top_search {
-      display: none;
-    }
+  .gall_exposure,
+  .right_content,
+  .minor_ranking_box,
+  .listwrap .issue_contentbox {
+    display: none;
+  }
 
-    .area_links {
-      right: 13px;
-    }
+  .list_array_option,
+  .listwrap .visit_list,
+  .listwrap .issuebox {
+    width: 100%;
+  }
 
-    .gall_exposure,
-    .right_content,
-    .minor_ranking_box,
-    .listwrap .issue_contentbox {
-      display: none;
-    }
+  .listwrap .visit_history {
+    width: 98.5%;
+  }
 
-    .list_array_option,
-    .listwrap .visit_list,
-    .listwrap .issuebox {
-      width: 100%;
-    }
+  .listwrap .visit_list {
+    display: contents;
+  }
 
-    .listwrap .visit_history {
-      width: 98.5%;
-    }
+  .array_tab button {
+    width: 72px;
+  }
 
-    .listwrap .visit_list {
-      display: contents;
-    }
+  .page_head h2 {
+    font-size: 23px;
+  }
 
-    .array_tab button {
-      width: 72px;
-    }
+  .left_content .visit_list li a {
+    width: 60px;
+  }
 
-    .page_head h2 {
-      font-size: 23px;
-    }
+  .gall_issuebox {
+    padding-top: unset;
+  }
 
-    .left_content .visit_list li a {
-      width: 60px;
-    }
+  .listwrap .minor_intro_box {
+    padding: 0px 0px 0px 2px;
+  }
 
-    .gall_issuebox {
-      padding-top: unset;
-    }
+  main.listwrap {
+    display: flex;
+  }
 
-    .listwrap .minor_intro_box {
-      padding: 0px 0px 0px 2px;
-    }
+  .width1160 .left_content {
+    width: 95%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-    main.listwrap {
-      display: flex;
-    }
+  .width1160 .dc_all {
+    display: none;
+  }
+}
 
-    .width1160 .left_content {
-      width: 95%;
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+.refresherHideGalleryView .issue_wrap .issuebox {
+  display: none;
+}
 
-    .width1160 .dc_all {
-      display: none;
-    }
+.refresherHideUselessView section.right_content article {
+  display: none;
+}
+
+.refresherHideUselessView.refresherPushToRight {
+  .list_array_option,
+  .left_content,
+  .listwrap .issuebox {
+    width: 1160px;
+  }
+
+  .listwrap .minor_intro_box, .listwrap .visit_list {
+    width: 1000px;
+  }
+
+  .listwrap .visit_history {
+    width: 1134px;
   }
 }
 
