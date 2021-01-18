@@ -20,7 +20,7 @@ export default {
       <audio :src="getVoiceData.src" controls></audio>
       <p v-if="getVoiceData.memo">{{getVoiceData.memo}}</p>
     </div>
-    <p v-else class="refresher-comment-content" v-html="comment.memo"></p>
+    <p v-else class="refresher-comment-content" :class="{dccon: comment.memo.indexOf('<img class=') > -1}" v-html="comment.memo"></p>
   </div>`,
   data () {
     return {
