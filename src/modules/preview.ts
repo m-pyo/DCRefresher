@@ -956,6 +956,8 @@ let parse = (id: string, body: string) => {
   let requireCaptcha = dom.querySelector('.recommend_kapcode') !== null
   let requireCommentCaptcha =
     dom.querySelector('.cmt_write_box input[name="comment_code"]') !== null
+  
+  let disabledDownvote = dom.querySelector('.icon_recom_down') === null
 
   return new PostInfo(id, {
     header,
@@ -974,6 +976,7 @@ let parse = (id: string, body: string) => {
     commentId,
     commentNo,
     isNotice,
+    disabledDownvote,
     requireCaptcha,
     requireCommentCaptcha,
     dom
@@ -1000,7 +1003,8 @@ export default {
     colorPreviewLink: true,
     reversePreviewKey: false,
     autoRefreshComment: false,
-    commentRefreshInterval: 10
+    commentRefreshInterval: 10,
+    experimentalComment: false
   },
   memory: {
     preventOpen: false,
@@ -1106,6 +1110,13 @@ export default {
     noCacheHeader: {
       name: 'no-cache 헤더 추가',
       desc: '전송하는 게시글 요청에 no-cache 헤더를 추가합니다.',
+      type: 'check',
+      default: false,
+      advanced: true
+    },
+    experimentalComment: {
+      name: '댓글 기능 활성화',
+      desc: '!!!차단 가능성 있음!!! 실험 중인 댓글 기능을 활성화합니다. 현재 댓글 기능을 사용할 시 디시에서 일시로 차단당할 가능성이 있습니다.',
       type: 'check',
       default: false,
       advanced: true
@@ -1245,6 +1256,8 @@ export default {
             frame.upvotes = obj.upvotes
             frame.downvotes = obj.downvotes
 
+            frame.data.disabledDownvote = obj.disabledDownvote
+
             if (frame.title !== obj.title) {
               frame.title = obj.title || ''
             }
@@ -1291,6 +1304,8 @@ export default {
       frame.data.load = true
       frame.title = `댓글`
       frame.subtitle = `로딩 중`
+
+      frame.data.useWriteComment = this.status.experimentalComment
 
       let postDom: HTMLElement
 

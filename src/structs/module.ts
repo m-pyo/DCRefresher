@@ -61,6 +61,11 @@ interface RefresherModule {
   settings?: { [index: string]: RefresherSettings } | null
 
   /**
+   * 설정이 업데이트 됐을 시 호출할 함수를 정의합니다.
+   */
+  update?: { [index: string]: Function } | null
+
+  /**
    * 모듈에서 사용할 내장 유틸 목록.
    */
   require?: string[] | null

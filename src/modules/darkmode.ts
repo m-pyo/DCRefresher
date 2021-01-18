@@ -9,7 +9,13 @@ const contentColorFix = (el: HTMLElement) => {
   )! as HTMLElement
 
   DOM.traversal(qSelector).forEach(elem => {
-    if (!elem.style || !(elem.style.color || elem.hasAttribute('color'))) return
+    if (
+      !elem.style ||
+      !(elem.style.color || elem.hasAttribute('color')) ||
+        elem.style.background ||
+        elem.style.backgroundColor
+    )
+      return
 
     colorCorrection(elem)
   })
