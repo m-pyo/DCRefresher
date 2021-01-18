@@ -162,5 +162,15 @@ eventBus.on(
     if (module_store[module]) {
       module_store[module].status[key] = value
     }
+
+    if (
+      module_store[module].update &&
+      typeof module_store[module].update[key] === 'function'
+    ) {
+      module_store[module].update[key] = module_store[module].update[key].bind(
+        module_store[module]
+      )
+      module_store[module].update[key](value)
+    }
   }
 )
