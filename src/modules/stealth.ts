@@ -14,17 +14,20 @@ const tempButtonCreate = (elem:HTMLElement):void =>{
     buttonFrame.innerHTML = `      
       <div class="button" id ="tempview">
       <img src="${getURL('/assets/icons/change.png')}"></img>
-      <p>일시해제</p>
+      <p id="temp_button_text">이미지 보이기</p>
       </div>
     `
 
     let button = buttonFrame.querySelector('#tempview') as HTMLElement;
+    let buttonText = buttonFrame.querySelector('#temp_button_text') as HTMLElement;
 
     button.addEventListener('click', ev => {
       if(elem.className.indexOf('stlth') < 0){
         elem.classList.add('stlth')
+        buttonText.innerText = '이미지 숨기기';
       }else{
         elem.classList.remove('stlth')
+        buttonText.innerText = '이미지 보이기';
       }
     })
 
@@ -38,7 +41,6 @@ export default {
   author: { name: 'pyo', url: '' },
   status: false,
   memory: {
-    uuid: null,
     contentViewUUID: null
   },
   enable: true,
@@ -53,20 +55,13 @@ export default {
       document.documentElement &&
       document.documentElement.className.indexOf('refresherStealth') < 0
     ) {
-      document.documentElement.className += ' refresherStealth'
+      document.documentElement.classList.add('refresherStealth')
     }    
-    
-    this.memory.uuid = filter.add('html', (elem: HTMLElement) => {
-      if (elem.className.indexOf('refresherStealth') == -1) {
-        elem.className += ' refresherStealth'
-      }
-      if(elem.querySelectorAll('.stealth_control_button').length == 0){
-        tempButtonCreate(elem)
-      }
-    })
 
-    filter.runSpecific(this.memory.uuid)
-
+    if(document.querySelectorAll('.stealth_control_button').length == 0){
+      tempButtonCreate(document.documentElement)
+    }
+  
     this.memory.contentViewUUID = eventBus.on('contentPreview', (elem: HTMLElement)=>{
       if(elem.querySelectorAll('.stealth_control_button').length == 0){
         tempButtonCreate(elem)
@@ -77,10 +72,6 @@ export default {
 
   revoke(filter: RefresherFilter, eventBus: RefresherEventBus){
     document.documentElement.classList.remove('refresherStealth')
-
-    if (this.memory.uuid) {
-      filter.remove(this.memory.uuid, true)
-    }
 
     if (this.memory.contentViewUUID) {
       eventBus.remove('refresherStealth', this.memory.contentViewUUID, true)
